@@ -1,0 +1,12 @@
+{
+  "include": "/**/*.js",
+  "exclude": [
+    "/node_modules/*",
+    ".babelrc",
+    ".git",
+    "Example"
+  ],
+  "dependencies": {
+    "react-native-modal-datepicker": ".."
+  }
+}
