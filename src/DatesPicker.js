@@ -84,6 +84,12 @@ export default class DatesPicker extends React.Component {
     }
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.dates !== this.state.dates) {
+      this.setState({dates: nextProps.dates})
+    }
+  }
+
   isBlocked (day) {
     // const { isDayBlocked, isOutsideRange } = this.props
     // return isDayBlocked(day) || isOutsideRange(day);
