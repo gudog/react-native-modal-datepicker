@@ -14,17 +14,12 @@ export default class SingleDatePickerExample extends Component {
     this.setState({ dates })
   }
 
-  resetDates = () => {
-    this.setState({dates: []})
-  }
-
   render () {
     const { dates } = this.state
 
     return (
       <DatesPicker
         onDatesChange={this.onDatesChange}
-        onClearPress={this.resetDates}
         dates={dates}
         maxNumberOfDates={1}
         style={{}}

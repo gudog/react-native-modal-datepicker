@@ -16,7 +16,6 @@ const propTypes = {
   isOutsideRange: PropTypes.func,
 
   onDatesChange: PropTypes.func,
-  onClearPress: PropTypes.func,
 
   // Custom props for main RN components
   modalProps: React.PropTypes.object,
@@ -57,7 +56,6 @@ const defaultProps = {
   maxNumberOfDates: 100,
   initialVisibleMonth: () => moment(),
   onDatesChange () {},
-  onClearPress () {},
   dates: [],
   isOutsideRange: day => day && !day.isSameOrAfter(moment(), 'day'),
 
@@ -76,8 +74,13 @@ export default class DatesPicker extends React.Component {
 
   constructor (props) {
     super(props)
+
+    // state.dates => dates selected in the modal
+    // props.dates => dates selected in dateInput (after pressing Save)
+
     this.state = {
-      calendarVisible: false
+      calendarVisible: false,
+      dates: []
     }
   }
 
@@ -89,41 +92,48 @@ export default class DatesPicker extends React.Component {
   }
 
   isSelected (day) {
-    const { dates } = this.props
+    const { dates } = this.state
     return isDayIncluded(day, dates)
   }
 
-  onDayPress = (day, modifiers) => {
-    const { dates, onDatesChange, maxNumberOfDates } = this.props
+  handleDayPress = (day, modifiers) => {
+    const { dates } = this.state
+    const { maxNumberOfDates } = this.props
 
     if (modifiers.includes('blocked')) return
-    if (dates && dates.length >= maxNumberOfDates) return
-
-    if (isDayIncluded(day, dates)) {
-      const newDates = dates.filter((d) => !d.isSame(day))
-      onDatesChange(newDates)
+    if (dates && dates.length >= maxNumberOfDates) {
+      // Single date
+      this.setState({ dates: [day] })
     } else {
-      this.props.onDatesChange(sortDates([day, ...dates]))
+      // Multiple dates
+      if (isDayIncluded(day, dates)) {
+        const newDates = dates.filter((d) => !d.isSame(day))
+        this.setState({ dates: newDates })
+      } else {
+        this.setState({ dates: sortDates([day, ...dates]) })
+      }
     }
   }
 
-  openCalendar = () => {
+  handleOnDateInputPress = () => {
     this.setState({calendarVisible: true})
   }
 
-  closeCalendar = () => {
-    this.props.onClearPress()
-    this.setState({calendarVisible: false})
+  handleClosePress = () => {
+    this.setState({calendarVisible: false, dates: this.props.dates})
   }
 
-  //  TODO: rename this
-  saveCalendar = () => {
+  handleClearPress = () => {
+    this.setState({dates: []})
+  }
+
+  handleSavePress = () => {
     this.setState({calendarVisible: false})
+    this.props.onDatesChange(this.state.dates)
   }
 
   renderCalendar () {
-    const { calendarVisible } = this.state
-    const { dates, onClearPress } = this.props
+    const { dates, calendarVisible } = this.state
     const {
       initialVisibleMonth,
       numberOfMonths,
@@ -166,10 +176,10 @@ export default class DatesPicker extends React.Component {
         modifiers={modifiers}
         visible={calendarVisible}
         // Callbacks
-        onDayPress={this.onDayPress}
-        onClearPress={onClearPress}
-        onClosePress={this.closeCalendar}
-        onSavePress={this.saveCalendar}
+        onDayPress={this.handleDayPress}
+        onClearPress={this.handleClearPress}
+        onClosePress={this.handleClosePress}
+        onSavePress={this.handleSavePress}
         // Custom Props
         modalProps={modalProps}
         listViewProps={listViewProps}
@@ -205,11 +215,11 @@ export default class DatesPicker extends React.Component {
     return (
       <View style={style}>
         <DateInput
-          onPress={this.openCalendar}
+          onPress={this.handleOnDateInputPress}
           mode='dates'
           dates={dates}
           maxNumberOfDates={maxNumberOfDates}
-          phrases={phrases} 
+          phrases={phrases}
           containerStyle={dateInputStyle}
           textStyle={dateInputTextStyle}
         />

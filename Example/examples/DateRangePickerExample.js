@@ -15,17 +15,12 @@ export default class DateRangePickerExample extends Component {
     this.setState({ ...dates })
   }
 
-  resetDates = () => {
-    this.setState({startDate: null, endDate: null})
-  }
-
   render () {
     const { startDate, endDate } = this.state
 
     return (
       <DateRangePicker
         onDatesChange={this.onDatesChange}
-        onClearPress={this.resetDates}
         startDate={startDate}
         endDate={endDate}
         style={{}}
