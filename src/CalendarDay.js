@@ -30,7 +30,8 @@ export default class CalendarDay extends React.PureComponent {
       selectedContainerStyle,
       selectedTextStyle,
       pastTextStyle,
-      containerStyle
+      containerStyle,
+      textStyle
     } = this.props
 
     const isSelected = (
@@ -50,6 +51,7 @@ export default class CalendarDay extends React.PureComponent {
     }
 
     const textStyles = [
+      textStyle,
       past ? [styles.pastText, pastTextStyle] : null,
       isSelected ? [styles.selectedText, selectedTextStyle] : null
     ]

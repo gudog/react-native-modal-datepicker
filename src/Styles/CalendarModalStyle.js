@@ -55,7 +55,7 @@ export default StyleSheet.create({
     fontWeight: '100'
   },
   calendarMonthList: {
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
     alignSelf: 'stretch',
     flex: 1
   },

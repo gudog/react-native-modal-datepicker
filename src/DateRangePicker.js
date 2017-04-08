@@ -18,6 +18,9 @@ const propTypes = {
   // Custom props for main RN components
   modalProps: React.PropTypes.object,
 
+    // A React element to be used as background
+  calendarModalBackground: React.PropTypes.element,
+
   // Custom user styles
   style: View.propTypes.style,
   dateInputStyle: View.propTypes.style,
@@ -26,6 +29,9 @@ const propTypes = {
   calendarModalFooterStyle: View.propTypes.style,
   calendarModalFooterButtonStyle: View.propTypes.style,
   calendarModalFooterTextStyle: Text.propTypes.style,
+  calendarModalWeekHeaderStyle: Text.propTypes.style,
+  calendarModalWeekDayTextStyle: Text.propTypes.style,
+  calendarModalRangeSeparatorStyle: Text.propTypes.style,
   calendarMonthListStyle: View.propTypes.style,
   calendarMonthStyle: View.propTypes.style,
   calendarMonthTitleStyle: Text.propTypes.style,
@@ -33,6 +39,7 @@ const propTypes = {
   calendarDaySelectedTextStyle: Text.propTypes.style,
   calendarDayPastTextStyle: Text.propTypes.style,
   calendarDayContainerStyle: View.propTypes.style,
+  calendarDayTextStyle: View.propTypes.style,
   calendarDaySelectedContainerStyle: View.propTypes.style,
   calendarDaySelectedStartContainerStyle: View.propTypes.style,
   calendarDaySelectedEndContainerStyle: View.propTypes.style,
@@ -174,10 +181,18 @@ export default class DateRangePicker extends React.Component {
       phrases,
       modalProps,
       listViewProps,
+      calendarModalBackground,
       calendarModalStyle,
+      calendarModalCloseButtonStyle,
+      calendarModalResetButtonStyle,
+      calendarModalSelectedDateStyle,
+      calendarModalSelectedDateTextStyle,
       calendarModalFooterStyle,
       calendarModalFooterButtonStyle,
       calendarModalFooterTextStyle,
+      calendarModalWeekHeaderStyle,
+      calendarModalWeekDayTextStyle,
+      calendarModalRangeSeparatorStyle,
       calendarMonthListStyle,
       calendarMonthStyle,
       calendarMonthTitleStyle,
@@ -185,6 +200,7 @@ export default class DateRangePicker extends React.Component {
       calendarDaySelectedTextStyle,
       calendarDayPastTextStyle,
       calendarDayContainerStyle,
+      calendarDayTextStyle,
       calendarDaySelectedContainerStyle,
       calendarDaySelectedStartContainerStyle,
       calendarDaySelectedEndContainerStyle
@@ -216,11 +232,20 @@ export default class DateRangePicker extends React.Component {
         // Custom Props
         modalProps={modalProps}
         listViewProps={listViewProps}
+        // Background
+        background={calendarModalBackground}
         // Custom Styles
         containerStyle={calendarModalStyle}
+        closeButtonStyle={calendarModalCloseButtonStyle}
+        resetButtonStyle={calendarModalResetButtonStyle}
+        selectedDateStyle={calendarModalSelectedDateStyle}
+        selectedDateTextStyle={calendarModalSelectedDateTextStyle}
         footerStyle={calendarModalFooterStyle}
         footerButtonStyle={calendarModalFooterButtonStyle}
         footerTextStyle={calendarModalFooterTextStyle}
+        weekHeaderStyle={calendarModalWeekHeaderStyle}
+        weekDayTextStyle={calendarModalWeekDayTextStyle}
+        rangeSeparatorStyle={calendarModalRangeSeparatorStyle}
         calendarMonthListStyle={calendarMonthListStyle}
         calendarMonthStyle={calendarMonthStyle}
         calendarMonthTitleStyle={calendarMonthTitleStyle}
@@ -228,6 +253,7 @@ export default class DateRangePicker extends React.Component {
         calendarDaySelectedTextStyle={calendarDaySelectedTextStyle}
         calendarDayPastTextStyle={calendarDayPastTextStyle}
         calendarDayContainerStyle={calendarDayContainerStyle}
+        calendarDayTextStyle={calendarDayTextStyle}
         calendarDaySelectedContainerStyle={calendarDaySelectedContainerStyle}
         calendarDaySelectedStartContainerStyle={calendarDaySelectedStartContainerStyle}
         calendarDaySelectedEndContainerStyle={calendarDaySelectedEndContainerStyle}

@@ -15,8 +15,15 @@ const propTypes = {
   endDate: momentPropTypes.momentObj,
 
   // Custom styles
+  closeButtonStyle: View.propTypes.style,
+  resetButtonStyle: View.propTypes.style,
   calendarModalStyle: View.propTypes.style,
   calendarMonthListStyle: View.propTypes.style,
+  selectedDatesStyle: View.propTypes.style,
+  selectedDateTextStyle: View.propTypes.style,
+  weekHeaderStyle: View.propTypes.style,
+  weekDayTextStyle: View.propTypes.style,
+  rangeSeparatorStyle: View.propTypes.style,
 
   // Custom props
   modalProps: PropTypes.object,
@@ -68,39 +75,47 @@ export default class CalendarModal extends React.Component {
   }
 
   renderWeekHeader () {
+    const { weekHeaderStyle, weekDayTextStyle } = this.props
     const header = []
     for (let i = 0; i < 7; i++) {
       header.push(
-        <Text key={i} style={defaultStyles.weekDay}>
+        <Text key={i} style={[defaultStyles.weekDay, weekDayTextStyle]}>
           {moment().weekday(i).format('dd')}
         </Text>
       )
     }
 
     return (
-      <View style={defaultStyles.weekHeader}>
+      <View style={[defaultStyles.weekHeader, weekHeaderStyle]}>
         {header}
       </View>
     )
   }
 
   renderSelectedDates () {
-    const { phrases, mode, maxNumberOfDates } = this.props
+    const {
+      phrases,
+      mode,
+      maxNumberOfDates,
+      selectedDateTextStyle,
+      selectedDatesStyle,
+      rangeSeparatorStyle
+    } = this.props
     if (mode === 'dates') {
       const { dates } = this.props
 
       if (dates.length) {
         return (
-          <View style={defaultStyles.selectedDates}>
-            <Text style={defaultStyles.selectedDate} numberOfLines={3}>
+          <View style={[defaultStyles.selectedDates, selectedDatesStyle]}>
+            <Text style={[defaultStyles.selectedDate, selectedDateTextStyle]} numberOfLines={3}>
               {dates.map((day) => day.format('D\u00a0MMM')).join(', ')}
             </Text>
           </View>
         )
       } else {
         return (
-          <View style={defaultStyles.selectedDates}>
-            <Text style={defaultStyles.selectedDate}>
+          <View style={[defaultStyles.selectedDates, selectedDatesStyle]}>
+            <Text style={[defaultStyles.selectedDate, selectedDateTextStyle]}>
               {maxNumberOfDates === 1 ? phrases.selectDate : phrases.selectDates}
             </Text>
           </View>
@@ -110,12 +125,12 @@ export default class CalendarModal extends React.Component {
       const { startDate, endDate } = this.props
 
       return (
-        <View style={defaultStyles.selectedDates}>
-          <Text style={[defaultStyles.selectedDate, defaultStyles.startDate]} numberOfLines={2}>
+        <View style={[defaultStyles.selectedDates, selectedDatesStyle]}>
+          <Text style={[defaultStyles.selectedDate, selectedDateTextStyle, defaultStyles.startDate]} numberOfLines={2}>
             { startDate ? startDate.format('dddd D\u00a0MMM') : phrases.startDate }
           </Text>
-          <Text style={defaultStyles.rangeSeparator}>|</Text>
-          <Text style={[defaultStyles.selectedDate, defaultStyles.endDate]} numberOfLines={2}>
+          <Text style={[defaultStyles.rangeSeparator, rangeSeparatorStyle]}>|</Text>
+          <Text style={[defaultStyles.selectedDate, selectedDateTextStyle, defaultStyles.endDate]} numberOfLines={2}>
             { endDate ? endDate.format('dddd D\u00a0MMM') : phrases.endDate }
           </Text>
         </View>
@@ -159,7 +174,10 @@ export default class CalendarModal extends React.Component {
       modifiers,
       modalProps,
       listViewProps,
+      background,
       containerStyle,
+      closeButtonStyle,
+      resetButtonStyle,
       calendarMonthListStyle,
       calendarMonthStyle,
       calendarMonthTitleStyle,
@@ -167,6 +185,7 @@ export default class CalendarModal extends React.Component {
       calendarDaySelectedTextStyle,
       calendarDayPastTextStyle,
       calendarDayContainerStyle,
+      calendarDayTextStyle,
       calendarDaySelectedContainerStyle,
       calendarDaySelectedStartContainerStyle,
       calendarDaySelectedEndContainerStyle
@@ -176,15 +195,16 @@ export default class CalendarModal extends React.Component {
 
     return (
       <Modal visible={visible} animationType='slide' {...modalProps}>
+        {background}
         <View style={[defaultStyles.modal, containerStyle]}>
 
           <View style={defaultStyles.topActions}>
             <TouchableOpacity onPress={onClosePress}>
-              <Text style={defaultStyles.closeButton}>X</Text>
-            </TouchableOpacity >
+              <Text style={[defaultStyles.closeButton, closeButtonStyle]}>X</Text>
+            </TouchableOpacity>
 
             <TouchableOpacity onPress={onClearPress}>
-              <Text style={defaultStyles.resetButton}>{phrases.clearDates}</Text>
+              <Text style={[defaultStyles.resetButton, resetButtonStyle]}>{phrases.clearDates}</Text>
             </TouchableOpacity >
           </View>
 
@@ -210,6 +230,7 @@ export default class CalendarModal extends React.Component {
               calendarDaySelectedTextStyle={calendarDaySelectedTextStyle}
               calendarDayPastTextStyle={calendarDayPastTextStyle}
               calendarDayContainerStyle={calendarDayContainerStyle}
+              calendarDayTextStyle={calendarDayTextStyle}
               calendarDaySelectedContainerStyle={calendarDaySelectedContainerStyle}
               calendarDaySelectedStartContainerStyle={calendarDaySelectedStartContainerStyle}
               calendarDaySelectedEndContainerStyle={calendarDaySelectedEndContainerStyle}

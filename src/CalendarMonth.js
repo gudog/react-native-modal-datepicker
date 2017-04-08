@@ -43,6 +43,7 @@ export default class CalendarMonth extends React.Component {
       calendarDaySelectedTextStyle,
       calendarDayPastTextStyle,
       calendarDayContainerStyle,
+      calendarDayTextStyle,
       calendarDaySelectedContainerStyle,
       calendarDaySelectedStartContainerStyle,
       calendarDaySelectedEndContainerStyle
@@ -72,6 +73,7 @@ export default class CalendarMonth extends React.Component {
                       selectedTextStyle={calendarDaySelectedTextStyle}
                       pastTextStyle={calendarDayPastTextStyle}
                       containerStyle={calendarDayContainerStyle}
+                      textStyle={calendarDayTextStyle}
                       selectedContainerStyle={calendarDaySelectedContainerStyle}
                       selectedStartContainerStyle={calendarDaySelectedStartContainerStyle}
                       selectedEndContainerStyle={calendarDaySelectedEndContainerStyle}
