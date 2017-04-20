@@ -2,4 +2,6 @@
 .gitignore
 node_modules/
 npm-debug.log
-Example/
+storybook/
+ios/
+android/
