@@ -23,7 +23,7 @@ export default class CalendarMonthList extends React.Component {
     initialMonth: moment(),
     numberOfMonths: 24,
     dates: [],
-    modifiers: []
+    modifiers: {}
   };
 
   constructor (props) {
