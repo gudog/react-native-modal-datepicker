@@ -41,7 +41,7 @@ const propTypes = {
   calendarDaySelectedTextStyle: Text.propTypes.style,
   calendarDayPastTextStyle: Text.propTypes.style,
   calendarDayContainerStyle: View.propTypes.style,
-  calendarDayTextStyle: View.propTypes.style,
+  calendarDayTextStyle: Text.propTypes.style,
   calendarDaySelectedContainerStyle: View.propTypes.style,
   calendarDaySelectedStartContainerStyle: View.propTypes.style,
   calendarDaySelectedEndContainerStyle: View.propTypes.style,
