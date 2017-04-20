@@ -39,6 +39,7 @@ export default class SingleDatePickerExample extends Component {
         calendarDaySelectedContainerStyle={{}}
         calendarDaySelectedStartContainerStyle={{}}
         calendarDaySelectedEndContainerStyle={{}}
+        {...this.props}
       />
     )
   }

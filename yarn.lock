@@ -57,6 +57,18 @@
     json-stringify-safe "^5.0.1"
     react-inspector "^1.1.0"
 
+"@kadira/storybook-addon-knobs@^1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@kadira/storybook-addon-knobs/-/storybook-addon-knobs-1.7.1.tgz#5c6278c2c67652408358a7ee49e789fd1396b831"
+  dependencies:
+    babel-runtime "^6.5.0"
+    deep-equal "^1.0.1"
+    insert-css "^1.0.0"
+    moment "^2.15.0"
+    react-color "^2.4.3"
+    react-datetime "^2.6.0"
+    react-textarea-autosize "^4.0.5"
+
 "@kadira/storybook-addon-links@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@kadira/storybook-addon-links/-/storybook-addon-links-1.0.1.tgz#566136a8020b60f82f146ef37d93b0c86de969d8"
@@ -2017,7 +2029,7 @@ crc@3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/crc/-/crc-3.3.0.tgz#fa622e1bc388bf257309082d6b65200ce67090ba"
 
-create-react-class@^15.5.2:
+create-react-class@^15.5.2, create-react-class@^15.5.x:
   version "15.5.2"
   resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.5.2.tgz#6a8758348df660b88326a0e764d569f274aad681"
   dependencies:
@@ -3206,6 +3218,10 @@ inquirer@^0.12.0:
     strip-ansi "^3.0.0"
     through "^2.3.6"
 
+insert-css@^1.0.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/insert-css/-/insert-css-1.1.0.tgz#4a3f7a3e783877381bb8471a6452d1d27315db9e"
+
 interpret@^0.6.4:
   version "0.6.6"
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-0.6.6.tgz#fecd7a18e7ce5ca6abfb953e1f86213a49f1625b"
@@ -3732,7 +3748,7 @@ lodash@^3.5.0:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
-lodash@^4.0.0, lodash@^4.14.0, lodash@^4.16.6, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0, lodash@^4.6.1:
+lodash@^4.0.0, lodash@^4.0.1, lodash@^4.14.0, lodash@^4.16.6, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0, lodash@^4.6.1:
   version "4.17.2"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.2.tgz#34a3055babe04ce42467b607d700072c7ff6bf42"
 
@@ -3781,6 +3797,10 @@ mantra-core@^1.7.0:
 map-obj@^1.0.0, map-obj@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
+
+material-colors@^1.2.1:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/material-colors/-/material-colors-1.2.5.tgz#5292593e6754cb1bcc2b98030e4e0d6a3afc9ea1"
 
 math-expression-evaluator@^1.2.14:
   version "1.2.16"
@@ -3916,7 +3936,7 @@ mobx@^2.3.4:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/mobx/-/mobx-2.7.0.tgz#cf3d82d18c0ca7f458d8f2a240817b3dc7e54a01"
 
-moment@2.x.x, moment@>=1.6.0, moment@^2.17.1:
+moment@2.x.x, moment@>=1.6.0, moment@^2.15.0, moment@^2.17.1:
   version "2.17.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.17.1.tgz#fed9506063f36b10f066c8b59a144d7faebe1d82"
 
@@ -4678,6 +4698,22 @@ react-clone-referenced-element@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-clone-referenced-element/-/react-clone-referenced-element-1.0.1.tgz#2bba8c69404c5e4a944398600bcc4c941f860682"
 
+react-color@^2.4.3:
+  version "2.11.4"
+  resolved "https://registry.yarnpkg.com/react-color/-/react-color-2.11.4.tgz#43f64630e5d47a243f6bd35300224c9c69c73921"
+  dependencies:
+    lodash "^4.0.1"
+    material-colors "^1.2.1"
+    reactcss "^1.2.0"
+    tinycolor2 "^1.1.2"
+
+react-datetime@^2.6.0:
+  version "2.8.9"
+  resolved "https://registry.yarnpkg.com/react-datetime/-/react-datetime-2.8.9.tgz#52f3a1a28b0e34146664c057d480c80b33d39793"
+  dependencies:
+    object-assign "^3.0.0"
+    react-onclickoutside "^5.9.0"
+
 react-deep-force-update@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-deep-force-update/-/react-deep-force-update-1.0.1.tgz#f911b5be1d2a6fe387507dd6e9a767aa2924b4c7"
@@ -4834,6 +4870,12 @@ react-native@0.43.3:
     xpipe "^1.0.5"
     yargs "^6.4.0"
 
+react-onclickoutside@^5.9.0:
+  version "5.11.1"
+  resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-5.11.1.tgz#00314e52567cf55faba94cabbacd119619070623"
+  dependencies:
+    create-react-class "^15.5.x"
+
 react-proxy@^1.1.7:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/react-proxy/-/react-proxy-1.1.8.tgz#9dbfd9d927528c3aa9f444e4558c37830ab8c26a"
@@ -4854,6 +4896,10 @@ react-stubber@^1.0.0:
   dependencies:
     babel-runtime "^6.5.0"
 
+react-textarea-autosize@^4.0.5:
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/react-textarea-autosize/-/react-textarea-autosize-4.0.5.tgz#55379f6a6fa575fc87d1b8de2756e57e3b6c995d"
+
 react-timer-mixin@^0.13.2:
   version "0.13.3"
   resolved "https://registry.yarnpkg.com/react-timer-mixin/-/react-timer-mixin-0.13.3.tgz#0da8b9f807ec07dc3e854d082c737c65605b3d22"
@@ -4872,6 +4918,12 @@ react@16.0.0-alpha.6:
     fbjs "^0.8.9"
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
+
+reactcss@^1.2.0:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/reactcss/-/reactcss-1.2.2.tgz#41b0ef43e01d54880357c34b11ac1531209350ef"
+  dependencies:
+    lodash "^4.0.1"
 
 read-pkg-up@^1.0.1:
   version "1.0.1"
@@ -5651,6 +5703,10 @@ timers-browserify@^2.0.2:
   resolved "https://registry.yarnpkg.com/timers-browserify/-/timers-browserify-2.0.2.tgz#ab4883cf597dcd50af211349a00fbca56ac86b86"
   dependencies:
     setimmediate "^1.0.4"
+
+tinycolor2@^1.1.2:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
 
 tmpl@1.0.x:
   version "1.0.4"

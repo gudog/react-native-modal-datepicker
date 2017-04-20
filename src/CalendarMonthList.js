@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
+import moment from 'moment'
+import MomentPropTypes from 'react-moment-proptypes'
 import { ListView } from 'react-native'
 import CalendarMonth from './CalendarMonth'
 import getCalendarMonthWeeks from './utils/getCalendarMonthWeeks'
@@ -7,6 +9,22 @@ import isMonthIncluded from './utils/isMonthIncluded'
 import styles from './Styles/CalendarMonthListStyle'
 
 export default class CalendarMonthList extends React.Component {
+
+  static propTypes = {
+    mode: PropTypes.string,
+    initialMonth: MomentPropTypes.momentObj,
+    dates: PropTypes.array,
+    modifiers: PropTypes.array,
+    onDayPress: PropTypes.func
+  };
+
+  static defaultProps = {
+    mode: 'dateRange',
+    initialMonth: moment(),
+    numberOfMonths: 24,
+    dates: [],
+    modifiers: []
+  };
 
   constructor (props) {
     super(props)
