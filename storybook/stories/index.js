@@ -1,4 +1,6 @@
 import React from 'react'
+import moment from 'moment'
+import { View } from 'react-native'
 import { storiesOf } from '@kadira/react-native-storybook'
 import { withKnobs, number } from '@kadira/storybook-addon-knobs'
 
@@ -21,6 +23,7 @@ storiesOf('DateRangePicker', module)
 
 storiesOf('CalendarMonthList', module)
   .addDecorator(withKnobs)
+  .addDecorator(getStory => <View style={{marginTop: 20}}>{getStory()}</View>)
   .add('default', () => (
     <CalendarMonthList numberOfMonths={number('numberOfMonths', 24)} />
   ))
@@ -28,6 +31,15 @@ storiesOf('CalendarMonthList', module)
     <CalendarMonthList
       modifiers={{
         blocked: day => day.day() == 5 || day.day() == 6
+      }}
+    />
+  ))
+  .add('date range selected', () => (
+    <CalendarMonthList
+      modifiers={{
+        'selectedStart': day => day.isSame(moment(), 'day'),
+        'selectedSpan': day => day.isSame(moment().add(1, 'days'), 'day'),
+        'selectedEnd': day => day.isSame(moment().add(2, 'days'), 'day')
       }}
     />
   ))
