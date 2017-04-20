@@ -51,6 +51,7 @@ export default StyleSheet.create({
     backgroundColor: 'transparent'
   },
   pastText: {
+    textDecorationLine: 'none',
     opacity: 0.5
   },
   selectedText: {

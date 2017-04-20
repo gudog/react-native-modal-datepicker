@@ -55,9 +55,9 @@ export default class CalendarDay extends React.PureComponent {
 
     const textStyles = [
       textStyle,
+      isBlocked ? [styles.blockedText, blockedTextStyle] : null,
       past ? [styles.pastText, pastTextStyle] : null,
       isSelected ? [styles.selectedText, selectedTextStyle] : null,
-      isBlocked ? [styles.blockedText, blockedTextStyle] : null
     ]
 
     return (
