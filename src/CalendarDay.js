@@ -29,6 +29,7 @@ export default class CalendarDay extends React.PureComponent {
       // Custom styles
       selectedContainerStyle,
       selectedTextStyle,
+      blockedTextStyle,
       pastTextStyle,
       containerStyle,
       textStyle
@@ -40,6 +41,8 @@ export default class CalendarDay extends React.PureComponent {
         modifiers.includes('selectedSpan') ||
         modifiers.includes('selectedEnd')
     )
+
+    const isBlocked = modifiers.includes('blocked')
 
     const computedContainerStyle = modifiers.map((modifier) => {
       return [styles[`${modifier}Container`], this.props[`${modifier}ContainerStyle`]]
@@ -53,7 +56,8 @@ export default class CalendarDay extends React.PureComponent {
     const textStyles = [
       textStyle,
       past ? [styles.pastText, pastTextStyle] : null,
-      isSelected ? [styles.selectedText, selectedTextStyle] : null
+      isSelected ? [styles.selectedText, selectedTextStyle] : null,
+      isBlocked ? [styles.blockedText, blockedTextStyle] : null
     ]
 
     return (

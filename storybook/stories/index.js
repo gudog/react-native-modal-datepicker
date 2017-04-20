@@ -22,8 +22,13 @@ storiesOf('DateRangePicker', module)
 storiesOf('CalendarMonthList', module)
   .addDecorator(withKnobs)
   .add('default', () => (
+    <CalendarMonthList numberOfMonths={number('numberOfMonths', 24)} />
+  ))
+  .add('block all weekends', () => (
     <CalendarMonthList
-      numberOfMonths={number('numberOfMonths', 24)}
+      modifiers={{
+        blocked: day => day.day() == 5 || day.day() == 6
+      }}
     />
   ))
 

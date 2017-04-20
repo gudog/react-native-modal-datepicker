@@ -14,7 +14,7 @@ export default class CalendarMonthList extends React.Component {
     mode: PropTypes.string,
     initialMonth: MomentPropTypes.momentObj,
     dates: PropTypes.array,
-    modifiers: PropTypes.array,
+    modifiers: PropTypes.object,
     onDayPress: PropTypes.func
   };
 

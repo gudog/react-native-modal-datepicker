@@ -56,5 +56,9 @@ export default StyleSheet.create({
   selectedText: {
     color: 'white',
     fontWeight: 'bold'
+  },
+  blockedText: {
+    textDecorationLine: 'line-through',
+    opacity: 0.7
   }
 })
