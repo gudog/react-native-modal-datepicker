@@ -59,16 +59,6 @@ export default StyleSheet.create({
     alignSelf: 'stretch',
     flex: 1
   },
-  weekHeader: {
-    flexDirection: 'row',
-    paddingVertical: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc'
-  },
-  weekDay: {
-    flex: 1,
-    textAlign: 'center'
-  },
   footer: {
     paddingVertical: 10,
     borderTopWidth: 1,

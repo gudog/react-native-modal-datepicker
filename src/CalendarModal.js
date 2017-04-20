@@ -5,6 +5,7 @@ import momentPropTypes from 'react-moment-proptypes'
 
 import defaultStyles from './Styles/CalendarModalStyle'
 import CalendarMonthList from './CalendarMonthList'
+import WeekHeader from './WeekHeader'
 
 const propTypes = {
   mode: PropTypes.string,
@@ -72,24 +73,6 @@ export default class CalendarModal extends React.Component {
     this.state = {
       currentMonth: props.initialVisibleMonth()
     }
-  }
-
-  renderWeekHeader () {
-    const { weekHeaderStyle, weekDayTextStyle } = this.props
-    const header = []
-    for (let i = 0; i < 7; i++) {
-      header.push(
-        <Text key={i} style={[defaultStyles.weekDay, weekDayTextStyle]}>
-          {moment().weekday(i).format('dd')}
-        </Text>
-      )
-    }
-
-    return (
-      <View style={[defaultStyles.weekHeader, weekHeaderStyle]}>
-        {header}
-      </View>
-    )
   }
 
   renderSelectedDates () {
@@ -178,6 +161,8 @@ export default class CalendarModal extends React.Component {
       containerStyle,
       closeButtonStyle,
       resetButtonStyle,
+      weekHeaderStyle,
+      weekDayTextStyle,
       calendarMonthListStyle,
       calendarMonthStyle,
       calendarMonthTitleStyle,
@@ -209,7 +194,8 @@ export default class CalendarModal extends React.Component {
           </View>
 
           {this.renderSelectedDates()}
-          {this.renderWeekHeader()}
+          
+          <WeekHeader headerStyle={weekHeaderStyle} dayTextStyle={weekDayTextStyle} />
 
           <View style={defaultStyles.calendarMonthList}>
             <CalendarMonthList
