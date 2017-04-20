@@ -9,7 +9,7 @@ import SingleDatePickerExample from './SingleDatePickerExample'
 import DatesPickerExample from './DatesPickerExample'
 import DateRangePickerExample from './DateRangePickerExample'
 
-import { CalendarMonthList } from './../../src'
+import { CalendarMonthList, WeekHeader } from './../../src'
 
 storiesOf('DatesPicker', module)
   .addDecorator(withKnobs)
@@ -44,3 +44,7 @@ storiesOf('CalendarMonthList', module)
     />
   ))
 
+storiesOf('WeekHeader', module)
+  .addDecorator(getStory => <CenterView>{getStory()}</CenterView>)
+  .add('default', () => <WeekHeader />)
+    
