@@ -31,7 +31,7 @@ const propTypes = {
   calendarModalFooterTextStyle: Text.propTypes.style,
   calendarModalWeekHeaderStyle: Text.propTypes.style,
   calendarModalWeekDayTextStyle: Text.propTypes.style,
-  calendarModalRangeSeparatorStyle: Text.propTypes.style,
+  calendarModalRangeSeparatorTextStyle: Text.propTypes.style,
   calendarMonthListStyle: View.propTypes.style,
   calendarMonthStyle: View.propTypes.style,
   calendarMonthTitleStyle: Text.propTypes.style,
@@ -192,7 +192,7 @@ export default class DateRangePicker extends React.Component {
       calendarModalFooterTextStyle,
       calendarModalWeekHeaderStyle,
       calendarModalWeekDayTextStyle,
-      calendarModalRangeSeparatorStyle,
+      calendarModalRangeSeparatorTextStyle,
       calendarMonthListStyle,
       calendarMonthStyle,
       calendarMonthTitleStyle,
@@ -245,7 +245,7 @@ export default class DateRangePicker extends React.Component {
         footerTextStyle={calendarModalFooterTextStyle}
         weekHeaderStyle={calendarModalWeekHeaderStyle}
         weekDayTextStyle={calendarModalWeekDayTextStyle}
-        rangeSeparatorStyle={calendarModalRangeSeparatorStyle}
+        rangeSeparatorTextStyle={calendarModalRangeSeparatorTextStyle}
         calendarMonthListStyle={calendarMonthListStyle}
         calendarMonthStyle={calendarMonthStyle}
         calendarMonthTitleStyle={calendarMonthTitleStyle}
