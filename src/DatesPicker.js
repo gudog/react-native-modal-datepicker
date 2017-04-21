@@ -156,8 +156,8 @@ export default class DatesPicker extends React.Component {
       listViewProps,
       calendarModalBackground,
       calendarModalStyle,
-      calendarModalCloseButtonStyle,
-      calendarModalResetButtonStyle,
+      calendarModalCloseButtonTextStyle,
+      calendarModalResetButtonTextStyle,
       calendarModalSelectedDateStyle,
       calendarModalSelectedDateTextStyle,
       calendarModalFooterStyle,
@@ -207,8 +207,8 @@ export default class DatesPicker extends React.Component {
         background={calendarModalBackground}
         // Custom Styles
         containerStyle={calendarModalStyle}
-        closeButtonStyle={calendarModalCloseButtonStyle}
-        resetButtonStyle={calendarModalResetButtonStyle}
+        closeButtonTextStyle={calendarModalCloseButtonTextStyle}
+        resetButtonTextStyle={calendarModalResetButtonTextStyle}
         selectedDateStyle={calendarModalSelectedDateStyle}
         selectedDateTextStyle={calendarModalSelectedDateTextStyle}
         footerStyle={calendarModalFooterStyle}

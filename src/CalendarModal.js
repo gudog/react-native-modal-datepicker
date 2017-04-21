@@ -16,8 +16,8 @@ const propTypes = {
   endDate: momentPropTypes.momentObj,
 
   // Custom styles
-  closeButtonStyle: View.propTypes.style,
-  resetButtonStyle: View.propTypes.style,
+  closeButtonTextStyle: Text.propTypes.style,
+  resetButtonTextStyle: Text.propTypes.style,
   calendarModalStyle: View.propTypes.style,
   calendarMonthListStyle: View.propTypes.style,
   selectedDatesStyle: View.propTypes.style,
@@ -159,8 +159,8 @@ export default class CalendarModal extends React.Component {
       listViewProps,
       background,
       containerStyle,
-      closeButtonStyle,
-      resetButtonStyle,
+      closeButtonTextStyle,
+      resetButtonTextStyle,
       weekHeaderStyle,
       weekDayTextStyle,
       calendarMonthListStyle,
@@ -185,11 +185,11 @@ export default class CalendarModal extends React.Component {
 
           <View style={defaultStyles.topActions}>
             <TouchableOpacity onPress={onClosePress}>
-              <Text style={[defaultStyles.closeButton, closeButtonStyle]}>X</Text>
+              <Text style={[defaultStyles.closeButton, closeButtonTextStyle]}>X</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={onClearPress}>
-              <Text style={[defaultStyles.resetButton, resetButtonStyle]}>{phrases.clearDates}</Text>
+              <Text style={[defaultStyles.resetButton, resetButtonTextStyle]}>{phrases.clearDates}</Text>
             </TouchableOpacity >
           </View>
 
