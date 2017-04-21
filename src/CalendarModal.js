@@ -21,10 +21,10 @@ const propTypes = {
   calendarModalStyle: View.propTypes.style,
   calendarMonthListStyle: View.propTypes.style,
   selectedDatesStyle: View.propTypes.style,
-  selectedDateTextStyle: View.propTypes.style,
+  selectedDateTextStyle: Text.propTypes.style,
   weekHeaderStyle: View.propTypes.style,
-  weekDayTextStyle: View.propTypes.style,
-  rangeSeparatorStyle: View.propTypes.style,
+  weekDayTextStyle: Text.propTypes.style,
+  rangeSeparatorTextStyle: Text.propTypes.style,
 
   // Custom props
   modalProps: PropTypes.object,
@@ -82,7 +82,7 @@ export default class CalendarModal extends React.Component {
       maxNumberOfDates,
       selectedDateTextStyle,
       selectedDatesStyle,
-      rangeSeparatorStyle
+      rangeSeparatorTextStyle
     } = this.props
     if (mode === 'dates') {
       const { dates } = this.props
@@ -112,7 +112,7 @@ export default class CalendarModal extends React.Component {
           <Text style={[defaultStyles.selectedDate, selectedDateTextStyle, defaultStyles.startDate]} numberOfLines={2}>
             { startDate ? startDate.format('dddd D\u00a0MMM') : phrases.startDate }
           </Text>
-          <Text style={[defaultStyles.rangeSeparator, rangeSeparatorStyle]}>|</Text>
+          <Text style={[defaultStyles.rangeSeparator, rangeSeparatorTextStyle]}>|</Text>
           <Text style={[defaultStyles.selectedDate, selectedDateTextStyle, defaultStyles.endDate]} numberOfLines={2}>
             { endDate ? endDate.format('dddd D\u00a0MMM') : phrases.endDate }
           </Text>
