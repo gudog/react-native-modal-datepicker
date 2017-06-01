@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import { View, Text } from 'react-native'
+import glamorous, {ThemeProvider} from 'glamorous-native'
 import momentPropTypes from 'react-moment-proptypes'
 import moment from 'moment'
 
@@ -265,18 +266,20 @@ export default class DateRangePicker extends React.Component {
     const { startDate, endDate, phrases, dateInputStyle, dateInputTextStyle } = this.props
 
     return (
-      <View>
-        <DateInput
-          onPress={this.handleOnDateInputPress}
-          mode='dateRange'
-          startDate={startDate}
-          endDate={endDate}
-          phrases={phrases}
-          containerStyle={dateInputStyle}
-          textStyle={dateInputTextStyle}
-        />
-        {this.renderCalendar()}
-      </View>
+      <ThemeProvider theme={this.props.theme}>
+        <View>
+          <DateInput
+            onPress={this.handleOnDateInputPress}
+            mode='dateRange'
+            startDate={startDate}
+            endDate={endDate}
+            phrases={phrases}
+            containerStyle={dateInputStyle}
+            textStyle={dateInputTextStyle}
+          />
+          {this.renderCalendar()}
+        </View>
+      </ThemeProvider>
     )
   }
 }

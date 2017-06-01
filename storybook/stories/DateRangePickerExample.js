@@ -1,6 +1,15 @@
 import React, { Component } from 'react'
 import { DateRangePicker } from './../../src'
 
+const theme = {
+  dateInputContainer: {
+    backgroundColor: 'blue'
+  },
+  dateInputText: {
+    color: 'red'
+  }
+}
+
 export default class DateRangePickerExample extends Component {
 
   constructor (props) {
@@ -24,6 +33,7 @@ export default class DateRangePickerExample extends Component {
         startDate={startDate}
         endDate={endDate}
         style={{}}
+        theme={theme}
         dateInputStyle={{}}
         dateInputTextStyle={{}}
         calendarModalStyle={{}}
