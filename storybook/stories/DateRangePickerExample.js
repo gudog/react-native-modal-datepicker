@@ -7,6 +7,12 @@ const theme = {
   },
   dateInputText: {
     color: 'red'
+  },
+  calendarDayTodayMarker: {
+    color: 'blue'
+  },
+  calendarDaySelectedTodayMarker: {
+    color: 'red'
   }
 }
 
@@ -32,24 +38,7 @@ export default class DateRangePickerExample extends Component {
         onDatesChange={this.onDatesChange}
         startDate={startDate}
         endDate={endDate}
-        style={{}}
         theme={theme}
-        dateInputStyle={{}}
-        dateInputTextStyle={{}}
-        calendarModalStyle={{}}
-        calendarModalFooterStyle={{}}
-        calendarModalFooterButtonStyle={{}}
-        calendarModalFooterTextStyle={{}}
-        calendarMonthListStyle={{}}
-        calendarMonthStyle={{}}
-        calendarMonthTitleStyle={{}}
-        calendarMonthWeekStyle={{}}
-        calendarDaySelectedTextStyle={{}}
-        calendarDayPastTextStyle={{}}
-        calendarDayContainerStyle={{}}
-        calendarDaySelectedContainerStyle={{}}
-        calendarDaySelectedStartContainerStyle={{}}
-        calendarDaySelectedEndContainerStyle={{}}
       />
     )
   }

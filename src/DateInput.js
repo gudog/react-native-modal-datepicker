@@ -1,17 +1,25 @@
 import React from 'react'
-import glamorous from 'glamorous-native'
-import { View, TouchableOpacity } from 'react-native'
-import styles from './Styles/DateInputStyle'
+import styled from 'styled-components/native'
+import { TouchableOpacity } from 'react-native'
 
-const Container = glamorous.view(
-  styles.container,
-  (props, theme) => theme.dateInputTextStyle
-)
+const Container = styled.View`
+  ${{
+    backgroundColor: '#eee',
+    overflow: 'hidden',
+    borderRadius: 4,
+    width: 200,
+    paddingVertical: 5,
+    paddingHorizontal: 10
+  }}
+  ${props => props.theme.dateInputContainer }
+`
 
-const Text = glamorous.text(
-  styles.text,
-  (props, theme) => theme.dateInputTextStyle
-)
+const Text = styled.Text`
+  ${{
+    textAlign: 'center'
+  }}
+  ${props => props.theme.dateInputText}
+`
 
 export default class DateInput extends React.Component {
 
@@ -35,8 +43,6 @@ export default class DateInput extends React.Component {
   }
 
   render () {
-    const { containerStyle, textStyle } = this.props
-
     return (
       <Container>
         <TouchableOpacity onPress={this.props.onPress}>
@@ -44,7 +50,7 @@ export default class DateInput extends React.Component {
             {this.renderSelectedDates()}
           </Text>
         </TouchableOpacity>
-      </View>
+      </Container>
     )
   }
 }

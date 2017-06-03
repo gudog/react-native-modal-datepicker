@@ -1,23 +1,40 @@
 import React from 'react'
-import { Text, View } from 'react-native'
 import moment from 'moment'
-import defaultStyles from './Styles/WeekHeaderStyle'
+import styled from 'styled-components/native'
 
+
+const Container = styled.View`
+  ${props => {
+    return {
+      flexDirection: 'row',
+      paddingVertical: 5,
+      borderBottomWidth: 1,
+      borderBottomColor: '#ccc',
+      ...props.theme.weekHeaderContainer
+    }
+  }}
+`
+
+const Day = styled.Text`
+  ${props => {
+    return {
+      flex: 1,
+      textAlign: 'center',
+      ...props.theme.weekHeaderContainerDay
+    }
+  }}
+`
 const WeekHeader = ({ headerStyle, dayTextStyle }) => {
   const header = []
   for (let i = 0; i < 7; i++) {
     header.push(
-      <Text key={i} style={[defaultStyles.day, dayTextStyle]}>
+      <Day key={i}>
         {moment().weekday(i).format('dd')}
-      </Text>
+      </Day>
     )
   }
 
-  return (
-    <View style={[defaultStyles.header, headerStyle]}>
-      {header}
-    </View>
-  )
+  return <Container>{header}</Container>
 }
 
 export default WeekHeader
