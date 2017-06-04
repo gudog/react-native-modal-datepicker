@@ -129,7 +129,7 @@ const FooterText = styled.Text`
   ${props => {
     return {
       textAlign: 'center',
-      ...props.theme.calendarModalFooteText
+      ...props.theme.calendarModalFooterText
     }
   }}
 `

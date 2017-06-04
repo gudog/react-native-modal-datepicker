@@ -20,7 +20,7 @@ export default PropTypes.shape({
   calendarModalRangeSeparator: PropTypes.object,
   calendarModalFooter: PropTypes.object,
   calendarModalFooterButton: PropTypes.object,
-  calendarModalFooteText: PropTypes.object,
+  calendarModalFooterText: PropTypes.object,
   calendarMonthContainer: PropTypes.object,
   calendarMonthTitle: PropTypes.object,
   calendarMonthWeek: PropTypes.object,
