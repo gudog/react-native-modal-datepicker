@@ -25,7 +25,8 @@
   "homepage": "https://github.com/javiercr/react-native-modal-datepicker#readme",
   "dependencies": {
     "moment": "^2.17.1",
-    "react-moment-proptypes": "^1.2.0"
+    "react-moment-proptypes": "^1.2.0",
+    "styled-components": "^2.0.0"
   },
   "devDependencies": {
     "@kadira/react-native-storybook": "^2.0.0",

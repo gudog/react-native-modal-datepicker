@@ -6,7 +6,6 @@ import CalendarMonth from './CalendarMonth'
 import getCalendarMonthWeeks from './utils/getCalendarMonthWeeks'
 
 import isMonthIncluded from './utils/isMonthIncluded'
-import styles from './Styles/CalendarMonthListStyle'
 
 export default class CalendarMonthList extends React.Component {
 
@@ -103,17 +102,7 @@ export default class CalendarMonthList extends React.Component {
   renderRow = (rowData, sectionID, rowID, highlightRow) => {
     const {
       modifiers,
-      onDayPress,
-      calendarMonthStyle,
-      calendarMonthTitleStyle,
-      calendarMonthWeekStyle,
-      calendarDaySelectedTextStyle,
-      calendarDayPastTextStyle,
-      calendarDayContainerStyle,
-      calendarDayTextStyle,
-      calendarDaySelectedContainerStyle,
-      calendarDaySelectedStartContainerStyle,
-      calendarDaySelectedEndContainerStyle
+      onDayPress
     } = this.props
 
     return (
@@ -122,26 +111,15 @@ export default class CalendarMonthList extends React.Component {
         weeks={rowData.weeks}
         month={rowData.month}
         onDayPress={onDayPress}
-        containerStyle={calendarMonthStyle}
-        titleStyle={calendarMonthTitleStyle}
-        weekStyle={calendarMonthWeekStyle}
-        calendarDaySelectedTextStyle={calendarDaySelectedTextStyle}
-        calendarDayPastTextStyle={calendarDayPastTextStyle}
-        calendarDayContainerStyle={calendarDayContainerStyle}
-        calendarDayTextStyle={calendarDayTextStyle}
-        calendarDaySelectedContainerStyle={calendarDaySelectedContainerStyle}
-        calendarDaySelectedStartContainerStyle={calendarDaySelectedStartContainerStyle}
-        calendarDaySelectedEndContainerStyle={calendarDaySelectedEndContainerStyle}
       />
     )
   }
 
   render () {
-    const { listViewProps, listViewsStyle } = this.props
+    const { listViewProps } = this.props
 
     return (
       <ListView
-        style={[styles.container, listViewsStyle]}
         dataSource={this.state.dataSource}
         renderRow={this.renderRow}
         initialListSize={2}

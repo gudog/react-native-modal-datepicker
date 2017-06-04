@@ -21,23 +21,6 @@ export default class DatesPickerExample extends Component {
       <DatesPicker
         onDatesChange={this.onDatesChange}
         dates={dates}
-        style={{}}
-        dateInputStyle={{}}
-        dateInputTextStyle={{}}
-        calendarModalStyle={{}}
-        calendarModalFooterStyle={{}}
-        calendarModalFooterButtonStyle={{}}
-        calendarModalFooterTextStyle={{}}
-        calendarMonthListStyle={{}}
-        calendarMonthStyle={{}}
-        calendarMonthTitleStyle={{}}
-        calendarMonthWeekStyle={{}}
-        calendarDaySelectedTextStyle={{}}
-        calendarDayPastTextStyle={{}}
-        calendarDayContainerStyle={{}}
-        calendarDaySelectedContainerStyle={{}}
-        calendarDaySelectedStartContainerStyle={{}}
-        calendarDaySelectedEndContainerStyle={{}}
       />
     )
   }

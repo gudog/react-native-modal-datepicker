@@ -1,12 +1,15 @@
 import React, { PropTypes } from 'react'
 import { View, Text } from 'react-native'
+import { ThemeProvider } from 'styled-components'
 import momentPropTypes from 'react-moment-proptypes'
 import moment from 'moment'
 
 import DateInput from './DateInput'
+import ThemePropTypes from './ThemePropTypes'
 import CalendarModal from './CalendarModal'
 
 const propTypes = {
+  theme: ThemePropTypes,
   numberOfMonths: PropTypes.number,
   initialVisibleMonth: PropTypes.func,
   isOutsideRange: PropTypes.func,
@@ -20,29 +23,6 @@ const propTypes = {
 
     // A React element to be used as background
   calendarModalBackground: React.PropTypes.element,
-
-  // Custom user styles
-  style: View.propTypes.style,
-  dateInputStyle: View.propTypes.style,
-  dateInputTextStyle: Text.propTypes.style,
-  calendarModalStyle: View.propTypes.style,
-  calendarModalFooterStyle: View.propTypes.style,
-  calendarModalFooterButtonStyle: View.propTypes.style,
-  calendarModalFooterTextStyle: Text.propTypes.style,
-  calendarModalWeekHeaderStyle: Text.propTypes.style,
-  calendarModalWeekDayTextStyle: Text.propTypes.style,
-  calendarModalRangeSeparatorTextStyle: Text.propTypes.style,
-  calendarMonthListStyle: View.propTypes.style,
-  calendarMonthStyle: View.propTypes.style,
-  calendarMonthTitleStyle: Text.propTypes.style,
-  calendarMonthWeekStyle: View.propTypes.style,
-  calendarDaySelectedTextStyle: Text.propTypes.style,
-  calendarDayPastTextStyle: Text.propTypes.style,
-  calendarDayContainerStyle: View.propTypes.style,
-  calendarDayTextStyle: Text.propTypes.style,
-  calendarDaySelectedContainerStyle: View.propTypes.style,
-  calendarDaySelectedStartContainerStyle: View.propTypes.style,
-  calendarDaySelectedEndContainerStyle: View.propTypes.style,
 
   // i18n
   displayFormat: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
@@ -71,7 +51,8 @@ const defaultProps = {
     save: 'Save',
     startDate: 'Start Date',
     endDate: 'End Date'
-  }
+  },
+  theme: {}
 }
 
 export default class DateRangePicker extends React.Component {
@@ -105,13 +86,15 @@ export default class DateRangePicker extends React.Component {
     return day.isBetween(startDate, endDate)
   }
 
+  isSelected (day) {
+    return this.isStartDate(day) || this.isEndDate(day) || this.isInSelectedSpan(day)
+  }
+
   isEndDate (day) {
     return day.isSame(this.state.endDate, 'day')
   }
 
-  handleDayPress = (day, modifiers) => {
-    if (modifiers.includes('blocked')) return
-
+  handleDayPress = (day) => {
     let { startDate, endDate } = this.state
 
     if (!startDate && !endDate) {
@@ -181,36 +164,15 @@ export default class DateRangePicker extends React.Component {
       phrases,
       modalProps,
       listViewProps,
-      calendarModalBackground,
-      calendarModalStyle,
-      calendarModalCloseButtonTextStyle,
-      calendarModalResetButtonTextStyle,
-      calendarModalSelectedDateStyle,
-      calendarModalSelectedDateTextStyle,
-      calendarModalFooterStyle,
-      calendarModalFooterButtonStyle,
-      calendarModalFooterTextStyle,
-      calendarModalWeekHeaderStyle,
-      calendarModalWeekDayTextStyle,
-      calendarModalRangeSeparatorTextStyle,
-      calendarMonthListStyle,
-      calendarMonthStyle,
-      calendarMonthTitleStyle,
-      calendarMonthWeekStyle,
-      calendarDaySelectedTextStyle,
-      calendarDayPastTextStyle,
-      calendarDayContainerStyle,
-      calendarDayTextStyle,
-      calendarDaySelectedContainerStyle,
-      calendarDaySelectedStartContainerStyle,
-      calendarDaySelectedEndContainerStyle
+      calendarModalBackground
     } = this.props
 
     const modifiers = {
       blocked: day => this.isBlocked(day),
-      'selectedStart': day => this.isStartDate(day),
-      'selectedEnd': day => this.isEndDate(day),
-      'selectedSpan': day => this.isInSelectedSpan(day)
+      selected: day => this.isSelected(day),
+      selectedStart: day => this.isStartDate(day),
+      selectedEnd: day => this.isEndDate(day),
+      selectedSpan: day => this.isInSelectedSpan(day)
     }
 
     return (
@@ -234,49 +196,31 @@ export default class DateRangePicker extends React.Component {
         listViewProps={listViewProps}
         // Background
         background={calendarModalBackground}
-        // Custom Styles
-        containerStyle={calendarModalStyle}
-        closeButtonTextStyle={calendarModalCloseButtonTextStyle}
-        resetButtonTextStyle={calendarModalResetButtonTextStyle}
-        selectedDateStyle={calendarModalSelectedDateStyle}
-        selectedDateTextStyle={calendarModalSelectedDateTextStyle}
-        footerStyle={calendarModalFooterStyle}
-        footerButtonStyle={calendarModalFooterButtonStyle}
-        footerTextStyle={calendarModalFooterTextStyle}
-        weekHeaderStyle={calendarModalWeekHeaderStyle}
-        weekDayTextStyle={calendarModalWeekDayTextStyle}
-        rangeSeparatorTextStyle={calendarModalRangeSeparatorTextStyle}
-        calendarMonthListStyle={calendarMonthListStyle}
-        calendarMonthStyle={calendarMonthStyle}
-        calendarMonthTitleStyle={calendarMonthTitleStyle}
-        calendarMonthWeekStyle={calendarMonthWeekStyle}
-        calendarDaySelectedTextStyle={calendarDaySelectedTextStyle}
-        calendarDayPastTextStyle={calendarDayPastTextStyle}
-        calendarDayContainerStyle={calendarDayContainerStyle}
-        calendarDayTextStyle={calendarDayTextStyle}
-        calendarDaySelectedContainerStyle={calendarDaySelectedContainerStyle}
-        calendarDaySelectedStartContainerStyle={calendarDaySelectedStartContainerStyle}
-        calendarDaySelectedEndContainerStyle={calendarDaySelectedEndContainerStyle}
       />
     )
   }
 
   render () {
-    const { startDate, endDate, phrases, dateInputStyle, dateInputTextStyle } = this.props
+    const {
+      startDate,
+      endDate,
+      phrases,
+      theme
+    } = this.props
 
     return (
-      <View>
-        <DateInput
-          onPress={this.handleOnDateInputPress}
-          mode='dateRange'
-          startDate={startDate}
-          endDate={endDate}
-          phrases={phrases}
-          containerStyle={dateInputStyle}
-          textStyle={dateInputTextStyle}
-        />
-        {this.renderCalendar()}
-      </View>
+      <ThemeProvider theme={theme}>
+        <View>
+          <DateInput
+            onPress={this.handleOnDateInputPress}
+            mode='dateRange'
+            startDate={startDate}
+            endDate={endDate}
+            phrases={phrases}
+          />
+          {this.renderCalendar()}
+        </View>
+      </ThemeProvider>
     )
   }
 }

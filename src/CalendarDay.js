@@ -1,71 +1,114 @@
 import React from 'react'
-import { View, Text, TouchableWithoutFeedback } from 'react-native'
-import styles from './Styles/CalendarDayStyle'
+import styled from 'styled-components/native'
+import { TouchableWithoutFeedback } from 'react-native'
+
+const Container = styled.View`
+  ${props => {
+    return {
+      marginVertical: 3,
+      marginHorizontal: 5,
+      overflow: 'hidden',
+      ...props.theme.calendarDayContainer
+    }
+  }}
+  ${props => props.selected && {
+    borderRadius: 400,
+    backgroundColor: '#ccc',
+    overflow: 'hidden',
+    ...props.theme.calendarDaySelectedContainer
+  }}
+  ${props => props.selectedStart && {
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+    marginHorizontal: 0,
+    ...props.theme.calendarDaySelectedStartContainer
+  }}
+  ${props => props.selectedEnd && {
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
+    marginHorizontal: 0,
+    ...props.theme.calendarDaySelectedEndContainer
+  }}
+  ${props => props.selectedSpan && {
+    marginHorizontal: 0,
+    borderRadius: 0,
+    ...props.theme.calendarDaySelectedSpanContainer
+  }}
+`
+
+const Text = styled.Text`
+  ${props => {
+    return {
+      textAlign: 'center',
+      paddingVertical: 13,
+      fontSize: 16,
+      zIndex: 2,
+      backgroundColor: 'transparent',
+      ...props.theme.calendarDayText
+    }
+  }}
+  ${props => props.selected && {
+    color: 'white',
+    fontWeight: 'bold',
+    ...props.theme.calendarDaySelectedText
+  }}
+  ${props => props.past && {
+    textDecorationLine: 'none',
+    opacity: 0.5,
+    ...props.theme.calendarDayPastText
+  }}
+  ${props => props.blocked && {
+    textDecorationLine: 'line-through',
+    opacity: 0.7,
+    ...props.theme.calendarDayBlockedText
+  }}
+`
+
+const TodayMarker = styled.Text`
+  ${props => {
+    return {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      textAlign: 'center',
+      fontWeight: 'bold',
+      fontSize: 24,
+      zIndex: 1,
+      ...props.theme.calendarDayTodayMarker
+    }
+  }}
+  ${props => props.selected && {
+    color: 'white',
+    ...props.theme.calendarDaySelectedTodayMarker
+  }}
+`
 
 export default class CalendarDay extends React.PureComponent {
 
-  handleOnPress = () => {
-    const { day, onDayPress, modifiers } = this.props
-    onDayPress(day, modifiers)
-  }
-
   renderTodayMarker () {
-    const selected = this.props.modifiers.includes('selected')
-
     if (this.props.isToday) {
+      const { selected } = this.props
+
       return (
-        <Text
-          style={[styles.todayMarker, selected ? styles.todayMarkerSelected : null]}
-          >.</Text>
+        <TodayMarker selected={selected}>.</TodayMarker>
       )
     }
   }
 
   render () {
-    const {
-      day,
-      past,
-      modifiers,
-      // Custom styles
-      selectedContainerStyle,
-      selectedTextStyle,
-      blockedTextStyle,
-      pastTextStyle,
-      containerStyle,
-      textStyle
-    } = this.props
-
-    const isSelected = (
-        modifiers.includes('selected') ||
-        modifiers.includes('selectedStart') ||
-        modifiers.includes('selectedSpan') ||
-        modifiers.includes('selectedEnd')
-    )
-
-    const isBlocked = modifiers.includes('blocked')
-
-    const computedContainerStyle = modifiers.map((modifier) => {
-      return [styles[`${modifier}Container`], this.props[`${modifier}ContainerStyle`]]
-    })
-
-    // Add the common styles for any kind of selected day
-    if (isSelected) {
-      computedContainerStyle.unshift([styles['selectedContainer'], selectedContainerStyle])
-    }
-
-    const textStyles = [
-      textStyle,
-      isBlocked ? [styles.blockedText, blockedTextStyle] : null,
-      past ? [styles.pastText, pastTextStyle] : null,
-      isSelected ? [styles.selectedText, selectedTextStyle] : null,
-    ]
+    const { day, onDayPress, ...modifiersProps } = this.props
 
     return (
-      <TouchableWithoutFeedback onPress={this.handleOnPress} activeOpacity={0.5} >
-        <View style={[styles.container, containerStyle, computedContainerStyle]}>
-          <Text style={[styles.text, textStyles]}>{day.format('D')}</Text>
+      <TouchableWithoutFeedback onPress={() => !this.props.blocked && onDayPress(day)} activeOpacity={0.5} >
+        <Container {...modifiersProps}>
+          <Text {...modifiersProps}>{day.format('D')}</Text>
           {this.renderTodayMarker()}
-        </View>
+        </Container>
       </TouchableWithoutFeedback>
     )
   }

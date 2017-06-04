@@ -1,10 +1,49 @@
 import React, { PropTypes } from 'react'
-import { View, Text } from 'react-native'
+import styled from 'styled-components/native'
 import momentPropTypes from 'react-moment-proptypes'
 import moment from 'moment'
 
 import CalendarDay from './CalendarDay'
-import styles from './Styles/CalendarMonthStyle'
+
+const Container = styled.View`
+  ${props => {
+    return {
+      flex: 1,
+      flexDirection: 'column',
+      paddingVertical: 12,
+      ...props.theme.calendarMonthContainer
+    }
+  }}
+`
+const MonthTitle = styled.Text`
+  ${props => {
+    return {
+      fontWeight: 'bold',
+      fontSize: 16,
+      paddingHorizontal: 12,
+      ...props.theme.calendarMonthTitle
+    }
+  }}
+`
+const Week = styled.View`
+  ${props => {
+    return {
+      flexDirection: 'row',
+      alignItems: 'stretch',
+      ...props.theme.calendarMonthWeek
+    }
+  }}
+`
+const DayContainer = styled.View`
+  ${{
+    flex: 1,
+    alignSelf: 'stretch',
+    // Hack to avoid this issue
+    // https://github.com/facebook/react-native/issues/10539
+    marginLeft: -1,
+    marginRight: -1
+  }}
+`
 
 const propTypes = {
   month: momentPropTypes.momentObj,
@@ -24,8 +63,16 @@ const defaultProps = {
   monthFormat: 'MMMM YYYY' // english locale
 }
 
-export function getModifiersForDay (modifiers, day) {
-  return day ? Object.keys(modifiers).filter(key => modifiers[key](day)) : []
+export function getModifiersPropsForDay (modifiers, day) {
+  const props = {}
+  if (day) {
+    const keys = Object.keys(modifiers)
+    keys.forEach(key => {
+      props[key] = modifiers[key](day)
+    })
+  }
+
+  return props
 }
 
 export default class CalendarMonth extends React.Component {
@@ -36,55 +83,38 @@ export default class CalendarMonth extends React.Component {
       onDayPress,
       monthFormat,
       weeks,
-      modifiers,
-      containerStyle,
-      titleStyle,
-      weekStyle,
-      calendarDaySelectedTextStyle,
-      calendarDayPastTextStyle,
-      calendarDayContainerStyle,
-      calendarDayTextStyle,
-      calendarDaySelectedContainerStyle,
-      calendarDaySelectedStartContainerStyle,
-      calendarDaySelectedEndContainerStyle
+      modifiers
     } = this.props
 
     const monthTitle = month.format(monthFormat)
     const now = moment()
 
     return (
-      <View style={[styles.month, containerStyle]}>
-        <Text style={[styles.monthTitle, titleStyle]}>{monthTitle}</Text>
+      <Container>
+        <MonthTitle>{monthTitle}</MonthTitle>
         {weeks.map((week, i) =>
-          <View style={[styles.week, weekStyle]} key={i}>
+          <Week key={i}>
             {week.map((day, j) => {
-              const modifiersForDay = getModifiersForDay(modifiers, day)
+              const modifiersPropsForDay = getModifiersPropsForDay(modifiers, day)
               const past = day && day.isBefore(now, 'day')
               const isToday = day && day.isSame(now, 'day')
 
               return (
-                <View key={j} style={styles.day}>
+                <DayContainer key={j}>
                   {day &&
                     <CalendarDay day={day}
+                      {...modifiersPropsForDay}
                       onDayPress={onDayPress}
-                      modifiers={modifiersForDay}
                       past={past}
                       isToday={isToday}
-                      selectedTextStyle={calendarDaySelectedTextStyle}
-                      pastTextStyle={calendarDayPastTextStyle}
-                      containerStyle={calendarDayContainerStyle}
-                      textStyle={calendarDayTextStyle}
-                      selectedContainerStyle={calendarDaySelectedContainerStyle}
-                      selectedStartContainerStyle={calendarDaySelectedStartContainerStyle}
-                      selectedEndContainerStyle={calendarDaySelectedEndContainerStyle}
                     />
                   }
-                </View>
+                </DayContainer>
               )
             })}
-          </View>
+          </Week>
         )}
-      </View>
+      </Container>
     )
   }
 }

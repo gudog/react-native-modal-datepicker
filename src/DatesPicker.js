@@ -1,14 +1,17 @@
 import React, { PropTypes } from 'react'
 import { View, Text } from 'react-native'
+import { ThemeProvider } from 'styled-components'
 import momentPropTypes from 'react-moment-proptypes'
 import moment from 'moment'
 
 import DateInput from './DateInput'
+import ThemePropTypes from './ThemePropTypes'
 import CalendarModal from './CalendarModal'
 import isDayIncluded from './utils/isDayIncluded'
 import sortDates from './utils/sortDates'
 
 const propTypes = {
+  theme: ThemePropTypes,
   numberOfMonths: PropTypes.number,
   maxNumberOfDates: PropTypes.number,
   initialVisibleMonth: PropTypes.func,
@@ -23,28 +26,6 @@ const propTypes = {
 
   // A React element to be used as background
   calendarModalBackground: React.PropTypes.element,
-
-  // Custom user styles
-  style: View.propTypes.style,
-  dateInputStyle: View.propTypes.style,
-  dateInputTextStyle: Text.propTypes.style,
-  calendarModalStyle: View.propTypes.style,
-  calendarModalFooterStyle: View.propTypes.style,
-  calendarModalFooterButtonStyle: View.propTypes.style,
-  calendarModalFooterTextStyle: Text.propTypes.style,
-  calendarModalWeekHeaderStyle: Text.propTypes.style,
-  calendarModalWeekDayTextStyle: Text.propTypes.style,
-  calendarMonthListStyle: View.propTypes.style,
-  calendarMonthStyle: View.propTypes.style,
-  calendarMonthTitleStyle: Text.propTypes.style,
-  calendarMonthWeekStyle: View.propTypes.style,
-  calendarDaySelectedTextStyle: Text.propTypes.style,
-  calendarDayPastTextStyle: Text.propTypes.style,
-  calendarDayContainerStyle: View.propTypes.style,
-  calendarDayTextStyle: Text.propTypes.style,
-  calendarDaySelectedContainerStyle: View.propTypes.style,
-  calendarDaySelectedStartContainerStyle: View.propTypes.style,
-  calendarDaySelectedEndContainerStyle: View.propTypes.style,
 
   // i18n
   displayFormat: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
@@ -73,7 +54,8 @@ const defaultProps = {
     selectDates: 'Select Dates',
     clearDates: 'Clear',
     save: 'Save'
-  }
+  },
+  theme: {}
 }
 
 export default class DatesPicker extends React.Component {
@@ -108,11 +90,10 @@ export default class DatesPicker extends React.Component {
     return isDayIncluded(day, dates)
   }
 
-  handleDayPress = (day, modifiers) => {
+  handleDayPress = (day) => {
     const { dates } = this.state
     const { maxNumberOfDates } = this.props
 
-    if (modifiers.includes('blocked')) return
     if (dates && dates.length >= maxNumberOfDates) {
       // Single date
       this.setState({ dates: [day] })
@@ -154,28 +135,7 @@ export default class DatesPicker extends React.Component {
       phrases,
       modalProps,
       listViewProps,
-      calendarModalBackground,
-      calendarModalStyle,
-      calendarModalCloseButtonTextStyle,
-      calendarModalResetButtonTextStyle,
-      calendarModalSelectedDateStyle,
-      calendarModalSelectedDateTextStyle,
-      calendarModalFooterStyle,
-      calendarModalFooterButtonStyle,
-      calendarModalFooterTextStyle,
-      calendarModalWeekHeaderStyle,
-      calendarModalWeekDayTextStyle,
-      calendarMonthListStyle,
-      calendarMonthStyle,
-      calendarMonthTitleStyle,
-      calendarMonthWeekStyle,
-      calendarDaySelectedTextStyle,
-      calendarDayPastTextStyle,
-      calendarDayContainerStyle,
-      calendarDayTextStyle,
-      calendarDaySelectedContainerStyle,
-      calendarDaySelectedStartContainerStyle,
-      calendarDaySelectedEndContainerStyle
+      calendarModalBackground
     } = this.props
 
     const modifiers = {
@@ -205,28 +165,6 @@ export default class DatesPicker extends React.Component {
         listViewProps={listViewProps}
         // Background
         background={calendarModalBackground}
-        // Custom Styles
-        containerStyle={calendarModalStyle}
-        closeButtonTextStyle={calendarModalCloseButtonTextStyle}
-        resetButtonTextStyle={calendarModalResetButtonTextStyle}
-        selectedDateStyle={calendarModalSelectedDateStyle}
-        selectedDateTextStyle={calendarModalSelectedDateTextStyle}
-        footerStyle={calendarModalFooterStyle}
-        footerButtonStyle={calendarModalFooterButtonStyle}
-        footerTextStyle={calendarModalFooterTextStyle}
-        weekHeaderStyle={calendarModalWeekHeaderStyle}
-        weekDayTextStyle={calendarModalWeekDayTextStyle}
-        calendarMonthListStyle={calendarMonthListStyle}
-        calendarMonthStyle={calendarMonthStyle}
-        calendarMonthTitleStyle={calendarMonthTitleStyle}
-        calendarMonthWeekStyle={calendarMonthWeekStyle}
-        calendarDaySelectedTextStyle={calendarDaySelectedTextStyle}
-        calendarDayPastTextStyle={calendarDayPastTextStyle}
-        calendarDayContainerStyle={calendarDayContainerStyle}
-        calendarDayTextStyle={calendarDayTextStyle}
-        calendarDaySelectedContainerStyle={calendarDaySelectedContainerStyle}
-        calendarDaySelectedStartContainerStyle={calendarDaySelectedStartContainerStyle}
-        calendarDaySelectedEndContainerStyle={calendarDaySelectedEndContainerStyle}
       />
     )
   }
@@ -237,23 +175,22 @@ export default class DatesPicker extends React.Component {
       maxNumberOfDates,
       phrases,
       style,
-      dateInputStyle,
-      dateInputTextStyle
+      theme
     } = this.props
 
     return (
-      <View style={style}>
-        <DateInput
-          onPress={this.handleOnDateInputPress}
-          mode='dates'
-          dates={dates}
-          maxNumberOfDates={maxNumberOfDates}
-          phrases={phrases}
-          containerStyle={dateInputStyle}
-          textStyle={dateInputTextStyle}
-        />
-        {this.renderCalendar()}
-      </View>
+      <ThemeProvider theme={theme}>
+        <View style={style}>
+          <DateInput
+            onPress={this.handleOnDateInputPress}
+            mode='dates'
+            dates={dates}
+            maxNumberOfDates={maxNumberOfDates}
+            phrases={phrases}
+          />
+          {this.renderCalendar()}
+        </View>
+      </ThemeProvider>
     )
   }
 }

@@ -1,11 +1,138 @@
 import React, { PropTypes } from 'react'
-import { Text, View, Modal, TouchableOpacity } from 'react-native'
+import { View, Modal, TouchableOpacity } from 'react-native'
 import moment from 'moment'
 import momentPropTypes from 'react-moment-proptypes'
+import styled from 'styled-components/native'
 
-import defaultStyles from './Styles/CalendarModalStyle'
 import CalendarMonthList from './CalendarMonthList'
 import WeekHeader from './WeekHeader'
+
+const Container = styled.View`
+  ${props => {
+    return {
+      position: 'absolute',
+      top: 20,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      flexDirection: 'column',
+      ...props.theme.calendarModalContainer
+    }
+  }}
+`
+
+const TopActions = styled.View`
+  ${{
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  }}
+`
+
+const CloseButtonText = styled.Text`
+  ${props => {
+    return {
+      fontSize: 20,
+      paddingHorizontal: 10,
+      paddingVertical: 10,
+      ...props.theme.calendarModalCloseButtonText
+    }
+  }}
+`
+const ResetButtonText = styled.Text`
+  ${props => {
+    return {
+      fontSize: 13,
+      paddingHorizontal: 10,
+      paddingVertical: 10,
+      ...props.theme.calendarModalResetButtonText
+    }
+  }}
+`
+
+const SelectedDates = styled.View`
+  ${props => {
+    return {
+      paddingHorizontal: 20,
+      height: 110,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-around',
+      ...props.theme.calendarModalSelectedDates
+    }
+  }}
+`
+
+const SelectedDateText = styled.Text`
+  ${props => {
+    return {
+      fontSize: 24,
+      fontWeight: '200',
+      textAlign: 'center',
+      flex: 1,
+      alignSelf: 'center',
+      ...props.theme.calendarModalSelectedDateText
+    }
+  }}
+  ${props => props.left &&
+    {
+      textAlign: 'left',
+      paddingRight: 30
+    }
+  }}
+  ${props => props.right &&
+    {
+      textAlign: 'right',
+      paddingLeft: 30
+    }
+  }}
+`
+
+const RangeSeparator = styled.Text`
+  ${props => {
+    return {
+      textAlign: 'center',
+      fontSize: '60',
+      transform: 'rotate(40deg)',
+      zIndex: 2,
+      fontWeight: '100',
+      color: 'black',
+      ...props.theme.calendarModalRangeSeparator
+    }
+  }}
+`
+const Footer = styled.View`
+  ${props => {
+    return {
+      paddingVertical: 10,
+      borderTopWidth: 1,
+      borderTopColor: '#ccc',
+      ...props.theme.calendarModalFooter
+    }
+  }}
+`
+
+const FooterButton = styled.TouchableOpacity`
+  ${props => {
+    return {
+      backgroundColor: '#ccc',
+      borderRadius: 4,
+      overflow: 'hidden',
+      marginHorizontal: 20,
+      paddingVertical: 10,
+      ...props.theme.calendarModalFooterButton
+    }
+  }}
+`
+
+const FooterText = styled.Text`
+  ${props => {
+    return {
+      textAlign: 'center',
+      ...props.theme.calendarModalFooteText
+    }
+  }}
+`
 
 const propTypes = {
   mode: PropTypes.string,
@@ -14,17 +141,6 @@ const propTypes = {
   dates: PropTypes.arrayOf(momentPropTypes.momentObj),
   startDate: momentPropTypes.momentObj,
   endDate: momentPropTypes.momentObj,
-
-  // Custom styles
-  closeButtonTextStyle: Text.propTypes.style,
-  resetButtonTextStyle: Text.propTypes.style,
-  calendarModalStyle: View.propTypes.style,
-  calendarMonthListStyle: View.propTypes.style,
-  selectedDatesStyle: View.propTypes.style,
-  selectedDateTextStyle: Text.propTypes.style,
-  weekHeaderStyle: View.propTypes.style,
-  weekDayTextStyle: Text.propTypes.style,
-  rangeSeparatorTextStyle: Text.propTypes.style,
 
   // Custom props
   modalProps: PropTypes.object,
@@ -79,65 +195,52 @@ export default class CalendarModal extends React.Component {
     const {
       phrases,
       mode,
-      maxNumberOfDates,
-      selectedDateTextStyle,
-      selectedDatesStyle,
-      rangeSeparatorTextStyle
+      maxNumberOfDates
     } = this.props
     if (mode === 'dates') {
       const { dates } = this.props
 
       if (dates.length) {
         return (
-          <View style={[defaultStyles.selectedDates, selectedDatesStyle]}>
-            <Text style={[defaultStyles.selectedDate, selectedDateTextStyle]} numberOfLines={3}>
-              {dates.map((day) => day.format('D\u00a0MMM')).join(', ')}
-            </Text>
-          </View>
+          <SelectedDateText numberOfLines={3}>
+            {dates.map((day) => day.format('D\u00a0MMM')).join(', ')}
+          </SelectedDateText>
         )
       } else {
         return (
-          <View style={[defaultStyles.selectedDates, selectedDatesStyle]}>
-            <Text style={[defaultStyles.selectedDate, selectedDateTextStyle]}>
-              {maxNumberOfDates === 1 ? phrases.selectDate : phrases.selectDates}
-            </Text>
-          </View>
+          <SelectedDateText>
+            {maxNumberOfDates === 1 ? phrases.selectDate : phrases.selectDates}
+          </SelectedDateText>
         )
       }
     } else if (mode === 'dateRange') {
       const { startDate, endDate } = this.props
 
       return (
-        <View style={[defaultStyles.selectedDates, selectedDatesStyle]}>
-          <Text style={[defaultStyles.selectedDate, selectedDateTextStyle, defaultStyles.startDate]} numberOfLines={2}>
+        <View style={{flexDirection: 'row', flex: 1}}>
+          <SelectedDateText left numberOfLines={2}>
             { startDate ? startDate.format('dddd D\u00a0MMM') : phrases.startDate }
-          </Text>
-          <Text style={[defaultStyles.rangeSeparator, rangeSeparatorTextStyle]}>|</Text>
-          <Text style={[defaultStyles.selectedDate, selectedDateTextStyle, defaultStyles.endDate]} numberOfLines={2}>
+          </SelectedDateText>
+
+          <RangeSeparator>|</RangeSeparator>
+
+          <SelectedDateText right numberOfLines={2}>
             { endDate ? endDate.format('dddd D\u00a0MMM') : phrases.endDate }
-          </Text>
+          </SelectedDateText>
         </View>
       )
     }
   }
 
   renderFooter () {
-    const {
-      phrases,
-      onSavePress,
-      footerStyle,
-      footerButtonStyle,
-      footerTextStyle
-    } = this.props
+    const { phrases, onSavePress } = this.props
 
     return (
-      <View style={[defaultStyles.footer, footerStyle]}>
-        <TouchableOpacity style={[defaultStyles.footerButton, footerButtonStyle]} onPress={onSavePress}>
-          <Text style={[defaultStyles.footerText, footerTextStyle]}>
-            {phrases.save}
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <Footer>
+        <FooterButton onPress={onSavePress}>
+          <FooterText>{phrases.save}</FooterText>
+        </FooterButton>
+      </Footer>
     )
   }
 
@@ -157,23 +260,7 @@ export default class CalendarModal extends React.Component {
       modifiers,
       modalProps,
       listViewProps,
-      background,
-      containerStyle,
-      closeButtonTextStyle,
-      resetButtonTextStyle,
-      weekHeaderStyle,
-      weekDayTextStyle,
-      calendarMonthListStyle,
-      calendarMonthStyle,
-      calendarMonthTitleStyle,
-      calendarMonthWeekStyle,
-      calendarDaySelectedTextStyle,
-      calendarDayPastTextStyle,
-      calendarDayContainerStyle,
-      calendarDayTextStyle,
-      calendarDaySelectedContainerStyle,
-      calendarDaySelectedStartContainerStyle,
-      calendarDaySelectedEndContainerStyle
+      background
     } = this.props
 
     const { currentMonth } = this.state
@@ -181,49 +268,37 @@ export default class CalendarModal extends React.Component {
     return (
       <Modal visible={visible} animationType='slide' {...modalProps}>
         {background}
-        <View style={[defaultStyles.modal, containerStyle]}>
-
-          <View style={defaultStyles.topActions}>
+        <Container>
+          <TopActions>
             <TouchableOpacity onPress={onClosePress}>
-              <Text style={[defaultStyles.closeButton, closeButtonTextStyle]}>X</Text>
+              <CloseButtonText>X</CloseButtonText>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={onClearPress}>
-              <Text style={[defaultStyles.resetButton, resetButtonTextStyle]}>{phrases.clearDates}</Text>
+              <ResetButtonText>{phrases.clearDates}</ResetButtonText>
             </TouchableOpacity >
-          </View>
+          </TopActions>
 
-          {this.renderSelectedDates()}
-          
-          <WeekHeader headerStyle={weekHeaderStyle} dayTextStyle={weekDayTextStyle} />
+          <SelectedDates>
+            {this.renderSelectedDates()}
+          </SelectedDates>
 
-          <View style={defaultStyles.calendarMonthList}>
-            <CalendarMonthList
-              mode={mode}
-              initialMonth={currentMonth}
-              onDayPress={onDayPress}
-              numberOfMonths={numberOfMonths}
-              monthFormat={monthFormat}
-              modifiers={modifiers}
-              dates={dates}
-              startDate={startDate}
-              endDate={endDate}
-              listViewProps={listViewProps}
-              listViewsStyle={calendarMonthListStyle}
-              calendarMonthStyle={calendarMonthStyle}
-              calendarMonthTitleStyle={calendarMonthTitleStyle}
-              calendarMonthWeekStyle={calendarMonthWeekStyle}
-              calendarDaySelectedTextStyle={calendarDaySelectedTextStyle}
-              calendarDayPastTextStyle={calendarDayPastTextStyle}
-              calendarDayContainerStyle={calendarDayContainerStyle}
-              calendarDayTextStyle={calendarDayTextStyle}
-              calendarDaySelectedContainerStyle={calendarDaySelectedContainerStyle}
-              calendarDaySelectedStartContainerStyle={calendarDaySelectedStartContainerStyle}
-              calendarDaySelectedEndContainerStyle={calendarDaySelectedEndContainerStyle}
-            />
-          </View>
+          <WeekHeader />
+
+          <CalendarMonthList
+            mode={mode}
+            initialMonth={currentMonth}
+            onDayPress={onDayPress}
+            numberOfMonths={numberOfMonths}
+            monthFormat={monthFormat}
+            modifiers={modifiers}
+            dates={dates}
+            startDate={startDate}
+            endDate={endDate}
+            listViewProps={listViewProps}
+          />
           {this.renderFooter()}
-        </View>
+        </Container>
       </Modal>
     )
   }

@@ -1,6 +1,25 @@
 import React from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
-import defaultStyles from './Styles/DateInputStyle'
+import styled from 'styled-components/native'
+import { TouchableOpacity } from 'react-native'
+
+const Container = styled.View`
+  ${{
+    backgroundColor: '#eee',
+    overflow: 'hidden',
+    borderRadius: 4,
+    width: 200,
+    paddingVertical: 5,
+    paddingHorizontal: 10
+  }}
+  ${props => props.theme.dateInputContainer }
+`
+
+const Text = styled.Text`
+  ${{
+    textAlign: 'center'
+  }}
+  ${props => props.theme.dateInputText}
+`
 
 export default class DateInput extends React.Component {
 
@@ -24,16 +43,14 @@ export default class DateInput extends React.Component {
   }
 
   render () {
-    const { containerStyle, textStyle } = this.props
-
     return (
-      <View style={[defaultStyles.container, containerStyle]}>
+      <Container>
         <TouchableOpacity onPress={this.props.onPress}>
-          <Text style={[defaultStyles.text, textStyle]}>
+          <Text>
             {this.renderSelectedDates()}
           </Text>
         </TouchableOpacity>
-      </View>
+      </Container>
     )
   }
 }
