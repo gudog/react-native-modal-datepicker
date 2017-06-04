@@ -1,6 +1,6 @@
 {
   "name": "react-native-modal-datepicker",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A modal based datepicker for React Native with support for single dates, multiple dates and date ranges (start date – end date).",
   "main": "src/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/javiercr/react-native-modal-datepicker.git"
+    "url": "git+ssh://git@github.com/gudog/react-native-modal-datepicker.git"
   },
   "keywords": [
     "react-native",
@@ -20,9 +20,9 @@
   "author": "Javier Cuevas",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/javiercr/react-native-modal-datepicker/issues"
+    "url": "https://github.com/gudog/react-native-modal-datepicker/issues"
   },
-  "homepage": "https://github.com/javiercr/react-native-modal-datepicker#readme",
+  "homepage": "https://github.com/gudog/react-native-modal-datepicker#readme",
   "dependencies": {
     "moment": "^2.17.1",
     "react-moment-proptypes": "^1.2.0",
