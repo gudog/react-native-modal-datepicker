@@ -86,10 +86,6 @@ export default class DateRangePicker extends React.Component {
     return day.isBetween(startDate, endDate)
   }
 
-  isSelected (day) {
-    return this.isStartDate(day) || this.isEndDate(day) || this.isInSelectedSpan(day)
-  }
-
   isEndDate (day) {
     return day.isSame(this.state.endDate, 'day')
   }
@@ -169,7 +165,6 @@ export default class DateRangePicker extends React.Component {
 
     const modifiers = {
       blocked: day => this.isBlocked(day),
-      selected: day => this.isSelected(day),
       selectedStart: day => this.isStartDate(day),
       selectedEnd: day => this.isEndDate(day),
       selectedSpan: day => this.isInSelectedSpan(day)

@@ -2,6 +2,11 @@ import React from 'react'
 import styled from 'styled-components/native'
 import { TouchableWithoutFeedback } from 'react-native'
 
+// Receives props for a CalendarDay and returns
+// true if it is within a selection span
+const isSelected = ({ selected, selectedStart, selectedSpan, selectedEnd }) =>
+  selected || selectedStart || selectedSpan || selectedEnd
+
 const Container = styled.View`
   ${props => {
     return {
@@ -11,7 +16,7 @@ const Container = styled.View`
       ...props.theme.calendarDayContainer
     }
   }}
-  ${props => props.selected && {
+  ${props => isSelected(props) && {
     borderRadius: 400,
     backgroundColor: '#ccc',
     overflow: 'hidden',
@@ -51,7 +56,7 @@ const Text = styled.Text`
       ...props.theme.calendarDayText
     }
   }}
-  ${props => props.selected && {
+  ${props => isSelected(props) && {
     color: 'white',
     fontWeight: 'bold',
     ...props.theme.calendarDaySelectedText
