@@ -7,7 +7,6 @@ const Container = styled.View`
     backgroundColor: '#eee',
     overflow: 'hidden',
     borderRadius: 4,
-    width: 200,
     paddingVertical: 5,
     paddingHorizontal: 10
   }}
