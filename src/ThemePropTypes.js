@@ -25,5 +25,5 @@ export default PropTypes.shape({
   calendarMonthTitle: PropTypes.object,
   calendarMonthWeek: PropTypes.object,
   weekHeaderContainer: PropTypes.object,
-  weekHeaderContainerD: PropTypes.object
+  weekHeaderDayText: PropTypes.object
 })

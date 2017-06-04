@@ -20,7 +20,7 @@ const Day = styled.Text`
     return {
       flex: 1,
       textAlign: 'center',
-      ...props.theme.weekHeaderContainerDay
+      ...props.theme.weekHeaderDayText
     }
   }}
 `
