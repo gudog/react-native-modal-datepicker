@@ -1,6 +1,8 @@
 import { PropTypes } from 'react'
 
 export default PropTypes.shape({
+  dateInputContainer: PropTypes.object,
+  dateInputText: PropTypes.object,
   calendarDayContainer: PropTypes.object,
   calendarDaySelectedContainer: PropTypes.object,
   calendarDaySelectedStartContainer: PropTypes.object,
