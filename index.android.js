@@ -1,10 +1,10 @@
-import { AppRegistry } from 'react-native';
-import { getStorybookUI, configure } from '@kadira/react-native-storybook';
+import { AppRegistry } from "react-native";
+import { getStorybookUI, configure } from "@kadira/react-native-storybook";
 
 // import stories
 configure(() => {
-  require('./storybook/stories');
+  require("./storybook/stories");
 }, module);
 
-const StorybookUI = getStorybookUI({ port: 7007, host: 'localhost' });
-AppRegistry.registerComponent('RNModalDatePickerExample', () => StorybookUI);
+const StorybookUI = getStorybookUI({ port: 7007, host: "localhost" });
+AppRegistry.registerComponent("RNModalDatePickerExample", () => StorybookUI);
