@@ -1,4 +1,4 @@
-import { PropTypes } from 'react'
+import { PropTypes } from "react";
 
 export default PropTypes.shape({
   dateInputContainer: PropTypes.object,
@@ -28,4 +28,4 @@ export default PropTypes.shape({
   calendarMonthWeek: PropTypes.object,
   weekHeaderContainer: PropTypes.object,
   weekHeaderDayText: PropTypes.object
-})
+});

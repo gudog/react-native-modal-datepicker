@@ -1,49 +1,49 @@
-import React, { PropTypes } from 'react'
-import styled from 'styled-components/native'
-import momentPropTypes from 'react-moment-proptypes'
-import moment from 'moment'
+import React, { PropTypes } from "react";
+import styled from "styled-components/native";
+import momentPropTypes from "react-moment-proptypes";
+import moment from "moment";
 
-import CalendarDay from './CalendarDay'
+import CalendarDay from "./CalendarDay";
 
 const Container = styled.View`
   ${props => {
     return {
       flex: 1,
-      flexDirection: 'column',
+      flexDirection: "column",
       paddingVertical: 12,
       ...props.theme.calendarMonthContainer
-    }
+    };
   }}
-`
+`;
 const MonthTitle = styled.Text`
   ${props => {
     return {
-      fontWeight: 'bold',
+      fontWeight: "bold",
       fontSize: 16,
       paddingHorizontal: 12,
       ...props.theme.calendarMonthTitle
-    }
+    };
   }}
-`
+`;
 const Week = styled.View`
   ${props => {
     return {
-      flexDirection: 'row',
-      alignItems: 'stretch',
+      flexDirection: "row",
+      alignItems: "stretch",
       ...props.theme.calendarMonthWeek
-    }
+    };
   }}
-`
+`;
 const DayContainer = styled.View`
   ${{
     flex: 1,
-    alignSelf: 'stretch',
+    alignSelf: "stretch",
     // Hack to avoid this issue
     // https://github.com/facebook/react-native/issues/10539
     marginLeft: -1,
     marginRight: -1
   }}
-`
+`;
 
 const propTypes = {
   month: momentPropTypes.momentObj,
@@ -52,42 +52,35 @@ const propTypes = {
 
   // i18n
   monthFormat: PropTypes.string
-}
+};
 
 const defaultProps = {
   month: moment(),
   dates: [],
-  onDayPress () {},
+  onDayPress() {},
 
   // i18n
-  monthFormat: 'MMMM YYYY' // english locale
-}
+  monthFormat: "MMMM YYYY" // english locale
+};
 
-export function getModifiersPropsForDay (modifiers, day) {
-  const props = {}
+export function getModifiersPropsForDay(modifiers, day) {
+  const props = {};
   if (day) {
-    const keys = Object.keys(modifiers)
+    const keys = Object.keys(modifiers);
     keys.forEach(key => {
-      props[key] = modifiers[key](day)
-    })
+      props[key] = modifiers[key](day);
+    });
   }
 
-  return props
+  return props;
 }
 
 export default class CalendarMonth extends React.Component {
+  render() {
+    const { month, onDayPress, monthFormat, weeks, modifiers } = this.props;
 
-  render () {
-    const {
-      month,
-      onDayPress,
-      monthFormat,
-      weeks,
-      modifiers
-    } = this.props
-
-    const monthTitle = month.format(monthFormat)
-    const now = moment()
+    const monthTitle = month.format(monthFormat);
+    const now = moment();
 
     return (
       <Container>
@@ -95,29 +88,32 @@ export default class CalendarMonth extends React.Component {
         {weeks.map((week, i) =>
           <Week key={i}>
             {week.map((day, j) => {
-              const modifiersPropsForDay = getModifiersPropsForDay(modifiers, day)
-              const past = day && day.isBefore(now, 'day')
-              const isToday = day && day.isSame(now, 'day')
+              const modifiersPropsForDay = getModifiersPropsForDay(
+                modifiers,
+                day
+              );
+              const past = day && day.isBefore(now, "day");
+              const isToday = day && day.isSame(now, "day");
 
               return (
                 <DayContainer key={j}>
                   {day &&
-                    <CalendarDay day={day}
+                    <CalendarDay
+                      day={day}
                       {...modifiersPropsForDay}
                       onDayPress={onDayPress}
                       past={past}
                       isToday={isToday}
-                    />
-                  }
+                    />}
                 </DayContainer>
-              )
+              );
             })}
           </Week>
         )}
       </Container>
-    )
+    );
   }
 }
 
-CalendarMonth.propTypes = propTypes
-CalendarMonth.defaultProps = defaultProps
+CalendarMonth.propTypes = propTypes;
+CalendarMonth.defaultProps = defaultProps;

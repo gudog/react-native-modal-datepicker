@@ -1,14 +1,13 @@
-import React, { PropTypes } from 'react'
-import moment from 'moment'
-import MomentPropTypes from 'react-moment-proptypes'
-import { ListView } from 'react-native'
-import CalendarMonth from './CalendarMonth'
-import getCalendarMonthWeeks from './utils/getCalendarMonthWeeks'
+import React, { PropTypes } from "react";
+import moment from "moment";
+import MomentPropTypes from "react-moment-proptypes";
+import { ListView } from "react-native";
+import CalendarMonth from "./CalendarMonth";
+import getCalendarMonthWeeks from "./utils/getCalendarMonthWeeks";
 
-import isMonthIncluded from './utils/isMonthIncluded'
+import isMonthIncluded from "./utils/isMonthIncluded";
 
 export default class CalendarMonthList extends React.Component {
-
   static propTypes = {
     mode: PropTypes.string,
     initialMonth: MomentPropTypes.momentObj,
@@ -18,92 +17,91 @@ export default class CalendarMonthList extends React.Component {
   };
 
   static defaultProps = {
-    mode: 'dateRange',
+    mode: "dateRange",
     initialMonth: moment(),
     numberOfMonths: 24,
     dates: [],
     modifiers: {}
   };
 
-  constructor (props) {
-    super(props)
-    const { numberOfMonths, initialMonth } = this.props
+  constructor(props) {
+    super(props);
+    const { numberOfMonths, initialMonth } = this.props;
 
-    let month = initialMonth.clone().startOf('month')
-    const months = []
+    let month = initialMonth.clone().startOf("month");
+    const months = [];
     for (let i = 0; i < numberOfMonths; i++) {
       months.push({
-        month: month,
+        month,
         weeks: getCalendarMonthWeeks(month, false)
-      })
-      month = month.clone().add(1, 'month')
+      });
+      month = month.clone().add(1, "month");
     }
 
     const dataSource = new ListView.DataSource({
       rowHasChanged: (r1, r2) => {
         // console.log(`rowHasChanged ${r1.month.format('MMMM')}: ${(r1 !== r2)}`)
-        return (r1 !== r2)
+        return r1 !== r2;
       }
-    })
+    });
 
     this.state = {
-      months: months,
+      months,
       dataSource: dataSource.cloneWithRows(months)
-    }
+    };
   }
 
-  componentWillReceiveProps (nextProps) {
-    const { dates, startDate, endDate } = this.props
+  componentWillReceiveProps(nextProps) {
+    const { dates, startDate, endDate } = this.props;
     const {
       mode,
       dates: nextDates,
       startDate: nextStartDate,
       endDate: nextEndDate
-    } = nextProps
+    } = nextProps;
 
-    const { months, dataSource } = this.state
-    let newMonths
+    const { months, dataSource } = this.state;
+    let newMonths;
 
-    if (mode === 'dates') {
-      newMonths = months.map((monthRow) => {
-        const { month } = monthRow
-        if (isMonthIncluded(month, nextDates) ||
-            isMonthIncluded(month, dates)) {
+    if (mode === "dates") {
+      newMonths = months.map(monthRow => {
+        const { month } = monthRow;
+        if (
+          isMonthIncluded(month, nextDates) ||
+          isMonthIncluded(month, dates)
+        ) {
           // console.log(`flagging ${month.format('MMMM Y')} as dirty`)
-          return Object.assign({}, monthRow) // Change the reference to object
-        } else {
-          return monthRow // keep the same reference
+          return Object.assign({}, monthRow); // Change the reference to object
         }
-      })
-    } else if (mode === 'dateRange') {
+        return monthRow; // keep the same reference
+      });
+    } else if (mode === "dateRange") {
       // Tag all the months that need to be re-rendered
-      newMonths = months.map((monthRow) => {
-        const { month } = monthRow
-        if (month.isSame(nextStartDate, 'month') ||
-            month.isSame(nextEndDate, 'month') ||
-            month.isBetween(nextStartDate, nextEndDate, 'month') ||
-            month.isSame(startDate, 'month') ||
-            month.isSame(endDate, 'month') ||
-            month.isBetween(startDate, endDate, 'month')) {
+      newMonths = months.map(monthRow => {
+        const { month } = monthRow;
+        if (
+          month.isSame(nextStartDate, "month") ||
+          month.isSame(nextEndDate, "month") ||
+          month.isBetween(nextStartDate, nextEndDate, "month") ||
+          month.isSame(startDate, "month") ||
+          month.isSame(endDate, "month") ||
+          month.isBetween(startDate, endDate, "month")
+        ) {
           // console.log(`flagging ${month.format('MMMM Y')} as dirty`)
-          return Object.assign({}, monthRow) // Change the reference to object
-        } else {
-          return monthRow // keep the same reference
+          return Object.assign({}, monthRow); // Change the reference to object
         }
-      })
+        return monthRow; // keep the same reference
+      });
     }
 
     this.setState({
       months: newMonths,
       dataSource: dataSource.cloneWithRows(newMonths)
-    })
+    });
   }
 
   renderRow = (rowData, sectionID, rowID, highlightRow) => {
-    const {
-      modifiers,
-      onDayPress
-    } = this.props
+    const { modifiers, onDayPress } = this.props;
 
     return (
       <CalendarMonth
@@ -112,11 +110,11 @@ export default class CalendarMonthList extends React.Component {
         month={rowData.month}
         onDayPress={onDayPress}
       />
-    )
-  }
+    );
+  };
 
-  render () {
-    const { listViewProps } = this.props
+  render() {
+    const { listViewProps } = this.props;
 
     return (
       <ListView
@@ -128,6 +126,6 @@ export default class CalendarMonthList extends React.Component {
         showsVerticalScrollIndicator={false}
         {...listViewProps}
       />
-    )
+    );
   }
 }

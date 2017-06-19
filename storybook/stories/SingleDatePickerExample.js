@@ -1,21 +1,20 @@
-import React, { Component } from 'react'
-import { DatesPicker } from './../../src'
+import React, { Component } from "react";
+import { DatesPicker } from "./../../src";
 
 export default class SingleDatePickerExample extends Component {
-
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
       dates: []
-    }
+    };
   }
 
-  onDatesChange = (dates) => {
-    this.setState({ dates })
-  }
+  onDatesChange = dates => {
+    this.setState({ dates });
+  };
 
-  render () {
-    const { dates } = this.state
+  render() {
+    const { dates } = this.state;
 
     return (
       <DatesPicker
@@ -41,6 +40,6 @@ export default class SingleDatePickerExample extends Component {
         calendarDaySelectedEndContainerStyle={{}}
         {...this.props}
       />
-    )
+    );
   }
 }
