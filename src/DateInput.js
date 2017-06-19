@@ -1,6 +1,9 @@
+// @flow
 import React from "react";
 import styled from "styled-components/native";
 import { TouchableOpacity } from "react-native";
+
+import type { DatePickerMode, PhrasesType } from "./types";
 
 const Container = styled.View`
   ${{
@@ -20,12 +23,21 @@ const Text = styled.Text`
   ${props => props.theme.dateInputText}
 `;
 
-export default class DateInput extends React.Component {
+type Props = {
+  onPress: Function,
+  mode: DatePickerMode,
+  value: any, // TODO: fix this
+  maxNumberOfDates: number,
+  phrases: PhrasesType
+};
+
+export default class DateInput extends React.PureComponent<void, Props, void> {
   renderSelectedDates() {
     const { mode, phrases, maxNumberOfDates } = this.props;
 
     if (mode === "dates") {
-      const { dates } = this.props;
+      const dates = this.props.value;
+
       const label = maxNumberOfDates === 1
         ? phrases.selectDate
         : phrases.selectDates;
@@ -34,12 +46,13 @@ export default class DateInput extends React.Component {
         ? dates.map(day => day.format("D MMM")).join(", ")
         : label;
     } else if (mode === "dateRange") {
-      const { startDate, endDate } = this.props;
+      const { startDate, endDate } = this.props.value;
 
       return startDate && endDate
         ? `${startDate.format("l")} - ${endDate.format("l")}`
         : phrases.selectDates;
     }
+    return null;
   }
 
   render() {

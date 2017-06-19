@@ -1,6 +1,6 @@
-import DatesPicker from "./DatesPicker";
+import ModalDatePicker from "./ModalDatePicker";
 import DateRangePicker from "./DateRangePicker";
 import CalendarMonthList from "./CalendarMonthList";
 import WeekHeader from "./WeekHeader";
 
-export { DatesPicker, DateRangePicker, CalendarMonthList, WeekHeader };
+export { ModalDatePicker, DateRangePicker, CalendarMonthList, WeekHeader };

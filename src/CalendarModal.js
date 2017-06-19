@@ -1,11 +1,18 @@
-import React, { PropTypes } from "react";
+// @flow
+
+import React from "react";
 import { View, Modal, TouchableOpacity } from "react-native";
-import moment from "moment";
-import momentPropTypes from "react-moment-proptypes";
 import styled from "styled-components/native";
 
 import CalendarMonthList from "./CalendarMonthList";
 import WeekHeader from "./WeekHeader";
+
+import type {
+  DatePickerMode,
+  // InputValue,
+  PhrasesType,
+  DatesArray
+} from "./types";
 
 const Container = styled.View`
   ${props => {
@@ -132,55 +139,54 @@ const FooterText = styled.Text`
   }}
 `;
 
-const propTypes = {
-  mode: PropTypes.string,
-  numberOfMonths: PropTypes.number,
-  initialVisibleMonth: PropTypes.func,
-  dates: PropTypes.arrayOf(momentPropTypes.momentObj),
-  startDate: momentPropTypes.momentObj,
-  endDate: momentPropTypes.momentObj,
+type DefaultProps = {
+  numberOfMonths: number,
+  background: ?React.Component<any, any, any>,
+  onDayPress: Function,
+  onClearPress: Function,
+  onClosePress: Function,
+  onSavePress: Function
+};
+
+type Props = DefaultProps & {
+  mode: DatePickerMode,
+  phrases: PhrasesType,
+  visible: boolean,
+  initialVisibleMonth: Function,
+  selectedDates: any, // TODO: fix this
+  modifiers: Object,
+  maxNumberOfDates: number,
 
   // Custom props
-  modalProps: PropTypes.object,
-  listViewProps: PropTypes.object,
-
-  onDayPress: PropTypes.func,
-  onClearPress: PropTypes.func,
-  onClosePress: PropTypes.func,
-  onSavePress: PropTypes.func,
+  modalProps: Object,
+  listViewProps: Object,
 
   // i18n
-  monthFormat: PropTypes.string,
-  phrases: PropTypes.shape({
-    clearDates: PropTypes.node,
-    save: PropTypes.node
-  })
+  monthFormat: string
 };
 
-const defaultProps = {
-  mode: "dates", // 'dates' or 'dateRange'
-  numberOfMonths: 3,
-  initialVisibleMonth: () => moment(),
-  dates: [],
-  startDate: null,
-  endDate: null,
-  onDayPress() {},
-  onClearPress() {},
-  onClosePress() {},
-  onSavePress() {},
-
-  // i18n
-  monthFormat: "MMMM YYYY",
-  phrases: PropTypes.shape({
-    clearDates: PropTypes.node,
-    save: PropTypes.node,
-    startDate: PropTypes.node,
-    endDate: PropTypes.node
-  })
+type State = {
+  currentMonth: moment$Moment
 };
 
-export default class CalendarModal extends React.Component {
-  constructor(props) {
+export default class CalendarModal extends React.Component<
+  DefaultProps,
+  Props,
+  State
+> {
+  props: Props;
+  state: State;
+
+  static defaultProps = {
+    numberOfMonths: 3,
+    background: null,
+    onDayPress() {},
+    onClearPress() {},
+    onClosePress() {},
+    onSavePress() {}
+  };
+
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -190,10 +196,11 @@ export default class CalendarModal extends React.Component {
 
   renderSelectedDates() {
     const { phrases, mode, maxNumberOfDates } = this.props;
-    if (mode === "dates") {
-      const { dates } = this.props;
 
-      if (dates.length) {
+    if (mode === "dates") {
+      const dates: DatesArray = this.props.selectedDates;
+
+      if (dates && dates.length) {
         return (
           <SelectedDateText numberOfLines={3}>
             {dates.map(day => day.format("D\u00a0MMM")).join(", ")}
@@ -205,25 +212,24 @@ export default class CalendarModal extends React.Component {
           {maxNumberOfDates === 1 ? phrases.selectDate : phrases.selectDates}
         </SelectedDateText>
       );
-    } else if (mode === "dateRange") {
-      const { startDate, endDate } = this.props;
-
-      return (
-        <View style={{ flexDirection: "row", flex: 1 }}>
-          <SelectedDateText left numberOfLines={2}>
-            {startDate
-              ? startDate.format("dddd D\u00a0MMM")
-              : phrases.startDate}
-          </SelectedDateText>
-
-          <RangeSeparator>|</RangeSeparator>
-
-          <SelectedDateText right numberOfLines={2}>
-            {endDate ? endDate.format("dddd D\u00a0MMM") : phrases.endDate}
-          </SelectedDateText>
-        </View>
-      );
     }
+
+    // mode == dateRange
+    const { startDate, endDate } = this.props.selectedDates;
+
+    return (
+      <View style={{ flexDirection: "row", flex: 1 }}>
+        <SelectedDateText left numberOfLines={2}>
+          {startDate ? startDate.format("dddd D\u00a0MMM") : phrases.startDate}
+        </SelectedDateText>
+
+        <RangeSeparator>|</RangeSeparator>
+
+        <SelectedDateText right numberOfLines={2}>
+          {endDate ? endDate.format("dddd D\u00a0MMM") : phrases.endDate}
+        </SelectedDateText>
+      </View>
+    );
   }
 
   renderFooter() {
@@ -248,9 +254,7 @@ export default class CalendarModal extends React.Component {
       onDayPress,
       numberOfMonths,
       phrases,
-      dates,
-      startDate,
-      endDate,
+      selectedDates,
       modifiers,
       modalProps,
       listViewProps,
@@ -269,7 +273,9 @@ export default class CalendarModal extends React.Component {
             </TouchableOpacity>
 
             <TouchableOpacity onPress={onClearPress}>
-              <ResetButtonText>{phrases.clearDates}</ResetButtonText>
+              <ResetButtonText>
+                {phrases.clear}
+              </ResetButtonText>
             </TouchableOpacity>
           </TopActions>
 
@@ -286,9 +292,7 @@ export default class CalendarModal extends React.Component {
             numberOfMonths={numberOfMonths}
             monthFormat={monthFormat}
             modifiers={modifiers}
-            dates={dates}
-            startDate={startDate}
-            endDate={endDate}
+            selectedDates={selectedDates}
             listViewProps={listViewProps}
           />
           {this.renderFooter()}
@@ -298,5 +302,5 @@ export default class CalendarModal extends React.Component {
   }
 }
 
-CalendarModal.propTypes = propTypes;
-CalendarModal.defaultProps = defaultProps;
+// CalendarModal.propTypes = propTypes;
+// CalendarModal.defaultProps = defaultProps;

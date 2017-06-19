@@ -1,74 +1,7 @@
 import React, { PropTypes } from "react";
-import { View, Text } from "react-native";
-import { ThemeProvider } from "styled-components";
-import momentPropTypes from "react-moment-proptypes";
-import moment from "moment";
-
-import DateInput from "./DateInput";
-import ThemePropTypes from "./ThemePropTypes";
-import CalendarModal from "./CalendarModal";
-
-const propTypes = {
-  theme: ThemePropTypes,
-  numberOfMonths: PropTypes.number,
-  initialVisibleMonth: PropTypes.func,
-  isOutsideRange: PropTypes.func,
-  startDate: momentPropTypes.momentObj,
-  endDate: momentPropTypes.momentObj,
-
-  onDatesChange: PropTypes.func,
-
-  // Custom props for main RN components
-  modalProps: React.PropTypes.object,
-
-  // A React element to be used as background
-  calendarModalBackground: React.PropTypes.element,
-
-  // i18n
-  displayFormat: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-  monthFormat: PropTypes.string,
-  phrases: PropTypes.shape({
-    selectDates: PropTypes.node,
-    clear: PropTypes.node,
-    save: PropTypes.node
-  })
-};
-
-const defaultProps = {
-  numberOfMonths: 12,
-  initialVisibleMonth: () => moment(),
-  isOutsideRange: day => day && !day.isSameOrAfter(moment(), "day"),
-  startDate: null,
-  endDate: null,
-  onDatesChange() {},
-
-  // i18n
-  displayFormat: () => moment.localeData().longDateFormat("L"),
-  monthFormat: "MMMM YYYY",
-  phrases: {
-    selectDates: "Select Date Range",
-    clearDates: "Clear",
-    save: "Save",
-    startDate: "Start Date",
-    endDate: "End Date"
-  },
-  theme: {}
-};
+import ModalDatePicker from "./ModalDatePicker";
 
 export default class DateRangePicker extends React.Component {
-  constructor(props) {
-    super(props);
-
-    // state.startDate && state.endDate &&  => dates selected in the modal
-    // props.startDate && props.endDate &&  => dates selected in dateInput
-
-    this.state = {
-      calendarVisible: false,
-      startDate: null,
-      endDate: null
-    };
-  }
-
   isBlocked(day) {
     // const { isDayBlocked, isOutsideRange } = this.props
     // return isDayBlocked(day) || isOutsideRange(day);
@@ -150,11 +83,12 @@ export default class DateRangePicker extends React.Component {
     this.props.onDatesChange({ startDate, endDate });
   };
 
-  renderCalendar() {
-    const { calendarVisible, startDate, endDate } = this.state;
+  render() {
+    const { startDate, endDate } = this.state;
     const {
       initialVisibleMonth,
       numberOfMonths,
+      calendarVisible,
       monthFormat,
       phrases,
       modalProps,
@@ -193,26 +127,7 @@ export default class DateRangePicker extends React.Component {
       />
     );
   }
-
-  render() {
-    const { startDate, endDate, phrases, theme } = this.props;
-
-    return (
-      <ThemeProvider theme={theme}>
-        <View>
-          <DateInput
-            onPress={this.handleOnDateInputPress}
-            mode="dateRange"
-            startDate={startDate}
-            endDate={endDate}
-            phrases={phrases}
-          />
-          {this.renderCalendar()}
-        </View>
-      </ThemeProvider>
-    );
-  }
 }
 
-DateRangePicker.propTypes = propTypes;
-DateRangePicker.defaultProps = defaultProps;
+// DateRangePicker.propTypes = propTypes;
+// DateRangePicker.defaultProps = defaultProps;

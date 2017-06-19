@@ -1,3 +1,4 @@
+// @flow
 const compareMomentDates = (a, b) => {
   if (a.valueOf() < b.valueOf()) {
     return -1;
@@ -7,6 +8,8 @@ const compareMomentDates = (a, b) => {
   return 0;
 };
 
-export default function sortDates(arrayOfDates) {
+export default function sortDates(
+  arrayOfDates: Array<moment$Moment>
+): Array<moment$Moment> {
   return arrayOfDates.sort(compareMomentDates);
 }

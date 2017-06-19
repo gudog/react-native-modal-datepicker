@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { DatesPicker } from "./../../src";
+import { ModalDatePicker } from "./../../src";
 
 export default class SingleDatePickerExample extends Component {
   constructor(props) {
@@ -17,27 +17,10 @@ export default class SingleDatePickerExample extends Component {
     const { dates } = this.state;
 
     return (
-      <DatesPicker
+      <ModalDatePicker
         onDatesChange={this.onDatesChange}
         dates={dates}
         maxNumberOfDates={1}
-        style={{}}
-        dateInputStyle={{}}
-        dateInputTextStyle={{}}
-        calendarModalStyle={{}}
-        calendarModalFooterStyle={{}}
-        calendarModalFooterButtonStyle={{}}
-        calendarModalFooterTextStyle={{}}
-        calendarMonthListStyle={{}}
-        calendarMonthStyle={{}}
-        calendarMonthTitleStyle={{}}
-        calendarMonthWeekStyle={{}}
-        calendarDaySelectedTextStyle={{}}
-        calendarDayPastTextStyle={{}}
-        calendarDayContainerStyle={{}}
-        calendarDaySelectedContainerStyle={{}}
-        calendarDaySelectedStartContainerStyle={{}}
-        calendarDaySelectedEndContainerStyle={{}}
         {...this.props}
       />
     );

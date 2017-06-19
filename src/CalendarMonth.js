@@ -1,9 +1,11 @@
-import React, { PropTypes } from "react";
+// @flow
+import React from "react";
 import styled from "styled-components/native";
-import momentPropTypes from "react-moment-proptypes";
 import moment from "moment";
 
 import CalendarDay from "./CalendarDay";
+
+import type { Modifiers } from "./types";
 
 const Container = styled.View`
   ${props => {
@@ -45,25 +47,17 @@ const DayContainer = styled.View`
   }}
 `;
 
-const propTypes = {
-  month: momentPropTypes.momentObj,
-  dates: PropTypes.arrayOf(momentPropTypes.momentObj),
-  onDayPress: PropTypes.func,
+type Props = {
+  month: moment$Moment,
+  weeks: Array<any>, // TODO: change this
+  onDayPress?: moment$Moment => any,
+  modifiers: Modifiers,
 
   // i18n
-  monthFormat: PropTypes.string
+  monthFormat: string
 };
 
-const defaultProps = {
-  month: moment(),
-  dates: [],
-  onDayPress() {},
-
-  // i18n
-  monthFormat: "MMMM YYYY" // english locale
-};
-
-export function getModifiersPropsForDay(modifiers, day) {
+export function getModifiersPropsForDay(modifiers: Object, day: moment$Moment) {
   const props = {};
   if (day) {
     const keys = Object.keys(modifiers);
@@ -75,7 +69,19 @@ export function getModifiersPropsForDay(modifiers, day) {
   return props;
 }
 
-export default class CalendarMonth extends React.Component {
+export default class CalendarMonth extends React.PureComponent<
+  any,
+  Props,
+  void
+> {
+  static defaultProps = {
+    month: moment(),
+    onDayPress() {},
+
+    // i18n
+    monthFormat: "MMMM YYYY" // english locale
+  };
+
   render() {
     const { month, onDayPress, monthFormat, weeks, modifiers } = this.props;
 
@@ -114,6 +120,3 @@ export default class CalendarMonth extends React.Component {
     );
   }
 }
-
-CalendarMonth.propTypes = propTypes;
-CalendarMonth.defaultProps = defaultProps;

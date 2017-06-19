@@ -1,3 +1,4 @@
+// @flow
 import React from "react";
 import styled from "styled-components/native";
 import { TouchableWithoutFeedback } from "react-native";
@@ -112,7 +113,7 @@ const BlockedMarkerContainer = styled.View`
       left: 0,
       right: 0,
       bottom: 0,
-      justifyContent: 'center',
+      justifyContent: "center",
       zIndex: 1,
       ...props.theme.calendarDayBlockedMarkerContainer
     };
@@ -132,19 +133,48 @@ const BlockedMarker = styled.Text`
   }}
 `;
 
-export default class CalendarDay extends React.PureComponent {
+type DefaultProps = {
+  selected: ?boolean,
+  isToday: ?boolean,
+  blocked: ?boolean,
+  past: ?boolean,
+  onDayPress: (moment$Moment) => any
+};
+type Props = DefaultProps & {
+  day: moment$Moment,
+};
+
+export default class CalendarDay extends React.PureComponent<
+  DefaultProps,
+  Props,
+  void
+> {
+  static defaultProps = {
+    selected: false,
+    isToday: false,
+    blocked: false,
+    past: false,
+    onDayPress: () => {}
+  };
+
   renderTodayMarker() {
     if (this.props.isToday) {
       const { selected } = this.props;
 
       return <TodayMarker selected={selected}>.</TodayMarker>;
     }
+    return null;
   }
-  
+
   renderBlockedMarker() {
     if (this.props.blocked) {
-      return <BlockedMarkerContainer><BlockedMarker>|</BlockedMarker></BlockedMarkerContainer>;
+      return (
+        <BlockedMarkerContainer>
+          <BlockedMarker>|</BlockedMarker>
+        </BlockedMarkerContainer>
+      );
     }
+    return null;
   }
 
   render() {
