@@ -85,8 +85,7 @@ export default class DatesPicker extends React.Component {
     return isOutsideRange(day)
   }
 
-  isSelected;
- (day) {
+  isSelected (day) {
     const { dates } = this.state
     return isDayIncluded(day, dates)
   }
