@@ -2,7 +2,9 @@ import React, { PropTypes } from "react";
 import moment from "moment";
 import MomentPropTypes from "react-moment-proptypes";
 import { ListView } from "react-native";
+import { ThemeProvider } from "styled-components";
 import CalendarMonth from "./CalendarMonth";
+import ThemePropTypes from "./ThemePropTypes";
 import getCalendarMonthWeeks from "./utils/getCalendarMonthWeeks";
 
 import isMonthIncluded from "./utils/isMonthIncluded";
@@ -13,7 +15,8 @@ export default class CalendarMonthList extends React.Component {
     initialMonth: MomentPropTypes.momentObj,
     dates: PropTypes.array,
     modifiers: PropTypes.object,
-    onDayPress: PropTypes.func
+    onDayPress: PropTypes.func,
+    theme: ThemePropTypes
   };
 
   static defaultProps = {
@@ -21,7 +24,8 @@ export default class CalendarMonthList extends React.Component {
     initialMonth: moment(),
     numberOfMonths: 24,
     dates: [],
-    modifiers: {}
+    modifiers: {},
+    theme: {}
   };
 
   constructor(props) {
@@ -114,18 +118,20 @@ export default class CalendarMonthList extends React.Component {
   };
 
   render() {
-    const { listViewProps } = this.props;
+    const { listViewProps, theme } = this.props;
 
     return (
-      <ListView
-        dataSource={this.state.dataSource}
-        renderRow={this.renderRow}
-        initialListSize={2}
-        pageSize={2}
-        scrollRenderAheadDistance={200}
-        showsVerticalScrollIndicator={false}
-        {...listViewProps}
-      />
+      <ThemeProvider theme={theme}>
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={this.renderRow}
+          initialListSize={2}
+          pageSize={2}
+          scrollRenderAheadDistance={200}
+          showsVerticalScrollIndicator={false}
+          {...listViewProps}
+        />
+      </ThemeProvider>
     );
   }
 }

@@ -44,6 +44,13 @@ storiesOf("CalendarMonthList", module)
         selectedEnd: day => day.isSame(moment().add(2, "days"), "day")
       }}
     />
+  )
+  .add("with custom theme", () =>
+    <CalendarMonthList
+      theme={{
+        calendarMonthTitle: { color: "red" }
+      }}
+    />
   );
 
 storiesOf("WeekHeader", module)
