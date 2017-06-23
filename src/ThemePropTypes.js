@@ -8,6 +8,7 @@ export default PropTypes.shape({
   calendarDaySelectedStartContainer: PropTypes.object,
   calendarDaySelectedEndContainer: PropTypes.object,
   calendarDaySelectedSpanContainer: PropTypes.object,
+  calendarDayBlockedContainer: PropTypes.object,
   calendarDayText: PropTypes.object,
   calendarDaySelectedText: PropTypes.object,
   calendarDayPastText: PropTypes.object,

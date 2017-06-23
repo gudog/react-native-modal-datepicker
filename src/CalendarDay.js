@@ -47,6 +47,10 @@ const Container = styled.View`
       borderRadius: 0,
       ...props.theme.calendarDaySelectedSpanContainer
     }}
+  ${props =>
+    props.blocked && {
+      ...props.theme.calendarDayBlockedContainer
+    }}
 `;
 
 const Text = styled.Text`
