@@ -78,7 +78,6 @@ const Text = styled.Text`
     }}
   ${props =>
     props.blocked && {
-      textDecorationLine: "line-through",
       opacity: 0.7,
       ...props.theme.calendarDayBlockedText
     }}
@@ -105,12 +104,46 @@ const TodayMarker = styled.Text`
     }}
 `;
 
+const BlockedMarkerContainer = styled.View`
+  ${props => {
+    return {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      justifyContent: 'center',
+      zIndex: 1,
+      ...props.theme.calendarDayBlockedMarkerContainer
+    };
+  }}
+`;
+
+const BlockedMarker = styled.Text`
+  ${props => {
+    return {
+      transform: "rotate(45deg)",
+      fontWeight: 100,
+      textAlign: "center",
+      fontSize: 32,
+      marginTop: -4,
+      ...props.theme.calendarDayBlockedMarkerText
+    };
+  }}
+`;
+
 export default class CalendarDay extends React.PureComponent {
   renderTodayMarker() {
     if (this.props.isToday) {
       const { selected } = this.props;
 
       return <TodayMarker selected={selected}>.</TodayMarker>;
+    }
+  }
+  
+  renderBlockedMarker() {
+    if (this.props.blocked) {
+      return <BlockedMarkerContainer><BlockedMarker>|</BlockedMarker></BlockedMarkerContainer>;
     }
   }
 
@@ -125,6 +158,7 @@ export default class CalendarDay extends React.PureComponent {
         <Container {...modifiersProps}>
           <Text {...modifiersProps}>{day.format("D")}</Text>
           {this.renderTodayMarker()}
+          {this.renderBlockedMarker()}
         </Container>
       </TouchableWithoutFeedback>
     );

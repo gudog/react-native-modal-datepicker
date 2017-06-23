@@ -15,6 +15,8 @@ export default PropTypes.shape({
   calendarDayBlockedText: PropTypes.object,
   calendarDayTodayMarker: PropTypes.object,
   calendarDaySelectedTodayMarker: PropTypes.object,
+  calendarDayBlockedMarkerContainer: PropTypes.object,
+  calendarDayBlockedMarkerText: PropTypes.object,
   calendarModalContainer: PropTypes.object,
   calendarModalCloseButtonText: PropTypes.object,
   calendarModalResetButtonText: PropTypes.object,
