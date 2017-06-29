@@ -33,3 +33,4 @@ rules:
   import/no-named-as-default-member: 0
   react/jsx-wrap-multilines: ["error", {arrow: false}]
   react/no-array-index-key: 0
+  react/sort-comp: ['error', { order: [ 'type-annotations', 'static-methods', 'lifecycle', '/^on.+$/', '/^(get|set)(?!(InitialState$|DefaultProps$|ChildContext$)).+$/', 'everything-else', '/^render.+$/', 'render' ] }]
