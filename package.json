@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "storybook": "storybook start -p 7007"
+    "storybook": "storybook start -p 7007",
+    "flow": "flow --show-all-errors"
   },
   "repository": {
     "type": "git",
@@ -26,7 +27,7 @@
   "dependencies": {
     "moment": "^2.17.1",
     "react-moment-proptypes": "^1.2.0",
-    "styled-components": "^2.0.0"
+    "styled-components": "^2.1.0"
   },
   "devDependencies": {
     "@kadira/react-native-storybook": "^2.0.0",
@@ -38,9 +39,10 @@
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-react": "^7.0.1",
+    "flow-bin": "^0.45.0",
     "prettier": "^1.4.4",
     "react": "16.0.0-alpha.6",
-    "react-native": "0.43.3"
+    "react-native": "^0.45.1"
   },
   "peerDependencies": {
     "react": "16.0.0-alpha.6",
