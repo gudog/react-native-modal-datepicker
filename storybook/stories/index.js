@@ -1,55 +1,29 @@
-import React from "react";
-import moment from "moment";
-import { View } from "react-native";
-import { storiesOf } from "@storybook/react-native";
+/* eslint-disable import/no-extraneous-dependencies, import/no-unresolved, import/extensions */
 
-import CenterView from "./CenterView";
+import React from 'react';
+import { Text } from 'react-native';
+
+import { storiesOf } from '@storybook/react-native';
+import { action } from '@storybook/addon-actions';
+import { linkTo } from '@storybook/addon-links';
+
+// import Button from './Button';
+// import CenterView from './CenterView';
+// import Welcome from './Welcome';
+
+import CenterView from './CenterView';
 import SingleDatePickerExample from "./SingleDatePickerExample";
 import DatesPickerExample from "./DatesPickerExample";
 import DateRangePickerExample from "./DateRangePickerExample";
-
 import { ModalDatePicker, CalendarMonthList, WeekHeader } from "./../../src";
 
 storiesOf("ModalDatePicker", module)
-  .addDecorator(getStory => <CenterView>{getStory()}</CenterView>)
-  // .add("Single Date", () =>
-  //   <SingleDatePickerExample maxNumberOfDates={1} />
-  // )
-  .add("Multiple dates", () => <DatesPickerExample/>);
-
-// storiesOf("DateRangePicker", module)
-//   .addDecorator(getStory => <CenterView>{getStory()}</CenterView>)
-//   .add("default", () => <DateRangePickerExample />);
-
-// storiesOf("CalendarMonthList", module)
-//   .addDecorator(getStory => <View style={{ marginTop: 20 }}>{getStory()}</View>)
-//   .add("default", () =>
-//     <CalendarMonthList numberOfMonths={24} />
-//   )
-//   .add("block all weekends", () =>
-//     <CalendarMonthList
-//       modifiers={{
-//         blocked: day => day.day() == 5 || day.day() == 6
-//       }}
-//     />
-//   )
-//   .add("date range selected", () =>
-//     <CalendarMonthList
-//       modifiers={{
-//         selectedStart: day => day.isSame(moment(), "day"),
-//         selectedSpan: day => day.isSame(moment().add(1, "days"), "day"),
-//         selectedEnd: day => day.isSame(moment().add(2, "days"), "day")
-//       }}
-//     />
-//   )
-//   .add("with custom theme", () =>
-//     <CalendarMonthList
-//       theme={{
-//         calendarMonthTitle: { color: "red" }
-//       }}
-//     />
-//   );
-
-// storiesOf("WeekHeader", module)
-//   .addDecorator(getStory => <CenterView>{getStory()}</CenterView>)
-//   .add("default", () => <WeekHeader />);
+.addDecorator(getStory =>
+  <CenterView>
+    {getStory()}
+  </CenterView>
+)
+// .add("Single Date", () =>
+//   <SingleDatePickerExample maxNumberOfDates={1} />
+// )
+.add("Multiple dates", () => <DatesPickerExample/>);
