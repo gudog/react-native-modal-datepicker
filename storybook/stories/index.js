@@ -27,3 +27,8 @@ storiesOf("ModalDatePicker", module)
 //   <SingleDatePickerExample maxNumberOfDates={1} />
 // )
 .add("Multiple dates", () => <DatesPickerExample/>);
+
+storiesOf("CalendarMonthList", module)
+.add("12 months", () => <CalendarMonthList numberOfMonths={12} />)
+.add("24 months", () => <CalendarMonthList numberOfMonths={24} />);
+

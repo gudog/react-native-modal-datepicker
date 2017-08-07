@@ -16,6 +16,13 @@ export default class DatesPickerExample extends Component {
   render() {
     const { dates } = this.state;
 
-    return <ModalDatePicker mode='dates' onValueChange={this.onValueChange} value={dates} />;
+    return (
+      <ModalDatePicker
+        mode="dates"
+        onValueChange={this.onValueChange}
+        value={dates}
+        numberOfMonths={6}
+      />
+    );
   }
 }
