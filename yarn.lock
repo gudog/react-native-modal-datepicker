@@ -5470,6 +5470,10 @@ react-native-compat@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/react-native-compat/-/react-native-compat-0.0.2.tgz#5d7642f3d53ad324a025893be3c66d16a01cda23"
 
+react-native-console-time-polyfill@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/react-native-console-time-polyfill/-/react-native-console-time-polyfill-0.0.6.tgz#7823d86fe83439c74480d1b124a92b1a78571889"
+
 react-native@0.47.0:
   version "0.47.0"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.47.0.tgz#3c17fa67a1e19b5f78d33fabe7fe7096f2ed6841"
