@@ -10,7 +10,6 @@ import type { Modifiers } from "./types";
 const Container = styled.View`
   ${props => {
     return {
-      flex: 1,
       flexDirection: "column",
       paddingVertical: 12,
       ...props.theme.calendarMonthContainer
