@@ -1,10 +1,13 @@
+import React from "react";
 import { AppRegistry } from "react-native";
-import { getStorybookUI, configure } from "@storybook/react-native";
+import DatesPickerExample from "./storybook/stories/DatesPickerExample";
+import CalendarMonthList from "./src/CalendarMonthList";
+import CenterView from "./storybook/stories/CenterView";
 
-// import stories
-configure(() => {
-  require("./storybook/stories");
-}, module);
+// const Example = () => <CenterView><DatesPickerExample /></CenterView>;
+const Example = () => <CalendarMonthList numberOfMonths={24} />;
 
-const StorybookUI = getStorybookUI({ port: 7007, host: "localhost" });
-AppRegistry.registerComponent("RNModalDatePickerExample", () => StorybookUI);
+AppRegistry.registerComponent(
+  "RNModalDatePickerExample",
+  () => Example
+);
