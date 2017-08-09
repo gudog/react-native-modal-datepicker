@@ -1,7 +1,7 @@
 // @flow
 import React from "react";
 import moment from "moment";
-import { ListView } from "react-native";
+import { VirtualizedList } from "react-native";
 import { ThemeProvider } from "styled-components";
 import CalendarMonth from "./CalendarMonth";
 import getCalendarMonthWeeks from "./utils/getCalendarMonthWeeks";
@@ -55,22 +55,15 @@ export default class CalendarMonthList extends React.Component<
     const months = [];
     for (let i = 0; i < numberOfMonths; i++) {
       months.push({
+        key: i,
         month,
         weeks: getCalendarMonthWeeks(month, false)
       });
       month = month.clone().add(1, "month");
     }
 
-    const dataSource = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => {
-        // console.log(`rowHasChanged ${r1.month.format('MMMM')}: ${(r1 !== r2)}`)
-        return r1 !== r2;
-      }
-    });
-
     this.state = {
-      months,
-      dataSource: dataSource.cloneWithRows(months)
+      months
     };
   }
 
@@ -115,37 +108,56 @@ export default class CalendarMonthList extends React.Component<
     }
 
     this.setState({
-      months: newMonths,
-      dataSource: dataSource.cloneWithRows(newMonths)
+      months: newMonths
     });
   }
 
-  renderRow = (rowData: any) => {
+  renderItem = ({ item }) => {
     const { modifiers, onDayPress } = this.props;
 
     return (
       <CalendarMonth
         modifiers={modifiers}
-        weeks={rowData.weeks}
-        month={rowData.month}
+        weeks={item.weeks}
+        month={item.month}
         onDayPress={onDayPress}
       />
     );
   };
 
+  onViewableItemsChanged = ({ viewableItems, changed }) => {
+    console.log("------------viewableItems");
+    viewableItems.map(m =>
+      console.log(m.item.month.format("MMMM YYYY"))
+    );
+    console.log("-----------changed");
+    changed.map(m =>
+      console.log(
+        `${m.item.month.format("MMMM YYYY")} ${m.isViewable}`
+      )
+    );
+  };
+
   render() {
     const { listViewProps, theme } = this.props;
-
     return (
       <ThemeProvider theme={theme}>
-        <ListView
-          dataSource={this.state.dataSource}
-          renderRow={this.renderRow}
-          initialListSize={2}
-          pageSize={2}
-          scrollRenderAheadDistance={200}
+        <VirtualizedList
+          data={this.state.months}
+          getItemCount={(data) => data ? data.length : 0}
+          getItem={(data, index) => data[index]}
+          renderItem={this.renderItem}
+          initialNumToRender={3}
+          maxToRenderPerBatch={3}
+          onEndReachedThreshold={1}
+          windowSize={6}
           showsVerticalScrollIndicator={false}
-          {...listViewProps}
+          //debug={true}
+          //{...listViewProps}
+          //onViewableItemsChanged={this.onViewableItemsChanged}
+          // getItem={(data, index) => data[index]}
+          // getItemCount={data => data.length}
+          // {...listViewProps}sss
         />
       </ThemeProvider>
     );
