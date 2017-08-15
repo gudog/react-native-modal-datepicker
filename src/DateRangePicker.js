@@ -1,28 +1,48 @@
+// @flow
 import React, { PropTypes } from "react";
-import ModalDatePicker from "./ModalDatePicker";
+import CalendarModal from "./CalendarModal";
+import type { PickerProps, DateRange } from "./types";
+
+type State = {
+  startDate: moment$Moment | null,
+  endDate: moment$Moment | null,
+  calendarVisible: boolean
+};
+
 
 export default class DateRangePicker extends React.Component {
-  isBlocked(day) {
+  props: PickerProps<DateRange>;
+  state: State = {
+    startDate: null,
+    endDate: null,
+    calendarVisible: false
+  };
+
+  isBlocked(day: moment$Moment) {
     // const { isDayBlocked, isOutsideRange } = this.props
     // return isDayBlocked(day) || isOutsideRange(day);
     const { isOutsideRange } = this.props;
     return isOutsideRange(day);
   }
 
-  isStartDate(day) {
-    return day.isSame(this.state.startDate, "day");
+  isStartDate(day: moment$Moment) {
+    return (
+      this.state.startDate && day.isSame(this.state.startDate, "day")
+    );
   }
 
-  isInSelectedSpan(day) {
+  isInSelectedSpan(day: moment$Moment) {
     const { startDate, endDate } = this.state;
-    return day.isBetween(startDate, endDate);
+    return startDate && endDate && day.isBetween(startDate, endDate);
   }
 
-  isEndDate(day) {
-    return day.isSame(this.state.endDate, "day");
+  isEndDate(day: moment$Moment) {
+    return (
+      this.state.endDate && day.isSame(this.state.endDate, "day")
+    );
   }
 
-  handleDayPress = day => {
+  handleDayPress = (day: moment$Moment) => {
     let { startDate, endDate } = this.state;
 
     if (!startDate && !endDate) {
@@ -56,6 +76,7 @@ export default class DateRangePicker extends React.Component {
     }
 
     this.setState({ startDate, endDate });
+    this.props.onValueChange({ startDate, endDate });
   };
 
   handleOnDateInputPress = () => {
@@ -63,13 +84,15 @@ export default class DateRangePicker extends React.Component {
   };
 
   handleClosePress = () => {
+    const { value } = this.props;
     this.setState({
       calendarVisible: false,
-      startDate: this.props.startDate,
-      endDate: this.props.endDate
+      startDate: value && value.startDate,
+      endDate: value && value.endDate
     });
   };
 
+  // TODO: fix this, it's fighting with ModalDatePicker.js:96
   handleClearPress = () => {
     this.setState({
       startDate: null,
@@ -80,22 +103,13 @@ export default class DateRangePicker extends React.Component {
   handleSavePress = () => {
     const { startDate, endDate } = this.state;
     this.setState({ calendarVisible: false });
-    this.props.onDatesChange({ startDate, endDate });
+    this.props.onValueChange({ startDate, endDate });
   };
 
   render() {
     const { startDate, endDate } = this.state;
-    const {
-      initialVisibleMonth,
-      numberOfMonths,
-      calendarVisible,
-      monthFormat,
-      phrases,
-      modalProps,
-      listViewProps,
-      calendarModalBackground
-    } = this.props;
-
+    const { calendarVisible, value, ...restProps } = this.props;
+    
     const modifiers = {
       blocked: day => this.isBlocked(day),
       selectedStart: day => this.isStartDate(day),
@@ -106,28 +120,14 @@ export default class DateRangePicker extends React.Component {
     return (
       <CalendarModal
         mode="dateRange"
-        startDate={startDate}
-        endDate={endDate}
-        initialVisibleMonth={initialVisibleMonth}
-        numberOfMonths={numberOfMonths}
-        monthFormat={monthFormat}
-        phrases={phrases}
-        modifiers={modifiers}
         visible={calendarVisible}
-        // Callbacks
+        modifiers={modifiers}
         onDayPress={this.handleDayPress}
         onClearPress={this.handleClearPress}
-        onClosePress={this.handleClosePress}
-        onSavePress={this.handleSavePress}
-        // Custom Props
-        modalProps={modalProps}
-        listViewProps={listViewProps}
-        // Background
-        background={calendarModalBackground}
+        selectedDates={{ startDate, endDate }}
+        {...restProps}
       />
     );
   }
 }
 
-// DateRangePicker.propTypes = propTypes;
-// DateRangePicker.defaultProps = defaultProps;

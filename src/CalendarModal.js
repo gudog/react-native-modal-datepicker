@@ -188,7 +188,7 @@ export default class CalendarModal extends React.Component<
 
   constructor(props: Props) {
     super(props);
-
+    
     this.state = {
       currentMonth: props.initialVisibleMonth()
     };

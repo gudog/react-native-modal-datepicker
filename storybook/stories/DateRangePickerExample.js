@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { DateRangePicker } from "./../../src";
+import { ModalDatePicker } from "./../../src";
 
 const theme = {
   dateInputContainer: {
@@ -25,7 +25,8 @@ export default class DateRangePickerExample extends Component {
     };
   }
 
-  onDatesChange = dates => {
+  onValueChange = dates => {
+    console.log(dates)
     this.setState({ ...dates });
   };
 
@@ -33,11 +34,10 @@ export default class DateRangePickerExample extends Component {
     const { startDate, endDate } = this.state;
 
     return (
-      <DateRangePicker
-        onDatesChange={this.onDatesChange}
-        startDate={startDate}
-        endDate={endDate}
-        theme={theme}
+      <ModalDatePicker
+        mode="dateRange"
+        onValueChange={this.onValueChange}
+        value={{ startDate, endDate }}
       />
     );
   }

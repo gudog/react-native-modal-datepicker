@@ -7,14 +7,14 @@ import CalendarMonth from "./CalendarMonth";
 import getCalendarMonthWeeks from "./utils/getCalendarMonthWeeks";
 
 import isMonthIncluded from "./utils/isMonthIncluded";
-import type { DatePickerMode, InputValue, ThemeType } from "./types";
+import type { DatePickerMode, InputValue, ThemeType, Modifiers } from "./types";
 
 type DefaultProps = {
   mode: DatePickerMode,
   initialMonth: moment$Moment,
   numberOfMonths: number,
   blockedDates: Array<moment$Moment>,
-  modifiers: Object,
+  modifiers: Modifiers,
   theme: ThemeType
 };
 
@@ -26,7 +26,6 @@ type Props = DefaultProps & {
 
 type State = {
   months: Array<any>,
-  dataSource: ListView.DataSource
 };
 
 export default class CalendarMonthList extends React.Component<
@@ -71,7 +70,7 @@ export default class CalendarMonthList extends React.Component<
     const { selectedDates } = this.props;
     const { mode, selectedDates: nextSelectedDates } = nextProps;
 
-    const { months, dataSource } = this.state;
+    const { months } = this.state;
     let newMonths;
 
     if (mode === "dates") {
@@ -87,24 +86,24 @@ export default class CalendarMonthList extends React.Component<
         return monthRow; // keep the same reference
       });
     } else if (mode === "dateRange") {
-      // // Tag all the months that need to be re-rendered
-      // const { startDate, endDate } = selectedDates;
-      // const { nextStartDate, nextEndDate } = nextSelectedDates;
-      // newMonths = months.map(monthRow => {
-      //   const { month } = monthRow;
-      //   if (
-      //     month.isSame(nextStartDate, "month") ||
-      //     month.isSame(nextEndDate, "month") ||
-      //     month.isBetween(nextStartDate, nextEndDate, "month") ||
-      //     month.isSame(startDate, "month") ||
-      //     month.isSame(endDate, "month") ||
-      //     month.isBetween(startDate, endDate, "month")
-      //   ) {
-      //     // console.log(`flagging ${month.format('MMMM Y')} as dirty`)
-      //     return Object.assign({}, monthRow); // Change the reference to object
-      //   }
-      //   return monthRow; // keep the same reference
-      // });
+      // Tag all the months that need to be re-rendered
+      const { startDate, endDate } = selectedDates;
+      const { nextStartDate, nextEndDate } = nextSelectedDates;
+      newMonths = months.map(monthRow => {
+        const { month } = monthRow;
+        if (
+          month.isSame(nextStartDate, "month") ||
+          month.isSame(nextEndDate, "month") ||
+          month.isBetween(nextStartDate, nextEndDate, "month") ||
+          month.isSame(startDate, "month") ||
+          month.isSame(endDate, "month") ||
+          month.isBetween(startDate, endDate, "month")
+        ) {
+          // console.log(`flagging ${month.format('MMMM Y')} as dirty`)
+          return Object.assign({}, monthRow); // Change the reference to object
+        }
+        return monthRow; // keep the same reference
+      });
     }
 
     this.setState({
@@ -114,7 +113,6 @@ export default class CalendarMonthList extends React.Component<
 
   renderItem = ({ item }) => {
     const { modifiers, onDayPress } = this.props;
-
     return (
       <CalendarMonth
         modifiers={modifiers}
@@ -125,21 +123,22 @@ export default class CalendarMonthList extends React.Component<
     );
   };
 
-  onViewableItemsChanged = ({ viewableItems, changed }) => {
-    console.log("------------viewableItems");
-    viewableItems.map(m =>
-      console.log(m.item.month.format("MMMM YYYY"))
-    );
-    console.log("-----------changed");
-    changed.map(m =>
-      console.log(
-        `${m.item.month.format("MMMM YYYY")} ${m.isViewable}`
-      )
-    );
-  };
+
+  // onViewableItemsChanged = ({ viewableItems, changed }) => {
+  //   console.log("------------viewableItems");
+  //   viewableItems.map(m =>
+  //     console.log(m.item.month.format("MMMM YYYY"))
+  //   );
+  //   console.log("-----------changed");
+  //   changed.map(m =>
+  //     console.log(
+  //       `${m.item.month.format("MMMM YYYY")} ${m.isViewable}`
+  //     )
+  //   );
+  // };
 
   render() {
-    const { listViewProps, theme } = this.props;
+    const { theme } = this.props;
     return (
       <ThemeProvider theme={theme}>
         <VirtualizedList
