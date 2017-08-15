@@ -76,34 +76,6 @@ export default class DateRangePicker extends React.Component {
     }
 
     this.setState({ startDate, endDate });
-    this.props.onValueChange({ startDate, endDate });
-  };
-
-  handleOnDateInputPress = () => {
-    this.setState({ calendarVisible: true });
-  };
-
-  handleClosePress = () => {
-    const { value } = this.props;
-    this.setState({
-      calendarVisible: false,
-      startDate: value && value.startDate,
-      endDate: value && value.endDate
-    });
-  };
-
-  // TODO: fix this, it's fighting with ModalDatePicker.js:96
-  handleClearPress = () => {
-    this.setState({
-      startDate: null,
-      endDate: null
-    });
-  };
-
-  handleSavePress = () => {
-    const { startDate, endDate } = this.state;
-    this.setState({ calendarVisible: false });
-    this.props.onValueChange({ startDate, endDate });
   };
 
   render() {
@@ -123,7 +95,6 @@ export default class DateRangePicker extends React.Component {
         visible={calendarVisible}
         modifiers={modifiers}
         onDayPress={this.handleDayPress}
-        onClearPress={this.handleClearPress}
         selectedDates={{ startDate, endDate }}
         {...restProps}
       />
