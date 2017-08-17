@@ -1,5 +1,4 @@
 // @flow
-import Perf from "ReactPerf";
 import React from "react";
 import styled from "styled-components/native";
 import moment from "moment";
@@ -32,22 +31,13 @@ const Week = styled.View`
     ...props.theme.calendarMonthWeek
   })}
 `;
-const DayContainer = styled.View`
-  ${{
-    flex: 1,
-    alignSelf: "stretch",
-    // Hack to avoid this issue
-    // https://github.com/facebook/react-native/issues/10539
-    marginLeft: -1,
-    marginRight: -1
-  }}
-`;
 
 type Props = {
   month: moment$Moment,
   weeks: Array<any>, // TODO: change this
   onDayPress?: moment$Moment => any,
   modifiers: Modifiers,
+  refresh: boolean,
 
   // i18n
   monthFormat: string
@@ -55,7 +45,7 @@ type Props = {
 
 const defaultModifiers = getDefaultModifiers();
 
-export default class CalendarMonth extends React.PureComponent<
+export default class CalendarMonth extends React.Component<
   any,
   Props,
   void
@@ -63,23 +53,14 @@ export default class CalendarMonth extends React.PureComponent<
   static defaultProps = {
     month: moment(),
     onDayPress() {},
+    refresh: false,
 
     // i18n
     monthFormat: "MMMM YYYY" // english locale
   };
 
-  componentDidMount() {
-    // We have to push it to the next tick otherwise React Native would have
-    // problems with the WorkerPerformance
-    setTimeout(() => {
-      Perf.start();
-
-      // Some arbitrary time for metrics
-      setTimeout(() => {
-        Perf.stop();
-        Perf.printWasted();
-      }, 5000);
-    }, 0);
+  shouldComponentUpdate(nextProps: Props) {
+    return nextProps.refresh === true;
   }
 
   render() {
@@ -92,8 +73,8 @@ export default class CalendarMonth extends React.PureComponent<
     } = this.props;
 
     const monthTitle = month.format(monthFormat);
-    
 
+    console.log(`rendering ${monthTitle}`)
     return (
       <Container>
         <MonthTitle>{monthTitle}</MonthTitle>
@@ -107,14 +88,12 @@ export default class CalendarMonth extends React.PureComponent<
               );
 
               return (
-                <DayContainer key={j}>
-                  {day &&
-                    <CalendarDay
-                      day={day}
-                      modifiers={computedModifiers}
-                      onDayPress={onDayPress}
-                    />}
-                </DayContainer>
+                <CalendarDay
+                  key={j}
+                  day={day}
+                  modifiers={computedModifiers}
+                  onDayPress={onDayPress}
+                />
               );
             })}
           </Week>

@@ -1,10 +1,11 @@
 // @flow
 import React from "react";
+import { View, TouchableWithoutFeedback } from "react-native";
 import styled from "styled-components/native";
-import { TouchableWithoutFeedback } from "react-native";
 import type { ComputedModifiers, ThemeType } from "./types";
 import getModifiersStylesFromTheme from "./utils/getModifiersStylesFromTheme";
 import getDefaultStylesFromTheme from "./utils/getDefaultStylesFromTheme";
+import eqSet from "./utils/eqSet";
 
 // Receives props for a CalendarDay and returns
 // true if it is within a selection span
@@ -23,6 +24,17 @@ type Props = DefaultProps & {
   day: moment$Moment,
   theme?: ThemeType
 };
+
+const Wrapper = styled.View`
+${{
+  flex: 1,
+  alignSelf: "stretch",
+  // Hack to avoid this issue
+  // https://github.com/facebook/react-native/issues/10539
+  marginLeft: -1,
+  marginRight: -1
+}}
+`;
 
 const Container = styled.View`
   ${({ theme }: Props) => ({
@@ -72,7 +84,6 @@ const Text = styled.Text`
     paddingVertical: 13,
     fontSize: 16,
     zIndex: 2,
-    backgroundColor: "transparent",
     ...getDefaultStylesFromTheme(theme, ["calendarDay", "text"])
   })}
   ${({ modifiers }: Props) =>
@@ -167,7 +178,7 @@ const BlockedMarker = styled.Text`
   })}
 `;
 
-export default class CalendarDay extends React.PureComponent<
+export default class CalendarDay extends React.Component<
   DefaultProps,
   Props,
   void
@@ -177,15 +188,17 @@ export default class CalendarDay extends React.PureComponent<
     onDayPress: () => {}
   };
 
+  shouldComponentUpdate(nextProps: Props) {
+    return !eqSet(this.props.modifiers, nextProps.modifiers);
+  }
+
   isBlocked = () => this.props.modifiers.has("blocked");
   isSelected = () => this.props.modifiers.has("selected");
 
   renderTodayMarker() {
     const { modifiers } = this.props;
     if (modifiers.has("today")) {
-      return (
-        <TodayMarker modifiers={modifiers}>.</TodayMarker>
-      );
+      return <TodayMarker modifiers={modifiers}>.</TodayMarker>;
     }
     return null;
   }
@@ -194,7 +207,9 @@ export default class CalendarDay extends React.PureComponent<
     if (this.isBlocked()) {
       return (
         <BlockedMarkerContainer modifiers={this.props.modifiers}>
-          <BlockedMarker modifiers={this.props.modifiers}>|</BlockedMarker>
+          <BlockedMarker modifiers={this.props.modifiers}>
+            |
+          </BlockedMarker>
         </BlockedMarkerContainer>
       );
     }
@@ -205,18 +220,21 @@ export default class CalendarDay extends React.PureComponent<
     const { day, onDayPress, modifiers } = this.props;
 
     return (
-      <TouchableWithoutFeedback
-        onPress={() => !this.isBlocked() && onDayPress(day)}
-        activeOpacity={0.5}
-      >
-        <Container modifiers={modifiers}>
-          <Text modifiers={modifiers}>
-            {day.format("D")}
-          </Text>
-          {this.renderTodayMarker()}
-          {this.renderBlockedMarker()}
-        </Container>
-      </TouchableWithoutFeedback>
+      <Wrapper>
+        {day &&
+          <TouchableWithoutFeedback onPress={() => onDayPress(day)}>
+            {/* Make sure Touchable fills the whole space */}
+            <View style={{ flex: 1 }}>
+              <Container modifiers={modifiers}>
+                <Text modifiers={modifiers}>
+                  {day.format("D")}
+                </Text>
+                {this.renderTodayMarker()}
+                {this.renderBlockedMarker()}
+              </Container>
+            </View>
+          </TouchableWithoutFeedback>}
+      </Wrapper>
     );
   }
 }

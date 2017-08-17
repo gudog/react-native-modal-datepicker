@@ -1,28 +1,47 @@
 // @flow
 import React from "react";
 import moment from "moment";
+import Perf from "ReactPerf";
 
 import type { PickerProps, DatesArray } from "./types";
 import CalendarMonthList from "./CalendarMonthList";
 import isDayIncluded from "./utils/isDayIncluded";
 import sortDates from "./utils/sortDates";
 
-export default class DatesPicker extends React.PureComponent {
+function isPast(day: moment$Moment) {
+  return day.isBefore(moment(), "day");
+}
+
+export default class DatesPicker extends React.Component {
   props: PickerProps<DatesArray>;
 
-  isBlocked(day: moment) {
-    // const { isDayBlocked, isOutsideRange } = this.props
-    // return isDayBlocked(day) || isOutsideRange(day);
-    const { isOutsideRange } = this.props;
-    return isOutsideRange(day);
+  constructor(props) {
+    super(props);
+
+    this.combinedModifiers = Object.assign({}, props.modifiers, {
+      selected: (day: moment$Moment) => this.isSelected(day)
+    });
   }
 
-  isSelected(day: moment) {
+  isSelected(day: moment$Moment) {
     const { value: dates } = this.props;
     return isDayIncluded(day, dates);
   }
 
   handleDayPress = (day: moment) => {
+    // Perf.start();
+
+    // // Some arbitrary time for metrics
+    // setTimeout(() => {
+    //   Perf.stop();
+    //   Perf.printWasted();
+    //   Perf.printExclusive();
+    // }, 5000);
+
+    if (isPast(day)) {
+      return;
+    }
+
     const {
       value: dates,
       maxNumberOfDates,
@@ -49,11 +68,6 @@ export default class DatesPicker extends React.PureComponent {
       monthFormat
     } = this.props;
 
-    const modifiers = {
-      blocked: (day: moment$Moment) => this.isBlocked(day),
-      selected: (day: moment$Moment) => this.isSelected(day)
-    };
-
     return (
       <CalendarMonthList
         mode={mode}
@@ -61,7 +75,7 @@ export default class DatesPicker extends React.PureComponent {
         initialMonth={initialMonth}
         onDayPress={this.handleDayPress}
         monthFormat={monthFormat}
-        modifiers={modifiers}
+        modifiers={this.combinedModifiers}
         selectedDates={value}
       />
     );

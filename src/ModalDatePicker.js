@@ -28,7 +28,7 @@ export default class ModalDatePicker extends React.Component {
     maxNumberOfDates: 100,
     initialMonth: moment(),
     value: [],
-    isOutsideRange: day => day && !day.isSameOrAfter(moment(), "day"),
+    isOutsideRange: (day: moment$Moment) => day && !day.isSameOrAfter(moment(), "day"),
     displayFormat: () => moment.localeData().longDateFormat("L"),
     onValueChange: () => {},
     monthFormat: "MMMM YYYY"

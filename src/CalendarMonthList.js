@@ -1,7 +1,8 @@
 // @flow
 import React from "react";
+
 import moment from "moment";
-import { VirtualizedList } from "react-native";
+import { FlatList } from "react-native";
 import { ThemeProvider } from "styled-components";
 import CalendarMonth from "./CalendarMonth";
 import getCalendarMonthWeeks from "./utils/getCalendarMonthWeeks";
@@ -9,25 +10,31 @@ import getCalendarMonthWeeks from "./utils/getCalendarMonthWeeks";
 import isMonthIncluded from "./utils/isMonthIncluded";
 import type { CalendarMonthListProps } from "./types";
 
-
-type Props = CalendarMonthListProps
+type Props = CalendarMonthListProps;
 
 type State = {
-  months: Array<any>,
+  months: Array<any>
 };
 
-export default class CalendarMonthList extends React.Component {
+const defaultProps = {
+  mode: "dates",
+  initialMonth: moment(),
+  numberOfMonths: 24,
+  // selectedDates: null,
+  modifiers: {},
+  theme: {}
+};
+type DefaultProps = typeof defaultProps;
+
+export default class CalendarMonthList extends React.Component<
+  DefaultProps,
+  Props,
+  State
+> {
   props: Props;
   state: State;
 
-  static defaultProps = {
-    mode: "dates",
-    initialMonth: moment(),
-    numberOfMonths: 24,
-    // selectedDates: null,
-    modifiers: {},
-    theme: {}
-  };
+  static defaultProps: DefaultProps = defaultProps;
 
   constructor(props: Props) {
     super(props);
@@ -49,13 +56,14 @@ export default class CalendarMonthList extends React.Component {
     };
   }
 
+
   componentWillReceiveProps(nextProps: Props) {
     const { selectedDates } = this.props;
     const { mode, selectedDates: nextSelectedDates } = nextProps;
 
     const { months } = this.state;
     let newMonths;
-
+    
     if (mode === "dates") {
       newMonths = months.map(monthRow => {
         const { month } = monthRow;
@@ -63,8 +71,9 @@ export default class CalendarMonthList extends React.Component {
           isMonthIncluded(month, nextSelectedDates) ||
           isMonthIncluded(month, selectedDates)
         ) {
-          // console.log(`flagging ${month.format('MMMM Y')} as dirty`)
-          return Object.assign({}, monthRow); // Change the reference to object
+          monthRow.refresh = true;
+        } else {
+          monthRow.refresh = false;
         }
         return monthRow; // keep the same reference
       });
@@ -83,7 +92,9 @@ export default class CalendarMonthList extends React.Component {
           month.isBetween(startDate, endDate, "month")
         ) {
           // console.log(`flagging ${month.format('MMMM Y')} as dirty`)
-          return Object.assign({}, monthRow); // Change the reference to object
+          monthRow.refresh = true;
+        } else {
+          monthRow.refresh = false;
         }
         return monthRow; // keep the same reference
       });
@@ -95,17 +106,19 @@ export default class CalendarMonthList extends React.Component {
   }
 
   renderItem = ({ item }) => {
-    const { modifiers, onDayPress } = this.props;
+    const { modifiers, onDayPress, monthFormat } = this.props;
+    
     return (
       <CalendarMonth
         modifiers={modifiers}
         weeks={item.weeks}
         month={item.month}
+        refresh={item.refresh}
         onDayPress={onDayPress}
+        monthFormat={monthFormat}
       />
     );
   };
-
 
   // onViewableItemsChanged = ({ viewableItems, changed }) => {
   //   console.log("------------viewableItems");
@@ -122,21 +135,22 @@ export default class CalendarMonthList extends React.Component {
 
   render() {
     const { theme } = this.props;
+    
     return (
       <ThemeProvider theme={theme}>
-        <VirtualizedList
+        <FlatList
           data={this.state.months}
-          getItemCount={(data) => data ? data.length : 0}
-          getItem={(data, index) => data[index]}
+          //getItemCount={data => (data ? data.length : 0)}
+          //getItem={(data, index) => data[index]}
           renderItem={this.renderItem}
           initialNumToRender={3}
           maxToRenderPerBatch={3}
           onEndReachedThreshold={1}
           windowSize={6}
           showsVerticalScrollIndicator={false}
-          //debug={true}
-          //{...listViewProps}
-          //onViewableItemsChanged={this.onViewableItemsChanged}
+          // debug={true}
+          // {...listViewProps}
+          // onViewableItemsChanged={this.onViewableItemsChanged}
           // getItem={(data, index) => data[index]}
           // getItemCount={data => data.length}
           // {...listViewProps}sss

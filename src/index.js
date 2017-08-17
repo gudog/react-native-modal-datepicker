@@ -3,5 +3,6 @@ import DateRangePicker from "./DateRangePicker";
 import CalendarMonthList from "./CalendarMonthList";
 import WeekHeader from "./WeekHeader";
 import CalendarDay from "./CalendarDay";
+import DatesPicker from "./DatesPicker";
 
-export { ModalDatePicker, DateRangePicker, CalendarMonthList, WeekHeader, CalendarDay };
+export { ModalDatePicker, DateRangePicker, DatesPicker, CalendarMonthList, WeekHeader, CalendarDay };

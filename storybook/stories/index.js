@@ -17,6 +17,7 @@ import CenterView from "./CenterView";
 import SingleDatePickerExample from "./SingleDatePickerExample";
 import DatesPickerExample from "./DatesPickerExample";
 import DateRangePickerExample from "./DateRangePickerExample";
+import AvailabilityCalendar from "./AvailabilityCalendar";
 import {
   ModalDatePicker,
   CalendarMonthList,
@@ -75,6 +76,13 @@ const modifiers = {
   booked: day => datesList.some(day2 => day.isSame(day2.clone().add(1, "day"), "day"))
 };
 
+
+storiesOf("CalendarMonthList", module)
+.add("AvailabilityCalendar", () => <AvailabilityCalendar />)
+.add("12 months", () => <CalendarMonthList numberOfMonths={12} theme={theme} modifiers={modifiers} />)
+.add("24 months", () => <CalendarMonthList numberOfMonths={24} />);
+
+
 storiesOf("ModalDatePicker", module)
   .addDecorator(getStory =>
     <CenterView>
@@ -88,6 +96,3 @@ storiesOf("ModalDatePicker", module)
   .add("Multiple dates", () => <DatesPickerExample />);
 
 
-storiesOf("CalendarMonthList", module)
-.add("12 months", () => <CalendarMonthList numberOfMonths={12} theme={theme} modifiers={modifiers} />)
-.add("24 months", () => <CalendarMonthList numberOfMonths={24} />);
