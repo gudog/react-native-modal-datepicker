@@ -1,6 +1,7 @@
 // @flow
 import React from "react";
 import styled from "styled-components/native";
+import { path } from "ramda";
 import moment from "moment";
 
 import CalendarDay from "./CalendarDay";
@@ -9,27 +10,31 @@ import getComputedModifiers from "./utils/getComputedModifiers";
 
 import type { Modifiers } from "./types";
 
+const getStylesFromTheme = (element: string, theme): any => {
+  return path(["calendarMonth", element], theme);
+};
+
 const Container = styled.View`
-  ${props => ({
+  ${({ theme }) => ({
     flexDirection: "column",
     paddingVertical: 12,
-    ...props.theme.calendarMonthContainer
-  })}
+    ...getStylesFromTheme("container", theme)
+  })};
 `;
 const MonthTitle = styled.Text`
-  ${props => ({
+  ${({ theme }) => ({
     fontWeight: "bold",
     fontSize: 16,
     paddingHorizontal: 12,
-    ...props.theme.calendarMonthTitle
-  })}
+    ...getStylesFromTheme("title", theme)
+  })};
 `;
 const Week = styled.View`
-  ${props => ({
+  ${({ theme }) => ({
     flexDirection: "row",
     alignItems: "stretch",
-    ...props.theme.calendarMonthWeek
-  })}
+    ...getStylesFromTheme("week", theme)
+  })};
 `;
 
 type Props = {
@@ -74,10 +79,11 @@ export default class CalendarMonth extends React.Component<
 
     const monthTitle = month.format(monthFormat);
 
-    console.log(`rendering ${monthTitle}`)
     return (
       <Container>
-        <MonthTitle>{monthTitle}</MonthTitle>
+        <MonthTitle>
+          {monthTitle}
+        </MonthTitle>
         {weeks.map((week, i) =>
           <Week key={i}>
             {week.map((day, j) => {

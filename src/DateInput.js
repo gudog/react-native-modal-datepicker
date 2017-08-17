@@ -1,26 +1,31 @@
 // @flow
 import React from "react";
 import styled from "styled-components/native";
+import { path } from "ramda";
 import { TouchableOpacity } from "react-native";
 
 import type { DateInputProps } from "./types";
 
+const getStylesFromTheme = (element: string, theme): any => {
+  return path(["dateInput", element], theme);
+};
+
 const Container = styled.View`
-  ${{
+  ${({ theme }) => ({
     backgroundColor: "#eee",
     overflow: "hidden",
     borderRadius: 4,
     paddingVertical: 5,
-    paddingHorizontal: 10
-  }}
-  ${props => props.theme.dateInputContainer}
+    paddingHorizontal: 10,
+    ...getStylesFromTheme("container", theme)
+  })};
 `;
 
 const Text = styled.Text`
-  ${{
-    textAlign: "center"
-  }}
-  ${props => props.theme.dateInputText}
+  ${({ theme }) => ({
+    textAlign: "center",
+    ...getStylesFromTheme("text", theme)
+  })};
 `;
 
 type Props = DateInputProps;

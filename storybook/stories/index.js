@@ -36,7 +36,7 @@ const theme: ThemeType = {
       // custom modifeirs
       booked: {
         backgroundColor: "orange"
-      },
+      }
     },
     text: {
       default: {
@@ -57,6 +57,11 @@ const theme: ThemeType = {
         color: "red"
       }
     }
+  },
+  calendarModal: {
+    container: {
+      backgroundColor: "red"
+    }
   }
 };
 
@@ -73,15 +78,22 @@ const datesList = [
 
 const modifiers = {
   selected: day => datesList.some(day2 => day.isSame(day2, "day")),
-  booked: day => datesList.some(day2 => day.isSame(day2.clone().add(1, "day"), "day"))
+  booked: day =>
+    datesList.some(day2 =>
+      day.isSame(day2.clone().add(1, "day"), "day")
+    )
 };
 
-
 storiesOf("CalendarMonthList", module)
-.add("AvailabilityCalendar", () => <AvailabilityCalendar />)
-.add("12 months", () => <CalendarMonthList numberOfMonths={12} theme={theme} modifiers={modifiers} />)
-.add("24 months", () => <CalendarMonthList numberOfMonths={24} />);
-
+  .add("AvailabilityCalendar", () => <AvailabilityCalendar />)
+  .add("12 months", () =>
+    <CalendarMonthList
+      numberOfMonths={12}
+      theme={theme}
+      modifiers={modifiers}
+    />
+  )
+  .add("24 months", () => <CalendarMonthList numberOfMonths={24} />);
 
 storiesOf("ModalDatePicker", module)
   .addDecorator(getStory =>
@@ -94,5 +106,3 @@ storiesOf("ModalDatePicker", module)
   // )
   .add("Date Range", () => <DateRangePickerExample />)
   .add("Multiple dates", () => <DatesPickerExample />);
-
-

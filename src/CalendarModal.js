@@ -2,6 +2,7 @@
 
 import React, { createElement } from "react";
 import { View, Modal, TouchableOpacity } from "react-native";
+import { path } from "ramda";
 import styled from "styled-components/native";
 
 import DatesPicker from "./DatesPicker";
@@ -14,8 +15,12 @@ import type {
   InputValue
 } from "./types";
 
+const getStylesFromTheme = (element: string, theme): any => {
+  return path(["calendarModal", element], theme);
+};
+
 const Container = styled.View`
-  ${props => {
+  ${({ theme }) => {
     return {
       position: "absolute",
       top: 20,
@@ -23,9 +28,9 @@ const Container = styled.View`
       left: 0,
       right: 0,
       flexDirection: "column",
-      ...props.theme.calendarModalContainer
+      ...getStylesFromTheme("container", theme)
     };
-  }}
+  }};
 `;
 
 const TopActions = styled.View`
@@ -33,52 +38,52 @@ const TopActions = styled.View`
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center"
-  }}
+  }};
 `;
 
 const CloseButtonText = styled.Text`
-  ${props => {
+  ${({ theme }) => {
     return {
       fontSize: 20,
       paddingHorizontal: 10,
       paddingVertical: 10,
-      ...props.theme.calendarModalCloseButtonText
+      ...getStylesFromTheme("closeButtonText", theme)
     };
-  }}
+  }};
 `;
 const ResetButtonText = styled.Text`
-  ${props => {
+  ${({ theme }) => {
     return {
       fontSize: 13,
       paddingHorizontal: 10,
       paddingVertical: 10,
-      ...props.theme.calendarModalResetButtonText
+      ...getStylesFromTheme("resetButtonText", theme)
     };
-  }}
+  }};
 `;
 
-const SelectedDates = styled.View`
-  ${props => {
+const SelectedDatesContainer = styled.View`
+  ${({ theme }) => {
     return {
       paddingHorizontal: 20,
       height: 110,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-around",
-      ...props.theme.calendarModalSelectedDates
+      ...getStylesFromTheme("selectedDatesContainer", theme)
     };
-  }}
+  }};
 `;
 
 const SelectedDateText = styled.Text`
-  ${props => {
+  ${({ theme }) => {
     return {
       fontSize: 24,
       fontWeight: "200",
       textAlign: "center",
       flex: 1,
       alignSelf: "center",
-      ...props.theme.calendarModalSelectedDateText
+      ...getStylesFromTheme("selectedDateText", theme)
     };
   }}
   ${props =>
@@ -94,7 +99,7 @@ const SelectedDateText = styled.Text`
 `;
 
 const RangeSeparator = styled.Text`
-  ${props => {
+  ${({ theme }) => {
     return {
       textAlign: "center",
       fontSize: "60",
@@ -102,41 +107,41 @@ const RangeSeparator = styled.Text`
       zIndex: 2,
       fontWeight: "100",
       color: "black",
-      ...props.theme.calendarModalRangeSeparator
+      ...getStylesFromTheme("rangeSeparator", theme)
     };
-  }}
+  }};
 `;
 const Footer = styled.View`
-  ${props => {
+  ${({ theme }) => {
     return {
       paddingVertical: 10,
       borderTopWidth: 1,
       borderTopColor: "#ccc",
-      ...props.theme.calendarModalFooter
+      ...getStylesFromTheme("footer", theme)
     };
-  }}
+  }};
 `;
 
 const FooterButton = styled.TouchableOpacity`
-  ${props => {
+  ${({ theme }) => {
     return {
       backgroundColor: "#ccc",
       borderRadius: 4,
       overflow: "hidden",
       marginHorizontal: 20,
       paddingVertical: 10,
-      ...props.theme.calendarModalFooterButton
+      ...getStylesFromTheme("footerButton", theme)
     };
-  }}
+  }};
 `;
 
 const FooterText = styled.Text`
-  ${props => {
+  ${({ theme }) => {
     return {
       textAlign: "center",
-      ...props.theme.calendarModalFooterText
+      ...getStylesFromTheme("footerText", theme)
     };
-  }}
+  }};
 `;
 
 type Props = CalendarModalProps;
@@ -154,7 +159,7 @@ export default class CalendarModal extends React.Component {
     numberOfMonths: 3,
     background: null,
     onDayPress() {},
-    onClearPress() {},
+    onClearPress() {}
   };
 
   constructor(props: CalendarModalProps) {
@@ -173,16 +178,16 @@ export default class CalendarModal extends React.Component {
 
   handleValueChange = (value: InputValue) => {
     this.setState({ value });
-  }
+  };
 
   handleClearPress = () => {
     this.setState({ value: null });
-  }
+  };
 
   handleSavePress = () => {
     this.props.onValueChange(this.state.value);
     this.props.onClosePress();
-  }
+  };
 
   renderSelectedDates() {
     const { value } = this.state;
@@ -236,9 +241,8 @@ export default class CalendarModal extends React.Component {
   renderPicker() {
     const { value } = this.state;
 
-    const Picker = this.props.mode === "dates"
-      ? DatesPicker
-      : DateRangePicker;
+    const Picker =
+      this.props.mode === "dates" ? DatesPicker : DateRangePicker;
 
     return createElement(Picker, {
       ...this.props,
@@ -253,7 +257,9 @@ export default class CalendarModal extends React.Component {
     return (
       <Footer>
         <FooterButton onPress={this.handleSavePress}>
-          <FooterText>{phrases.save}</FooterText>
+          <FooterText>
+            {phrases.save}
+          </FooterText>
         </FooterButton>
       </Footer>
     );
@@ -283,7 +289,9 @@ export default class CalendarModal extends React.Component {
             </TouchableOpacity>
           </TopActions>
 
-          <SelectedDates>{this.renderSelectedDates()}</SelectedDates>
+          <SelectedDatesContainer>
+            {this.renderSelectedDates()}
+          </SelectedDatesContainer>
 
           <WeekHeader />
 

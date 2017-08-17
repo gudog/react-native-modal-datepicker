@@ -29,6 +29,30 @@ export type ThemeType = {|
     todayMarker?: CalendarDayThemeStyles,
     blockedMarkerContainer?: CalendarDayThemeStyles,
     blockedMarker?: CalendarDayThemeStyles
+  |},
+  calendarModal?: {|
+    container?: Object,
+    closeButtonText?: Object,
+    resetButtonText?: Object,
+    selectedDatesContainer?: Object,
+    selectedDateText?: Object,
+    rangeSeparator?: Object,
+    footer?: Object,
+    footerButton?: Object,
+    footerText?: Object,
+  |},
+  calendarMonth?: {|
+    container?: Object,
+    title?: Object,
+    week?: Object
+  |},
+  weekHeader?: {|
+    container?: Object,
+    dayText?: Object
+  |},
+  dateInput?: {|
+    container?: Object,
+    text?: Object
   |}
 |};
 
