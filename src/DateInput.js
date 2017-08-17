@@ -3,7 +3,7 @@ import React from "react";
 import styled from "styled-components/native";
 import { TouchableOpacity } from "react-native";
 
-import type { DatePickerMode, PhrasesType } from "./types";
+import type { DateInputProps } from "./types";
 
 const Container = styled.View`
   ${{
@@ -23,13 +23,7 @@ const Text = styled.Text`
   ${props => props.theme.dateInputText}
 `;
 
-type Props = {
-  onPress: Function,
-  mode: DatePickerMode,
-  value: any, // TODO: fix this
-  maxNumberOfDates: number,
-  phrases: PhrasesType
-};
+type Props = DateInputProps;
 
 export default class DateInput extends React.PureComponent<void, Props, void> {
   renderSelectedDates() {

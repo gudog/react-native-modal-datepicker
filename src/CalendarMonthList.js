@@ -7,32 +7,16 @@ import CalendarMonth from "./CalendarMonth";
 import getCalendarMonthWeeks from "./utils/getCalendarMonthWeeks";
 
 import isMonthIncluded from "./utils/isMonthIncluded";
-import type { DatePickerMode, InputValue, ThemeType, Modifiers } from "./types";
+import type { CalendarMonthListProps } from "./types";
 
-type DefaultProps = {
-  mode: DatePickerMode,
-  initialMonth: moment$Moment,
-  numberOfMonths: number,
-  blockedDates: Array<moment$Moment>,
-  modifiers: Modifiers,
-  theme: ThemeType
-};
 
-type Props = DefaultProps & {
-  selectedDates: InputValue,
-  onDayPress: ?(moment$Moment) => any,
-  listViewProps?: Object
-};
+type Props = CalendarMonthListProps
 
 type State = {
   months: Array<any>,
 };
 
-export default class CalendarMonthList extends React.Component<
-  DefaultProps,
-  Props,
-  State
-> {
+export default class CalendarMonthList extends React.Component {
   props: Props;
   state: State;
 
@@ -41,7 +25,6 @@ export default class CalendarMonthList extends React.Component<
     initialMonth: moment(),
     numberOfMonths: 24,
     // selectedDates: null,
-    blockedDates: [],
     modifiers: {},
     theme: {}
   };

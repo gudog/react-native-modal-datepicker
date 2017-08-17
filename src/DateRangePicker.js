@@ -1,22 +1,10 @@
 // @flow
 import React, { PropTypes } from "react";
-import CalendarModal from "./CalendarModal";
+import CalendarMonthList from "./CalendarMonthList";
 import type { PickerProps, DateRange } from "./types";
 
-type State = {
-  startDate: moment$Moment | null,
-  endDate: moment$Moment | null,
-  calendarVisible: boolean
-};
-
-
-export default class DateRangePicker extends React.Component {
+export default class DateRangePicker extends React.PureComponent {
   props: PickerProps<DateRange>;
-  state: State = {
-    startDate: null,
-    endDate: null,
-    calendarVisible: false
-  };
 
   isBlocked(day: moment$Moment) {
     // const { isDayBlocked, isOutsideRange } = this.props
@@ -26,24 +14,32 @@ export default class DateRangePicker extends React.Component {
   }
 
   isStartDate(day: moment$Moment) {
+    const { value } = this.props;
+
     return (
-      this.state.startDate && day.isSame(this.state.startDate, "day")
+      value && value.startDate && day.isSame(value.startDate, "day")
     );
   }
 
   isInSelectedSpan(day: moment$Moment) {
-    const { startDate, endDate } = this.state;
-    return startDate && endDate && day.isBetween(startDate, endDate);
+    const { value } = this.props;
+    if (value) {
+      const { startDate, endDate } = value;
+      return (
+        startDate && endDate && day.isBetween(startDate, endDate)
+      );
+    }
+    return false;
   }
 
   isEndDate(day: moment$Moment) {
-    return (
-      this.state.endDate && day.isSame(this.state.endDate, "day")
-    );
+    const { value } = this.props;
+    return value && value.endDate && day.isSame(value.endDate, "day");
   }
 
   handleDayPress = (day: moment$Moment) => {
-    let { startDate, endDate } = this.state;
+    const { value, onValueChange } = this.props;
+    let { startDate, endDate } = value;
 
     if (!startDate && !endDate) {
       // Nothing was selected
@@ -75,13 +71,18 @@ export default class DateRangePicker extends React.Component {
       }
     }
 
-    this.setState({ startDate, endDate });
+    onValueChange({ startDate, endDate });
   };
 
   render() {
-    const { startDate, endDate } = this.state;
-    const { calendarVisible, value, ...restProps } = this.props;
-    
+    const {
+      mode,
+      value,
+      initialMonth,
+      numberOfMonths,
+      monthFormat
+    } = this.props;
+
     const modifiers = {
       blocked: day => this.isBlocked(day),
       selectedStart: day => this.isStartDate(day),
@@ -90,15 +91,15 @@ export default class DateRangePicker extends React.Component {
     };
 
     return (
-      <CalendarModal
-        mode="dateRange"
-        visible={calendarVisible}
-        modifiers={modifiers}
+      <CalendarMonthList
+        mode={mode}
+        numberOfMonths={numberOfMonths}
+        initialMonth={initialMonth}
         onDayPress={this.handleDayPress}
-        selectedDates={{ startDate, endDate }}
-        {...restProps}
+        monthFormat={monthFormat}
+        modifiers={modifiers}
+        selectedDates={value}
       />
     );
   }
 }
-

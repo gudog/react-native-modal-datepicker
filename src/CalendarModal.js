@@ -1,17 +1,17 @@
 // @flow
 
-import React from "react";
+import React, { createElement } from "react";
 import { View, Modal, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 
-import CalendarMonthList from "./CalendarMonthList";
+import DatesPicker from "./DatesPicker";
+import DateRangePicker from "./DateRangePicker";
 import WeekHeader from "./WeekHeader";
 
 import type {
-  DatePickerMode,
-  // InputValue,
-  PhrasesType,
-  DatesArray
+  CalendarModalProps,
+  DatesArray,
+  InputValue
 } from "./types";
 
 const Container = styled.View`
@@ -139,105 +139,120 @@ const FooterText = styled.Text`
   }}
 `;
 
-type DefaultProps = {
-  numberOfMonths: number,
-  background: ?React.Component<any, any, any>,
-  onDayPress: Function,
-  onClearPress: Function,
-  onClosePress: Function,
-  onSavePress: Function
-};
-
-type Props = DefaultProps & {
-  mode: DatePickerMode,
-  phrases: PhrasesType,
-  visible: boolean,
-  initialVisibleMonth: Function,
-  selectedDates: any, // TODO: fix this
-  modifiers: Object,
-  maxNumberOfDates: number,
-
-  // Custom props
-  modalProps: Object,
-  listViewProps: Object,
-
-  // i18n
-  monthFormat: string
-};
+type Props = CalendarModalProps;
 
 type State = {
-  currentMonth: moment$Moment
+  value: InputValue
 };
 
-export default class CalendarModal extends React.Component<
-  DefaultProps,
-  Props,
-  State
-> {
+export default class CalendarModal extends React.Component {
   props: Props;
   state: State;
+  currentMonth: moment$Moment;
 
   static defaultProps = {
     numberOfMonths: 3,
     background: null,
     onDayPress() {},
     onClearPress() {},
-    onClosePress() {},
-    onSavePress() {}
   };
 
-  constructor(props: Props) {
+  constructor(props: CalendarModalProps) {
     super(props);
-    
+
     this.state = {
-      currentMonth: props.initialVisibleMonth()
+      value: props.value
     };
   }
 
+  componentWillReceiveProps(nextProps: Props) {
+    if (this.props.value !== nextProps.value) {
+      this.setState({ value: nextProps.value });
+    }
+  }
+
+  handleValueChange = (value: InputValue) => {
+    this.setState({ value });
+  }
+
+  handleClearPress = () => {
+    this.setState({ value: null });
+  }
+
+  handleSavePress = () => {
+    this.props.onValueChange(this.state.value);
+    this.props.onClosePress();
+  }
+
   renderSelectedDates() {
-    const { phrases, mode, maxNumberOfDates } = this.props;
+    const { value } = this.state;
 
-    if (mode === "dates") {
-      const dates: DatesArray = this.props.selectedDates;
+    if (value) {
+      const { phrases, mode, maxNumberOfDates } = this.props;
 
-      if (dates && dates.length) {
+      if (mode === "dates") {
+        const dates: DatesArray = value;
+
+        if (dates && dates.length) {
+          return (
+            <SelectedDateText numberOfLines={3}>
+              {dates.map(day => day.format("D\u00a0MMM")).join(", ")}
+            </SelectedDateText>
+          );
+        }
         return (
-          <SelectedDateText numberOfLines={3}>
-            {dates.map(day => day.format("D\u00a0MMM")).join(", ")}
+          <SelectedDateText>
+            {maxNumberOfDates === 1
+              ? phrases.selectDate
+              : phrases.selectDates}
           </SelectedDateText>
         );
       }
+
+      // mode == dateRange
+      const { startDate, endDate } = value;
+
       return (
-        <SelectedDateText>
-          {maxNumberOfDates === 1 ? phrases.selectDate : phrases.selectDates}
-        </SelectedDateText>
+        <View style={{ flexDirection: "row", flex: 1 }}>
+          <SelectedDateText left numberOfLines={2}>
+            {startDate
+              ? startDate.format("dddd D\u00a0MMM")
+              : phrases.startDate}
+          </SelectedDateText>
+
+          <RangeSeparator>|</RangeSeparator>
+
+          <SelectedDateText right numberOfLines={2}>
+            {endDate
+              ? endDate.format("dddd D\u00a0MMM")
+              : phrases.endDate}
+          </SelectedDateText>
+        </View>
       );
     }
+    return null;
+  }
 
-    // mode == dateRange
-    const { startDate, endDate } = this.props.selectedDates;
+  renderPicker() {
+    const { value } = this.state;
 
-    return (
-      <View style={{ flexDirection: "row", flex: 1 }}>
-        <SelectedDateText left numberOfLines={2}>
-          {startDate ? startDate.format("dddd D\u00a0MMM") : phrases.startDate}
-        </SelectedDateText>
+    const Picker = this.props.mode === "dates"
+      ? DatesPicker
+      : DateRangePicker;
 
-        <RangeSeparator>|</RangeSeparator>
-
-        <SelectedDateText right numberOfLines={2}>
-          {endDate ? endDate.format("dddd D\u00a0MMM") : phrases.endDate}
-        </SelectedDateText>
-      </View>
-    );
+    return createElement(Picker, {
+      ...this.props,
+      value,
+      onValueChange: this.handleValueChange
+    });
   }
 
   renderFooter() {
-    const { phrases, onSavePress } = this.props;
+    const { phrases } = this.props;
 
     return (
       <Footer>
-        <FooterButton onPress={onSavePress}>
+        <FooterButton onPress={this.handleSavePress}>
           <FooterText>{phrases.save}</FooterText>
         </FooterButton>
       </Footer>
@@ -246,55 +261,34 @@ export default class CalendarModal extends React.Component<
 
   render() {
     const {
-      mode,
-      visible,
-      monthFormat,
+      calendarModalBackground,
+      calendarModalVisible,
       onClosePress,
-      onClearPress,
-      onDayPress,
-      numberOfMonths,
-      phrases,
-      selectedDates,
-      modifiers,
-      modalProps,
-      listViewProps,
-      background
+      phrases
     } = this.props;
 
-    const { currentMonth } = this.state;
-
     return (
-      <Modal visible={visible} animationType="slide" {...modalProps}>
-        {background}
+      <Modal visible={calendarModalVisible} animationType="slide">
+        {calendarModalBackground}
         <Container>
           <TopActions>
             <TouchableOpacity onPress={onClosePress}>
               <CloseButtonText>X</CloseButtonText>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={onClearPress}>
+            <TouchableOpacity onPress={this.handleClearPress}>
               <ResetButtonText>
                 {phrases.clear}
               </ResetButtonText>
             </TouchableOpacity>
           </TopActions>
 
-          <SelectedDates>
-            {this.renderSelectedDates()}
-          </SelectedDates>
+          <SelectedDates>{this.renderSelectedDates()}</SelectedDates>
 
           <WeekHeader />
 
-          <CalendarMonthList
-            mode={mode}
-            initialMonth={currentMonth}
-            onDayPress={onDayPress}
-            numberOfMonths={numberOfMonths}
-            monthFormat={monthFormat}
-            modifiers={modifiers}
-            selectedDates={selectedDates}
-            listViewProps={listViewProps}
-          />
+          {this.renderPicker()}
+
           {this.renderFooter()}
         </Container>
       </Modal>

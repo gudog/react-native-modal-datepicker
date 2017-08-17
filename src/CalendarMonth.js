@@ -1,12 +1,14 @@
 // @flow
-import Perf from 'ReactPerf';
+import Perf from "ReactPerf";
 import React from "react";
 import styled from "styled-components/native";
 import moment from "moment";
 
 import CalendarDay from "./CalendarDay";
+import getDefaultModifiers from "./utils/getDefaultModifiers";
+import getComputedModifiers from "./utils/getComputedModifiers";
 
-import type { Modifiers, ComputedModifiers } from "./types";
+import type { Modifiers } from "./types";
 
 const Container = styled.View`
   ${props => ({
@@ -41,14 +43,6 @@ const DayContainer = styled.View`
   }}
 `;
 
-function getDefaultModifiers(): Modifiers {
-  const today = moment();
-  return {
-    past: day => day && day.isBefore(today, "day"),
-    today: day => day && day.isSame(today, "day")
-  };
-}
-
 type Props = {
   month: moment$Moment,
   weeks: Array<any>, // TODO: change this
@@ -59,28 +53,7 @@ type Props = {
   monthFormat: string
 };
 
-function getComputedModifiers(
-  defaultModifiers: Modifiers,
-  modifiers: Modifiers,
-  day: moment$Moment
-): ComputedModifiers {
-  const computedModifiers = new Set();
-
-  if (day) {
-    const combinedModifiers = Object.assign(
-      defaultModifiers,
-      modifiers
-    );
-
-    const keys = Object.keys(combinedModifiers);
-    keys.forEach(key => {
-      if (combinedModifiers[key](day)) {
-        computedModifiers.add(key);
-      }
-    });
-  }
-  return computedModifiers;
-}
+const defaultModifiers = getDefaultModifiers();
 
 export default class CalendarMonth extends React.PureComponent<
   any,
@@ -106,9 +79,8 @@ export default class CalendarMonth extends React.PureComponent<
         Perf.stop();
         Perf.printWasted();
       }, 5000);
-
     }, 0);
- }
+  }
 
   render() {
     const {
@@ -120,7 +92,7 @@ export default class CalendarMonth extends React.PureComponent<
     } = this.props;
 
     const monthTitle = month.format(monthFormat);
-    const defaultModifiers = getDefaultModifiers();
+    
 
     return (
       <Container>

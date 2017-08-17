@@ -3,7 +3,7 @@ import React from "react";
 import moment from "moment";
 
 import type { PickerProps, DatesArray } from "./types";
-import CalendarModal from "./CalendarModal";
+import CalendarMonthList from "./CalendarMonthList";
 import isDayIncluded from "./utils/isDayIncluded";
 import sortDates from "./utils/sortDates";
 
@@ -41,21 +41,28 @@ export default class DatesPicker extends React.PureComponent {
   };
 
   render() {
-    const { calendarVisible, value, ...restProps } = this.props;
+    const {
+      mode,
+      value,
+      initialMonth,
+      numberOfMonths,
+      monthFormat
+    } = this.props;
 
     const modifiers = {
-      blocked: day => this.isBlocked(day),
-      selected: day => this.isSelected(day)
+      blocked: (day: moment$Moment) => this.isBlocked(day),
+      selected: (day: moment$Moment) => this.isSelected(day)
     };
 
     return (
-      <CalendarModal
-        mode="dates"
-        visible={calendarVisible}
-        modifiers={modifiers}
+      <CalendarMonthList
+        mode={mode}
+        numberOfMonths={numberOfMonths}
+        initialMonth={initialMonth}
         onDayPress={this.handleDayPress}
+        monthFormat={monthFormat}
+        modifiers={modifiers}
         selectedDates={value}
-        {...restProps}
       />
     );
   }

@@ -1,51 +1,17 @@
 // @flow
-import React, { createElement } from "react";
+import React from "react";
 import { View } from "react-native";
 import { ThemeProvider } from "styled-components";
 import moment from "moment";
 
 import DateInput from "./DateInput";
-import DatesPicker from "./DatesPicker";
-import DateRangePicker from "./DateRangePicker";
-import type {
-  ThemeType,
-  PhrasesType,
-  DatePickerMode,
-  InputValue
-} from "./types";
-import isDayIncluded from "./utils/isDayIncluded";
-import sortDates from "./utils/sortDates";
-
-type Props = {
-  mode: DatePickerMode,
-  theme: ThemeType,
-  style: StyleSheet,
-  numberOfMonths: number,
-  maxNumberOfDates: number,
-  initialVisibleMonth: Function,
-  value: DateInput,
-  isOutsideRange: moment$Moment => boolean,
-  onValueChange: InputValue => any,
-
-  // Custom props for main RN components
-  modalProps: Object,
-  listViewProps: Object,
-
-  // A React element to be used as background
-  calendarModalBackground: React.Element<*>,
-
-  // i18n
-  // displayFormat: string | Function,
-  monthFormat: string,
-  phrases: PhrasesType
-};
+import CalendarModal from "./CalendarModal";
+import type { ModalDatePickerProps, InputValue } from "./types";
 
 export default class ModalDatePicker extends React.Component {
-  props: Props;
-
+  props: ModalDatePickerProps;
   state: {
-    calendarVisible: boolean,
-    value: InputValue
+    calendarModalVisible: boolean
   };
 
   static defaultProps = {
@@ -60,7 +26,7 @@ export default class ModalDatePicker extends React.Component {
     },
     numberOfMonths: 12,
     maxNumberOfDates: 100,
-    initialVisibleMonth: () => moment(),
+    initialMonth: moment(),
     value: [],
     isOutsideRange: day => day && !day.isSameOrAfter(moment(), "day"),
     displayFormat: () => moment.localeData().longDateFormat("L"),
@@ -68,67 +34,48 @@ export default class ModalDatePicker extends React.Component {
     monthFormat: "MMMM YYYY"
   };
 
-  constructor(props: Props) {
+  constructor(props: ModalDatePickerProps) {
     super(props);
     this.state = {
-      calendarVisible: false,
-      value: props.mode === "dates" ? [] : null
+      calendarModalVisible: false
     };
   }
 
-  componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.value !== this.state.value) {
-      this.setState({ value: nextProps.value });
-    }
-  }
-
   handleOnDateInputPress = () => {
-    this.setState({ calendarVisible: true });
+    this.setState({ calendarModalVisible: true });
   };
 
-  handleClosePress = () => {
+  handleClosePress = (): void => {
     this.setState({
-      calendarVisible: false,
-      value: this.props.value
+      calendarModalVisible: false
     });
+    return undefined;
   };
 
-  handleClearPress = () => {
-    this.setState({ value: [] });
+  handleSavePress = (value: InputValue): void => {
+    this.props.onValueChange(value);
+    this.setState({ calendarModalVisible: false });
   };
-
-  handleSavePress = () => {
-    this.setState({ calendarVisible: false });
-    this.props.onValueChange(this.state.value);
-  };
-
-  handleValueChange = (value: InputValue) => {
-    this.setState({ value });
-  };
-
-  renderPicker() {
-    const { value, calendarVisible } = this.state;
-
-    // const Picker = mode === 'dates' ? DatesPicker : DateRangePicker;
-    const Picker = this.props.mode === "dates" ? DatesPicker : DateRangePicker;
-
-    return createElement(Picker, {
-      ...this.props,
-      value,
-      calendarVisible,
-      onValueChange: this.handleValueChange,
-      onClearPress: this.handleClearPress,
-      onClosePress: this.handleClosePress,
-      onSavePress: this.handleSavePress
-    });
-  }
 
   render() {
-    const { value, mode, maxNumberOfDates, phrases, style, theme } = this.props;
+    const {
+      value,
+      mode,
+      maxNumberOfDates,
+      phrases,
+      theme,
+      calendarModalBackground,
+      initialMonth,
+      isOutsideRange,
+      monthFormat,
+      onValueChange
+    } = this.props;
+
+    const { calendarModalVisible } = this.state;
 
     return (
       <ThemeProvider theme={{ ...theme }}>
-        <View style={style}>
+        <View>
           <DateInput
             onPress={this.handleOnDateInputPress}
             mode={mode}
@@ -136,7 +83,20 @@ export default class ModalDatePicker extends React.Component {
             maxNumberOfDates={maxNumberOfDates}
             phrases={phrases}
           />
-          {this.renderPicker()}
+          <CalendarModal
+            mode={mode}
+            value={value}
+            maxNumberOfDates={maxNumberOfDates}
+            phrases={phrases}
+            theme={theme}
+            initialMonth={initialMonth}
+            isOutsideRange={isOutsideRange}
+            monthFormat={monthFormat}
+            calendarModalBackground={calendarModalBackground}
+            calendarModalVisible={calendarModalVisible}
+            onValueChange={onValueChange}
+            onClosePress={this.handleClosePress}
+          />
         </View>
       </ThemeProvider>
     );

@@ -41,24 +41,42 @@ export type InputValue = ?DatesArray | ?DateRange;
 
 export type DatePickerMode = "dates" | "dateRange";
 
-export type PickerProps<ValueType> = {
-  theme: ThemeType,
-  style: StyleSheet,
-  calendarVisible: boolean,
+export type Modifiers = { [string]: Function };
+export type ComputedModifiers = Set<string>;
+
+export type CalendarMonthListProps = {
+  mode: DatePickerMode,
+  initialMonth: moment$Moment,
   numberOfMonths: number,
+  modifiers: Modifiers,
+  theme: ThemeType,
+  selectedDates: ?InputValue,
+  onDayPress: ?(moment$Moment) => any
+};
+
+export type DateInputProps = {
+  value: InputValue,
+  mode: DatePickerMode,
   maxNumberOfDates: number,
-  initialVisibleMonth: Function,
+
+  // Callbacks
+  onPress: Function,
+
+  // i18n
+  phrases: PhrasesType
+};
+
+export type PickerProps<ValueType> = {
+  mode: DatePickerMode,
   value: ValueType,
+  numberOfMonths: number,
+  initialMonth: moment$Moment,
   isOutsideRange: Function,
+  maxNumberOfDates: number,
+  theme: ThemeType,
 
+  // Callbacks
   onValueChange: Function,
-
-  // Custom props for main RN components
-  modalProps: Object,
-  listViewProps: Object,
-
-  // A React element to be used as background
-  calendarModalBackground: ?React.Element<*>,
 
   // i18n
   // displayFormat: string | Function,
@@ -66,40 +84,15 @@ export type PickerProps<ValueType> = {
   phrases: PhrasesType
 };
 
-export type Modifiers = { [string]: Function };
-export type ComputedModifiers = Set<string>;
+export type CalendarModalProps = PickerProps<InputValue> & {
+  calendarModalBackground: ?React.Element<*>,
+  calendarModalVisible: boolean,
 
-// export type ThemeType =
-//   | {
-//       dateInputContainer: Object,
-//       dateInputText: Object,
-//       calendarDayContainer: Object,
-//       calendarDaySelectedContainer: Object,
-//       calendarDaySelectedStartContainer: Object,
-//       calendarDaySelectedEndContainer: Object,
-//       calendarDaySelectedSpanContainer: Object,
-//       calendarDayBlockedContainer: Object,
-//       calendarDayText: Object,
-//       calendarDaySelectedText: Object,
-//       calendarDayPastText: Object,
-//       calendarDayBlockedText: Object,
-//       calendarDayTodayMarker: Object,
-//       calendarDaySelectedTodayMarker: Object,
-//       calendarDayBlockedMarkerContainer: Object,
-//       calendarDayBlockedMarkerText: Object,
-//       calendarModalContainer: Object,
-//       calendarModalCloseButtonText: Object,
-//       calendarModalResetButtonText: Object,
-//       calendarModalSelectedDates: Object,
-//       calendarModalSelectedDateText: Object,
-//       calendarModalRangeSeparator: Object,
-//       calendarModalFooter: Object,
-//       calendarModalFooterButton: Object,
-//       calendarModalFooterText: Object,
-//       calendarMonthContainer: Object,
-//       calendarMonthTitle: Object,
-//       calendarMonthWeek: Object,
-//       weekHeaderContainer: Object,
-//       weekHeaderDayText: Object
-//     }
-//   | {};
+  // Callbacks
+  onClosePress: () => void
+};
+
+export type ModalDatePickerProps = CalendarModalProps & {
+  // Callbacks
+  onValueChange: InputValue => void
+};
