@@ -39,7 +39,7 @@ const Week = styled.View`
 
 type Props = {
   month: moment$Moment,
-  weeks: Array<any>, // TODO: change this
+  weeks: Array<Array<moment$Moment>>,
   onDayPress?: moment$Moment => any,
   modifiers: Modifiers,
   refresh: boolean,

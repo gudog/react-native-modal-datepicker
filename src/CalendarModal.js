@@ -9,11 +9,7 @@ import DatesPicker from "./DatesPicker";
 import DateRangePicker from "./DateRangePicker";
 import WeekHeader from "./WeekHeader";
 
-import type {
-  CalendarModalProps,
-  DatesArray,
-  InputValue
-} from "./types";
+import type { CalendarModalProps, InputValue } from "./types";
 
 const getStylesFromTheme = (element: string, theme): any => {
   return path(["calendarModal", element], theme);
@@ -193,10 +189,11 @@ export default class CalendarModal extends React.Component {
     const { value } = this.state;
 
     if (value) {
-      const { phrases, mode, maxNumberOfDates } = this.props;
+      const { phrases, maxNumberOfDates } = this.props;
 
-      if (mode === "dates") {
-        const dates: DatesArray = value;
+      // mode == dates
+      if (Array.isArray(value)) {
+        const dates = value;
 
         if (dates && dates.length) {
           return (

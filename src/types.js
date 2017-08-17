@@ -56,10 +56,10 @@ export type ThemeType = {|
   |}
 |};
 
-export type DateRange = {
+export type DateRange = {|
   startDate?: moment$Moment,
   endDate?: moment$Moment
-};
+|};
 export type DatesArray = Array<moment$Moment>;
 export type InputValue = ?DatesArray | ?DateRange;
 

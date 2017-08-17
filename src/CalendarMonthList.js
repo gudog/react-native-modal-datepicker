@@ -80,7 +80,7 @@ export default class CalendarMonthList extends React.Component<
     } else if (mode === "dateRange") {
       // Tag all the months that need to be re-rendered
       const { startDate, endDate } = selectedDates;
-      const { nextStartDate, nextEndDate } = nextSelectedDates;
+      const { startDate: nextStartDate, endDate: nextEndDate } = nextSelectedDates;
       newMonths = months.map(monthRow => {
         const { month } = monthRow;
         if (
