@@ -2,6 +2,7 @@
 import React from "react";
 import moment from "moment";
 import Perf from "ReactPerf";
+import { ThemeProvider } from "styled-components";
 
 import type { PickerProps, DatesArray } from "./types";
 import CalendarMonthList from "./CalendarMonthList";
@@ -65,19 +66,22 @@ export default class DatesPicker extends React.Component {
       value,
       initialMonth,
       numberOfMonths,
-      monthFormat
+      monthFormat,
+      theme
     } = this.props;
 
     return (
-      <CalendarMonthList
-        mode={mode}
-        numberOfMonths={numberOfMonths}
-        initialMonth={initialMonth}
-        onDayPress={this.handleDayPress}
-        monthFormat={monthFormat}
-        modifiers={this.combinedModifiers}
-        selectedDates={value}
-      />
+      <ThemeProvider theme={{ ...theme }}>
+        <CalendarMonthList
+          mode={mode}
+          numberOfMonths={numberOfMonths}
+          initialMonth={initialMonth}
+          onDayPress={this.handleDayPress}
+          monthFormat={monthFormat}
+          modifiers={this.combinedModifiers}
+          selectedDates={value}
+        />
+      </ThemeProvider>
     );
   }
 }

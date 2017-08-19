@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import moment from "moment";
 import { DatesPicker } from "./../../src";
+import type { ThemeType } from "./../../src/types";
 
 const theme: ThemeType = {
   calendarDay: {
