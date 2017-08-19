@@ -1,7 +1,6 @@
 // @flow
 import React from "react";
 import moment from "moment";
-import Perf from "ReactPerf";
 import { ThemeProvider } from "styled-components";
 
 import type { PickerProps, DatesArray } from "./types";
@@ -30,16 +29,7 @@ export default class DatesPicker extends React.Component {
   }
 
   handleDayPress = (day: moment) => {
-    // Perf.start();
-
-    // // Some arbitrary time for metrics
-    // setTimeout(() => {
-    //   Perf.stop();
-    //   Perf.printWasted();
-    //   Perf.printExclusive();
-    // }, 5000);
-
-    if (isPast(day)) {
+     if (isPast(day)) {
       return;
     }
 
