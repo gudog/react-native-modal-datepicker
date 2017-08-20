@@ -38,7 +38,7 @@ const bookedDates = [
   moment().add(16, "days")
 ];
 
-const unavailableDates = [
+const blockedDates = [
   moment().add(7, "days"),
   moment().add(8, "days"),
   moment().add(9, "days"),
@@ -49,7 +49,7 @@ const unavailableDates = [
 
 const modifiers = {
   booked: day => bookedDates.some(day2 => day.isSame(day2, "day")),
-  blocked: day => unavailableDates.some(day2 => day.isSame(day2, "day"))
+  blocked: day => blockedDates.some(day2 => day.isSame(day2, "day"))
 };
 
 

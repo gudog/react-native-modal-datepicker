@@ -17,7 +17,7 @@ const isSelected = (modifiers: ComputedModifiers): boolean =>
 
 type DefaultProps = {
   modifiers: ComputedModifiers,
-  onDayPress: moment$Moment => any
+  onDayPress: (moment$Moment, ComputedModifiers) => any
 };
 
 type Props = DefaultProps & {
@@ -222,7 +222,7 @@ export default class CalendarDay extends React.Component<
     return (
       <Wrapper>
         {day &&
-          <TouchableWithoutFeedback onPress={() => onDayPress(day)}>
+          <TouchableWithoutFeedback onPress={() => onDayPress(day, modifiers)}>
             {/* Make sure Touchable fills the whole space */}
             <View style={{ flex: 1 }}>
               <Container modifiers={modifiers}>

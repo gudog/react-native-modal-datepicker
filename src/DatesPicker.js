@@ -3,19 +3,18 @@ import React from "react";
 import moment from "moment";
 import { ThemeProvider } from "styled-components";
 
-import type { PickerProps, DatesArray } from "./types";
+import type { PickerProps, DatesArray, ComputedModifiers } from "./types";
 import CalendarMonthList from "./CalendarMonthList";
 import isDayIncluded from "./utils/isDayIncluded";
 import sortDates from "./utils/sortDates";
 
-function isPast(day: moment$Moment) {
-  return day.isBefore(moment(), "day");
-}
+type Props = PickerProps<DatesArray>;
 
 export default class DatesPicker extends React.Component {
-  props: PickerProps<DatesArray>;
+  props: Props;
+  combinedModifiers: Object;
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     this.combinedModifiers = Object.assign({}, props.modifiers, {
@@ -28,8 +27,8 @@ export default class DatesPicker extends React.Component {
     return isDayIncluded(day, dates);
   }
 
-  handleDayPress = (day: moment) => {
-     if (isPast(day)) {
+  handleDayPress = (day: moment, modifiers: ComputedModifiers) => {
+    if (modifiers.has("past") || modifiers.has("blocked")) {
       return;
     }
 

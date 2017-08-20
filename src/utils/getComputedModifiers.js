@@ -11,6 +11,7 @@ export default function getComputedModifiers(
 
   if (month) {
     const combinedModifiers = Object.assign(
+      {},
       defaultModifiers,
       modifiers
     );

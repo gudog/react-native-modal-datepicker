@@ -75,7 +75,7 @@ export type CalendarMonthListProps = {
   modifiers: Modifiers,
   theme: ThemeType,
   selectedDates: ?InputValue,
-  onDayPress: ?(moment$Moment) => any
+  onDayPress: ?(moment$Moment, ComputedModifiers) => any
 };
 
 export type DateInputProps = {

@@ -1,16 +1,22 @@
 // @flow
-import React, { PropTypes } from "react";
+import React from "react";
 import CalendarMonthList from "./CalendarMonthList";
-import type { PickerProps, DateRange } from "./types";
+import type { PickerProps, DateRange, ComputedModifiers } from "./types";
 
-export default class DateRangePicker extends React.PureComponent {
-  props: PickerProps<DateRange>;
+type Props = PickerProps<DateRange>;
 
-  isBlocked(day: moment$Moment) {
-    // const { isDayBlocked, isOutsideRange } = this.props
-    // return isDayBlocked(day) || isOutsideRange(day);
-    const { isOutsideRange } = this.props;
-    return isOutsideRange(day);
+export default class DateRangePicker extends React.Component {
+  props: Props;
+  combinedModifiers: Object;
+
+  constructor(props: Props) {
+    super(props);
+
+    this.combinedModifiers = Object.assign({}, props.modifiers, {
+      selectedStart: day => this.isStartDate(day),
+      selectedEnd: day => this.isEndDate(day),
+      selectedSpan: day => this.isInSelectedSpan(day)
+    });
   }
 
   isStartDate(day: moment$Moment) {
@@ -37,7 +43,11 @@ export default class DateRangePicker extends React.PureComponent {
     return value && value.endDate && day.isSame(value.endDate, "day");
   }
 
-  handleDayPress = (day: moment$Moment) => {
+  handleDayPress = (day: moment, modifiers: ComputedModifiers) => {
+    if (modifiers.has("past") || modifiers.has("blocked")) {
+      return;
+    }
+
     const { value, onValueChange } = this.props;
     let { startDate, endDate } = value;
 
@@ -83,13 +93,6 @@ export default class DateRangePicker extends React.PureComponent {
       monthFormat
     } = this.props;
 
-    const modifiers = {
-      blocked: day => this.isBlocked(day),
-      selectedStart: day => this.isStartDate(day),
-      selectedEnd: day => this.isEndDate(day),
-      selectedSpan: day => this.isInSelectedSpan(day)
-    };
-
     return (
       <CalendarMonthList
         mode={mode}
@@ -97,7 +100,7 @@ export default class DateRangePicker extends React.PureComponent {
         initialMonth={initialMonth}
         onDayPress={this.handleDayPress}
         monthFormat={monthFormat}
-        modifiers={modifiers}
+        modifiers={this.combinedModifiers}
         selectedDates={value}
       />
     );
