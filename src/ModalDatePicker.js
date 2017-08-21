@@ -68,6 +68,7 @@ export default class ModalDatePicker extends React.Component {
       initialMonth,
       isOutsideRange,
       monthFormat,
+      numberOfMonths,
       onValueChange,
       modifiers
     } = this.props;
@@ -93,6 +94,7 @@ export default class ModalDatePicker extends React.Component {
             initialMonth={initialMonth}
             isOutsideRange={isOutsideRange}
             monthFormat={monthFormat}
+            numberOfMonths={numberOfMonths}
             calendarModalBackground={calendarModalBackground}
             calendarModalVisible={calendarModalVisible}
             modifiers={modifiers}
