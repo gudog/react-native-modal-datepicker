@@ -144,7 +144,8 @@ const BlockedMarkerContainer = styled.View`
     right: 0,
     bottom: 0,
     justifyContent: "center",
-    zIndex: 1,
+    zIndex: 2,
+    backgroundColor: "transparent",
     ...getDefaultStylesFromTheme(theme, [
       "calendarDay",
       "blockedMarkerContainer"
@@ -172,7 +173,7 @@ const BlockedMarker = styled.Text`
   })}
   ${({ theme, modifiers }: Props) => ({
     ...getModifiersStylesFromTheme(modifiers, theme, [
-      "day",
+      "calendarDay",
       "blockedMarker"
     ])
   })}

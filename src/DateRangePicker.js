@@ -1,7 +1,11 @@
 // @flow
 import React from "react";
 import CalendarMonthList from "./CalendarMonthList";
-import type { PickerProps, DateRange, ComputedModifiers } from "./types";
+import type {
+  PickerProps,
+  DateRange,
+  ComputedModifiers
+} from "./types";
 
 type Props = PickerProps<DateRange>;
 
@@ -44,6 +48,9 @@ export default class DateRangePicker extends React.Component {
   }
 
   handleDayPress = (day: moment, modifiers: ComputedModifiers) => {
+    // No matter what, always bubble up the press event
+    this.props.onDayPress(day, modifiers);
+
     if (modifiers.has("past") || modifiers.has("blocked")) {
       return;
     }

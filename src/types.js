@@ -98,9 +98,11 @@ export type PickerProps<ValueType> = {
   isOutsideRange: Function,
   maxNumberOfDates: number,
   theme: ThemeType,
+  enableBlockedDatesSelection: boolean,
 
   // Callbacks
   onValueChange: Function,
+  onDayPress: Function,
 
   // i18n
   // displayFormat: string | Function,

@@ -3,7 +3,11 @@ import React from "react";
 import moment from "moment";
 import { ThemeProvider } from "styled-components";
 
-import type { PickerProps, DatesArray, ComputedModifiers } from "./types";
+import type {
+  PickerProps,
+  DatesArray,
+  ComputedModifiers
+} from "./types";
 import CalendarMonthList from "./CalendarMonthList";
 import isDayIncluded from "./utils/isDayIncluded";
 import sortDates from "./utils/sortDates";
@@ -13,6 +17,10 @@ type Props = PickerProps<DatesArray>;
 export default class DatesPicker extends React.Component {
   props: Props;
   combinedModifiers: Object;
+
+  static defaultProps = {
+    enableBlockedDatesSelection: false
+  };
 
   constructor(props: Props) {
     super(props);
@@ -28,15 +36,24 @@ export default class DatesPicker extends React.Component {
   }
 
   handleDayPress = (day: moment, modifiers: ComputedModifiers) => {
-    if (modifiers.has("past") || modifiers.has("blocked")) {
-      return;
-    }
-
     const {
       value: dates,
       maxNumberOfDates,
-      onValueChange
+      onDayPress,
+      onValueChange,
+      enableBlockedDatesSelection
     } = this.props;
+
+    // No matter what, always bubble up the press event
+    onDayPress(day, modifiers);
+
+    if (
+      modifiers.has("past") ||
+      (modifiers.has("blocked") && !enableBlockedDatesSelection)
+    ) {
+      return;
+    }
+
     if (dates && dates.length >= maxNumberOfDates) {
       // Reached max number of dates
       onValueChange([day]);

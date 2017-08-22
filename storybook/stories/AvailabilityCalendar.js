@@ -18,6 +18,11 @@ const theme: ThemeType = {
         borderRadius: 50
       }
     },
+    blockedMarker: {
+      selected: {
+        color: "white"
+      }
+    },
     text: {
       selected: {
         color: "white"
@@ -52,7 +57,6 @@ const modifiers = {
   blocked: day => blockedDates.some(day2 => day.isSame(day2, "day"))
 };
 
-
 export default class AvailabilityCalendar extends Component {
   constructor(props) {
     super(props);
@@ -65,6 +69,10 @@ export default class AvailabilityCalendar extends Component {
     this.setState({ dates });
   };
 
+  onDayPress = () => {
+    window.alert("A day was pressed");
+  };
+
   render() {
     const { dates } = this.state;
 
@@ -72,9 +80,11 @@ export default class AvailabilityCalendar extends Component {
       <DatesPicker
         numberOfMonths={12}
         onValueChange={this.onDatesChange}
+        onDayPress={this.onDayPress}
         value={dates}
         theme={theme}
         modifiers={modifiers}
+        enableBlockedDatesSelection
       />
     );
   }
