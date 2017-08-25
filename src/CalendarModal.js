@@ -267,11 +267,17 @@ export default class CalendarModal extends React.Component {
       calendarModalBackground,
       calendarModalVisible,
       onClosePress,
+      onModalShow,
       phrases
     } = this.props;
 
     return (
-      <Modal visible={calendarModalVisible} animationType="slide">
+      <Modal
+        visible={calendarModalVisible}
+        animationType="slide"
+        onRequestClose={onClosePress}
+        onShow={onModalShow}
+      >
         {calendarModalBackground}
         <Container>
           <TopActions>

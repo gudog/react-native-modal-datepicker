@@ -70,6 +70,7 @@ export default class ModalDatePicker extends React.Component {
       monthFormat,
       numberOfMonths,
       onValueChange,
+      onModalShow,
       modifiers
     } = this.props;
 
@@ -99,6 +100,7 @@ export default class ModalDatePicker extends React.Component {
             calendarModalVisible={calendarModalVisible}
             modifiers={modifiers}
             onValueChange={onValueChange}
+            onModalShow={onModalShow}
             onClosePress={this.handleClosePress}
           />
         </View>

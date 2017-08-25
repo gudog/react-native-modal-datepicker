@@ -115,10 +115,12 @@ export type CalendarModalProps = PickerProps<InputValue> & {
   calendarModalVisible: boolean,
 
   // Callbacks
-  onClosePress: () => void
+  onClosePress: () => void,
+  onModalShow: () => void
 };
 
 export type ModalDatePickerProps = CalendarModalProps & {
   // Callbacks
-  onValueChange: InputValue => void
+  onValueChange: InputValue => void,
+  onModalShow: InputValue => void
 };
