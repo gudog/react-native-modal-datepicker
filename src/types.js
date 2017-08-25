@@ -122,5 +122,6 @@ export type CalendarModalProps = PickerProps<InputValue> & {
 export type ModalDatePickerProps = CalendarModalProps & {
   // Callbacks
   onValueChange: InputValue => void,
-  onModalShow: InputValue => void
+  onModalShow: () => void,
+  onModalClose: () => void
 };

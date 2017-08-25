@@ -49,6 +49,7 @@ export default class ModalDatePicker extends React.Component {
     this.setState({
       calendarModalVisible: false
     });
+    this.props.onModalClose();
     return undefined;
   };
 
