@@ -177,7 +177,11 @@ export default class CalendarModal extends React.Component {
   };
 
   handleClearPress = () => {
-    this.setState({ value: null });
+    if (this.props.mode === "dates") {
+      this.setState({ value: [] });
+    } else {
+      this.setState({ value: { startDate: null, endDate: null } });
+    }
   };
 
   handleSavePress = () => {
