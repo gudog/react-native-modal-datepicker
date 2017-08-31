@@ -3,11 +3,7 @@ import React from "react";
 import moment from "moment";
 import { ThemeProvider } from "styled-components";
 
-import type {
-  PickerProps,
-  DatesArray,
-  ComputedModifiers
-} from "./types";
+import type { PickerProps, DatesArray, ComputedModifiers } from "./types";
 import CalendarMonthList from "./CalendarMonthList";
 import isDayIncluded from "./utils/isDayIncluded";
 import sortDates from "./utils/sortDates";
@@ -59,7 +55,7 @@ export default class DatesPicker extends React.Component {
       onValueChange([day]);
     } else if (isDayIncluded(day, dates)) {
       // Multiple dates
-      const newDates = dates.filter(d => !d.isSame(day));
+      const newDates = dates.filter(d => !d.isSame(day, "day"));
       onValueChange(newDates);
     } else {
       onValueChange(sortDates([day, ...dates]));
