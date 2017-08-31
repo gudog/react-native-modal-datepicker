@@ -31,6 +31,7 @@ export default class ModalDatePicker extends React.Component {
     isOutsideRange: (day: moment$Moment) => day && !day.isSameOrAfter(moment(), "day"),
     displayFormat: () => moment.localeData().longDateFormat("L"),
     onValueChange: () => {},
+    onModalClose: () => {},
     monthFormat: "MMMM YYYY"
   };
 
