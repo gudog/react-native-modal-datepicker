@@ -41,6 +41,8 @@ export default class CalendarMonthList extends React.Component<
 
     const { numberOfMonths, initialMonth } = this.props;
     let month = initialMonth.clone().startOf("month");
+    month.locale(false); // Make sure we always use the global moment locale
+
     const months = [];
     for (let i = 0; i < numberOfMonths; i++) {
       months.push({
@@ -56,14 +58,13 @@ export default class CalendarMonthList extends React.Component<
     };
   }
 
-
   componentWillReceiveProps(nextProps: Props) {
     const { selectedDates } = this.props;
     const { mode, selectedDates: nextSelectedDates } = nextProps;
 
     const { months } = this.state;
     let newMonths;
-    
+
     if (mode === "dates") {
       newMonths = months.map(monthRow => {
         const { month } = monthRow;
@@ -80,7 +81,10 @@ export default class CalendarMonthList extends React.Component<
     } else if (mode === "dateRange") {
       // Tag all the months that need to be re-rendered
       const { startDate, endDate } = selectedDates;
-      const { startDate: nextStartDate, endDate: nextEndDate } = nextSelectedDates;
+      const {
+        startDate: nextStartDate,
+        endDate: nextEndDate
+      } = nextSelectedDates;
       newMonths = months.map(monthRow => {
         const { month } = monthRow;
         if (
