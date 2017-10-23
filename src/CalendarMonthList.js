@@ -111,7 +111,7 @@ export default class CalendarMonthList extends React.Component<
 
   renderItem = ({ item }) => {
     const { modifiers, onDayPress, monthFormat } = this.props;
-    
+
     return (
       <CalendarMonth
         modifiers={modifiers}
@@ -139,13 +139,13 @@ export default class CalendarMonthList extends React.Component<
 
   render() {
     const { theme } = this.props;
-    
+
     return (
       <ThemeProvider theme={theme}>
         <FlatList
           data={this.state.months}
-          //getItemCount={data => (data ? data.length : 0)}
-          //getItem={(data, index) => data[index]}
+          // getItemCount={data => (data ? data.length : 0)}
+          // getItem={(data, index) => data[index]}
           renderItem={this.renderItem}
           initialNumToRender={3}
           maxToRenderPerBatch={3}

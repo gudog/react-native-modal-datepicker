@@ -16,7 +16,7 @@ const Container = styled.View`
       borderBottomColor: "#ccc",
       ...getStylesFromTheme("container", theme)
     };
-  }}
+  }};
 `;
 
 const Day = styled.Text`
@@ -26,10 +26,11 @@ const Day = styled.Text`
       textAlign: "center",
       ...getStylesFromTheme("dayText", theme)
     };
-  }}
+  }};
 `;
 const WeekHeader = () => {
   const header = [];
+
   for (let i = 0; i < 7; i++) {
     header.push(
       <Day key={i}>
@@ -38,7 +39,11 @@ const WeekHeader = () => {
     );
   }
 
-  return <Container>{header}</Container>;
+  return (
+    <Container>
+      {header}
+    </Container>
+  );
 };
 
 export default WeekHeader;
