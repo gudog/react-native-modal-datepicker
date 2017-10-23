@@ -1,6 +1,6 @@
 {
   "name": "react-native-modal-datepicker",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0",
   "description": "A modal based datepicker for React Native with support for single dates, multiple dates and date ranges (start date – end date).",
   "main": "src/index.js",
   "scripts": {
