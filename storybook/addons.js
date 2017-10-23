@@ -1,3 +1,4 @@
-import "@kadira/react-native-storybook/addons";
-//  To add the knobs addon
-import "@kadira/storybook-addon-knobs/register";
+/* eslint-disable import/no-extraneous-dependencies, import/no-unresolved, import/extensions */
+
+import '@storybook/addon-actions/register';
+import '@storybook/addon-links/register';

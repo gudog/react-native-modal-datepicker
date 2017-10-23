@@ -1,30 +1,36 @@
 import React from "react";
 import moment from "moment";
+import { path } from "ramda";
 import styled from "styled-components/native";
 
+const getStylesFromTheme = (element: string, theme): any => {
+  return path(["weekHeader", element], theme);
+};
+
 const Container = styled.View`
-  ${props => {
+  ${({ theme }) => {
     return {
       flexDirection: "row",
       paddingVertical: 5,
       borderBottomWidth: 1,
       borderBottomColor: "#ccc",
-      ...props.theme.weekHeaderContainer
+      ...getStylesFromTheme("container", theme)
     };
-  }}
+  }};
 `;
 
 const Day = styled.Text`
-  ${props => {
+  ${({ theme }) => {
     return {
       flex: 1,
       textAlign: "center",
-      ...props.theme.weekHeaderDayText
+      ...getStylesFromTheme("dayText", theme)
     };
-  }}
+  }};
 `;
-const WeekHeader = ({ headerStyle, dayTextStyle }) => {
+const WeekHeader = () => {
   const header = [];
+
   for (let i = 0; i < 7; i++) {
     header.push(
       <Day key={i}>
@@ -33,7 +39,11 @@ const WeekHeader = ({ headerStyle, dayTextStyle }) => {
     );
   }
 
-  return <Container>{header}</Container>;
+  return (
+    <Container>
+      {header}
+    </Container>
+  );
 };
 
 export default WeekHeader;

@@ -1,5 +1,5 @@
 ---
-extends: airbnb
+extends: [airbnb, plugin:flowtype/recommended]
 env:
   node: true
   es6: true
@@ -15,7 +15,7 @@ parserOptions:
     jsx: true
     experimentalObjectRestSpread: true
   sourceType: module
-plugins: [react]
+plugins: [react, flowtype]
 
 rules:
   max-len: [1, 140, 2, {"ignoreUrls":true}]
@@ -33,3 +33,4 @@ rules:
   import/no-named-as-default-member: 0
   react/jsx-wrap-multilines: ["error", {arrow: false}]
   react/no-array-index-key: 0
+  react/sort-comp: ['error', { order: [ 'type-annotations', 'static-methods', 'lifecycle', '/^on.+$/', '/^(get|set)(?!(InitialState$|DefaultProps$|ChildContext$)).+$/', 'everything-else', '/^render.+$/', 'render' ] }]

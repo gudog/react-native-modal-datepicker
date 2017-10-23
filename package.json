@@ -1,11 +1,12 @@
 {
   "name": "react-native-modal-datepicker",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "A modal based datepicker for React Native with support for single dates, multiple dates and date ranges (start date – end date).",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "storybook": "storybook start -p 7007"
+    "storybook": "storybook start -p 7007",
+    "flow": "flow --show-all-errors"
   },
   "repository": {
     "type": "git",
@@ -24,26 +25,30 @@
   },
   "homepage": "https://github.com/gudog/react-native-modal-datepicker#readme",
   "dependencies": {
-    "moment": "^2.17.1",
+    "moment": "^2.19.1",
+    "ramda": "^0.24.1",
     "react-moment-proptypes": "^1.2.0",
-    "styled-components": "^2.0.0"
+    "styled-components": "^2.1.0"
   },
   "devDependencies": {
-    "@kadira/react-native-storybook": "^2.0.0",
-    "@kadira/storybook-addon-knobs": "^1.7.1",
+    "@storybook/react-native": "^3.2.3",
     "babel-eslint": "^7.1.1",
     "babel-preset-react-native": "^1.9.0",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.1",
+    "eslint-plugin-flowtype": "^2.34.1",
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-react": "^7.0.1",
+    "flow-bin": "^0.49.1",
     "prettier": "^1.4.4",
-    "react": "16.0.0-alpha.6",
-    "react-native": "0.43.3"
+    "react": "16.0.0-alpha.12",
+    "react-dom": "16.0.0-alpha.12",
+    "react-native": "0.49.3",
+    "react-native-console-time-polyfill": "^0.0.6"
   },
   "peerDependencies": {
-    "react": "16.0.0-alpha.6",
-    "react-native": "0.43.3"
+    "react": "16.0.0-alpha.12",
+    "react-native": "0.47.0"
   }
 }

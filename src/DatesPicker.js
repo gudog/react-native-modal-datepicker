@@ -1,199 +1,89 @@
-import React, { PropTypes } from 'react'
-import { View, Text } from 'react-native'
-import { ThemeProvider } from 'styled-components'
-import momentPropTypes from 'react-moment-proptypes'
-import moment from 'moment'
+// @flow
+import React from "react";
+import moment from "moment";
+import { ThemeProvider } from "styled-components";
 
-import DateInput from './DateInput'
-import ThemePropTypes from './ThemePropTypes'
-import CalendarModal from './CalendarModal'
-import isDayIncluded from './utils/isDayIncluded'
-import sortDates from './utils/sortDates'
+import type { PickerProps, DatesArray, ComputedModifiers } from "./types";
+import CalendarMonthList from "./CalendarMonthList";
+import isDayIncluded from "./utils/isDayIncluded";
+import sortDates from "./utils/sortDates";
 
-const propTypes = {
-  theme: ThemePropTypes,
-  numberOfMonths: PropTypes.number,
-  maxNumberOfDates: PropTypes.number,
-  initialVisibleMonth: PropTypes.func,
-  dates: PropTypes.arrayOf(momentPropTypes.momentObj),
-  isOutsideRange: PropTypes.func,
-
-  onDatesChange: PropTypes.func,
-
-  // Custom props for main RN components
-  modalProps: React.PropTypes.object,
-  listViewProps: React.PropTypes.object,
-
-  // A React element to be used as background
-  calendarModalBackground: React.PropTypes.element,
-
-  // i18n
-  displayFormat: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-  monthFormat: PropTypes.string,
-  phrases: PropTypes.shape({
-    selectDate: PropTypes.node,
-    selectDates: PropTypes.node,
-    clear: PropTypes.node,
-    save: PropTypes.node
-  })
-}
-
-const defaultProps = {
-  numberOfMonths: 12,
-  maxNumberOfDates: 100,
-  initialVisibleMonth: () => moment(),
-  onDatesChange () {},
-  dates: [],
-  isOutsideRange: day => day && !day.isSameOrAfter(moment(), 'day'),
-
-  // i18n
-  displayFormat: () => moment.localeData().longDateFormat('L'),
-  monthFormat: 'MMMM YYYY',
-  phrases: {
-    selectDate: 'Select Date',
-    selectDates: 'Select Dates',
-    clearDates: 'Clear',
-    save: 'Save'
-  },
-  theme: {}
-}
+type Props = PickerProps<DatesArray>;
 
 export default class DatesPicker extends React.Component {
+  props: Props;
+  combinedModifiers: Object;
 
-  constructor (props) {
-    super(props)
+  static defaultProps = {
+    enableBlockedDatesSelection: false
+  };
 
-    // state.dates => dates selected in the modal
-    // props.dates => dates selected in dateInput (after pressing Save)
+  constructor(props: Props) {
+    super(props);
 
-    this.state = {
-      calendarVisible: false,
-      dates: []
+    this.combinedModifiers = Object.assign({}, props.modifiers, {
+      selected: (day: moment$Moment) => this.isSelected(day)
+    });
+  }
+
+  isSelected(day: moment$Moment) {
+    const { value: dates } = this.props;
+    return isDayIncluded(day, dates);
+  }
+
+  handleDayPress = (day: moment, modifiers: ComputedModifiers) => {
+    const {
+      value: dates,
+      maxNumberOfDates,
+      onDayPress,
+      onValueChange,
+      enableBlockedDatesSelection
+    } = this.props;
+
+    // No matter what, always bubble up the press event
+    onDayPress(day, modifiers);
+
+    if (
+      modifiers.has("past") ||
+      (modifiers.has("blocked") && !enableBlockedDatesSelection)
+    ) {
+      return;
     }
-  }
-
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.dates !== this.state.dates) {
-      this.setState({dates: nextProps.dates})
-    }
-  }
-
-  isBlocked (day) {
-    // const { isDayBlocked, isOutsideRange } = this.props
-    // return isDayBlocked(day) || isOutsideRange(day);
-    const { isOutsideRange } = this.props
-    return isOutsideRange(day)
-  }
-
-  isSelected (day) {
-    const { dates } = this.state
-    return isDayIncluded(day, dates)
-  }
-
-  handleDayPress = (day) => {
-    const { dates } = this.state
-    const { maxNumberOfDates } = this.props
 
     if (dates && dates.length >= maxNumberOfDates) {
-      // Single date
-      this.setState({ dates: [day] })
-    } else {
+      // Reached max number of dates
+      onValueChange([day]);
+    } else if (isDayIncluded(day, dates)) {
       // Multiple dates
-      if (isDayIncluded(day, dates)) {
-        const newDates = dates.filter((d) => !d.isSame(day))
-        this.setState({ dates: newDates })
-      } else {
-        this.setState({ dates: sortDates([day, ...dates]) })
-      }
+      const newDates = dates.filter(d => !d.isSame(day, "day"));
+      onValueChange(newDates);
+    } else {
+      onValueChange(sortDates([day, ...dates]));
     }
-  }
+  };
 
-  handleOnDateInputPress = () => {
-    this.setState({calendarVisible: true})
-  }
-
-  handleClosePress = () => {
-    this.setState({calendarVisible: false, dates: this.props.dates})
-  }
-
-  handleClearPress = () => {
-    this.setState({dates: []})
-  }
-
-  handleSavePress = () => {
-    this.setState({calendarVisible: false})
-    this.props.onDatesChange(this.state.dates)
-  }
-
-  renderCalendar () {
-    const { dates, calendarVisible } = this.state
+  render() {
     const {
-      initialVisibleMonth,
+      mode,
+      value,
+      initialMonth,
       numberOfMonths,
-      maxNumberOfDates,
       monthFormat,
-      phrases,
-      modalProps,
-      listViewProps,
-      calendarModalBackground
-    } = this.props
-
-    const modifiers = {
-      blocked: day => this.isBlocked(day),
-      // valid: day => !this.isBlocked(day),
-      selected: day => this.isSelected(day)
-    }
-
-    return (
-      <CalendarModal
-        mode='dates'
-        dates={dates}
-        initialVisibleMonth={initialVisibleMonth}
-        maxNumberOfDates={maxNumberOfDates}
-        numberOfMonths={numberOfMonths}
-        monthFormat={monthFormat}
-        phrases={phrases}
-        modifiers={modifiers}
-        visible={calendarVisible}
-        // Callbacks
-        onDayPress={this.handleDayPress}
-        onClearPress={this.handleClearPress}
-        onClosePress={this.handleClosePress}
-        onSavePress={this.handleSavePress}
-        // Custom Props
-        modalProps={modalProps}
-        listViewProps={listViewProps}
-        // Background
-        background={calendarModalBackground}
-      />
-    )
-  }
-
-  render () {
-    const {
-      dates,
-      maxNumberOfDates,
-      phrases,
-      style,
       theme
-    } = this.props
+    } = this.props;
 
     return (
-      <ThemeProvider theme={theme}>
-        <View style={style}>
-          <DateInput
-            onPress={this.handleOnDateInputPress}
-            mode='dates'
-            dates={dates}
-            maxNumberOfDates={maxNumberOfDates}
-            phrases={phrases}
-          />
-          {this.renderCalendar()}
-        </View>
+      <ThemeProvider theme={{ ...theme }}>
+        <CalendarMonthList
+          mode={mode}
+          numberOfMonths={numberOfMonths}
+          initialMonth={initialMonth}
+          onDayPress={this.handleDayPress}
+          monthFormat={monthFormat}
+          modifiers={this.combinedModifiers}
+          selectedDates={value}
+        />
       </ThemeProvider>
-    )
+    );
   }
 }
-
-DatesPicker.propTypes = propTypes
-DatesPicker.defaultProps = defaultProps

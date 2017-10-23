@@ -1,166 +1,241 @@
+// @flow
 import React from "react";
+import { View, TouchableWithoutFeedback } from "react-native";
 import styled from "styled-components/native";
-import { TouchableWithoutFeedback } from "react-native";
+import type { ComputedModifiers, ThemeType } from "./types";
+import getModifiersStylesFromTheme from "./utils/getModifiersStylesFromTheme";
+import getDefaultStylesFromTheme from "./utils/getDefaultStylesFromTheme";
+import eqSet from "./utils/eqSet";
 
 // Receives props for a CalendarDay and returns
 // true if it is within a selection span
-const isSelected = ({ selected, selectedStart, selectedSpan, selectedEnd }) =>
-  selected || selectedStart || selectedSpan || selectedEnd;
+const isSelected = (modifiers: ComputedModifiers): boolean =>
+  modifiers.has("selected") ||
+  modifiers.has("selectedStart") ||
+  modifiers.has("selectedSpan") ||
+  modifiers.has("selectedEnd");
+
+type DefaultProps = {
+  modifiers: ComputedModifiers,
+  onDayPress: (moment$Moment, ComputedModifiers) => any
+};
+
+type Props = DefaultProps & {
+  day: moment$Moment,
+  theme?: ThemeType
+};
+
+const Wrapper = styled.View`
+${{
+  flex: 1,
+  alignSelf: "stretch",
+  // Hack to avoid this issue
+  // https://github.com/facebook/react-native/issues/10539
+  marginLeft: -1,
+  marginRight: -1
+}}
+`;
 
 const Container = styled.View`
-  ${props => {
-    return {
-      marginVertical: 3,
-      marginHorizontal: 5,
-      overflow: "hidden",
-      ...props.theme.calendarDayContainer
-    };
-  }}
-  ${props =>
-    isSelected(props) && {
+  ${({ theme }: Props) => ({
+    marginVertical: 3,
+    marginHorizontal: 5,
+    overflow: "hidden",
+    ...getDefaultStylesFromTheme(theme, ["calendarDay", "container"])
+  })}
+  ${({ modifiers }: Props) =>
+    isSelected(modifiers) && {
       borderRadius: 400,
       backgroundColor: "#ccc",
-      overflow: "hidden",
-      ...props.theme.calendarDaySelectedContainer
+      overflow: "hidden"
     }}
-  ${props =>
-    props.selectedStart && {
+  ${({ modifiers }: Props) =>
+    modifiers.has("selectedStart") && {
       borderTopLeftRadius: 20,
       borderBottomLeftRadius: 20,
       borderTopRightRadius: 0,
       borderBottomRightRadius: 0,
-      marginHorizontal: 0,
-      ...props.theme.calendarDaySelectedStartContainer
+      marginHorizontal: 0
     }}
-  ${props =>
-    props.selectedEnd && {
+  ${({ modifiers }: Props) =>
+    modifiers.has("selectedEnd") && {
       borderTopLeftRadius: 0,
       borderBottomLeftRadius: 0,
       borderTopRightRadius: 20,
       borderBottomRightRadius: 20,
+      marginHorizontal: 0
+    }}
+  ${({ modifiers }: Props) =>
+    modifiers.has("selectedSpan") && {
       marginHorizontal: 0,
-      ...props.theme.calendarDaySelectedEndContainer
+      borderRadius: 0
     }}
-  ${props =>
-    props.selectedSpan && {
-      marginHorizontal: 0,
-      borderRadius: 0,
-      ...props.theme.calendarDaySelectedSpanContainer
-    }}
-  ${props =>
-    props.blocked && {
-      ...props.theme.calendarDayBlockedContainer
-    }}
+  ${({ theme, modifiers }: Props) => ({
+    ...getModifiersStylesFromTheme(modifiers, theme, [
+      "calendarDay",
+      "container"
+    ])
+  })}
 `;
 
 const Text = styled.Text`
-  ${props => {
-    return {
-      textAlign: "center",
-      paddingVertical: 13,
-      fontSize: 16,
-      zIndex: 2,
-      backgroundColor: "transparent",
-      ...props.theme.calendarDayText
-    };
-  }}
-  ${props =>
-    isSelected(props) && {
+  ${({ theme }: Props) => ({
+    textAlign: "center",
+    paddingVertical: 13,
+    fontSize: 16,
+    zIndex: 2,
+    ...getDefaultStylesFromTheme(theme, ["calendarDay", "text"])
+  })}
+  ${({ modifiers }: Props) =>
+    isSelected(modifiers) && {
       color: "white",
-      fontWeight: "bold",
-      ...props.theme.calendarDaySelectedText
+      fontWeight: "bold"
     }}
-  ${props =>
-    props.past && {
+  ${({ modifiers }: Props) =>
+    modifiers.has("past") && {
       textDecorationLine: "none",
-      opacity: 0.5,
-      ...props.theme.calendarDayPastText
+      opacity: 0.5
     }}
-  ${props =>
-    props.blocked && {
-      opacity: 0.7,
-      ...props.theme.calendarDayBlockedText
+  ${({ modifiers }: Props) =>
+    modifiers.has("blocked") && {
+      opacity: 0.7
     }}
+
+  ${({ theme, modifiers }: Props) => ({
+    ...getModifiersStylesFromTheme(modifiers, theme, [
+      "calendarDay",
+      "text"
+    ])
+  })}
 `;
 
 const TodayMarker = styled.Text`
-  ${props => {
-    return {
-      position: "absolute",
-      bottom: 0,
-      left: 0,
-      right: 0,
-      textAlign: "center",
-      fontWeight: "bold",
-      fontSize: 24,
-      zIndex: 1,
-      ...props.theme.calendarDayTodayMarker
-    };
-  }}
-  ${props =>
-    props.selected && {
-      color: "white",
-      ...props.theme.calendarDaySelectedTodayMarker
+  ${({ theme }: Props) => ({
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 24,
+    zIndex: 1,
+    ...getDefaultStylesFromTheme(theme, [
+      "calendarDay",
+      "todayMarker"
+    ])
+  })}
+  ${({ modifiers }: Props) =>
+    isSelected(modifiers) && {
+      color: "white"
     }}
+  ${({ theme, modifiers }: Props) => ({
+    ...getModifiersStylesFromTheme(modifiers, theme, [
+      "calendarDay",
+      "todayMarker"
+    ])
+  })}
 `;
 
 const BlockedMarkerContainer = styled.View`
-  ${props => {
-    return {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      justifyContent: 'center',
-      zIndex: 1,
-      ...props.theme.calendarDayBlockedMarkerContainer
-    };
-  }}
+  ${({ theme }: Props) => ({
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    zIndex: 2,
+    backgroundColor: "transparent",
+    ...getDefaultStylesFromTheme(theme, [
+      "calendarDay",
+      "blockedMarkerContainer"
+    ])
+  })}
+  ${({ theme, modifiers }: Props) => ({
+    ...getModifiersStylesFromTheme(modifiers, theme, [
+      "calendarDay",
+      "blockedMarkerContainer"
+    ])
+  })}
 `;
 
 const BlockedMarker = styled.Text`
-  ${props => {
-    return {
-      transform: "rotate(45deg)",
-      fontWeight: 100,
-      textAlign: "center",
-      fontSize: 32,
-      marginTop: -4,
-      ...props.theme.calendarDayBlockedMarkerText
-    };
-  }}
+  ${({ theme }: Props) => ({
+    transform: "rotate(45deg)",
+    fontWeight: 100,
+    textAlign: "center",
+    fontSize: 32,
+    marginTop: -4,
+    ...getDefaultStylesFromTheme(theme, [
+      "calendarDay",
+      "blockedMarker"
+    ])
+  })}
+  ${({ theme, modifiers }: Props) => ({
+    ...getModifiersStylesFromTheme(modifiers, theme, [
+      "calendarDay",
+      "blockedMarker"
+    ])
+  })}
 `;
 
-export default class CalendarDay extends React.PureComponent {
-  renderTodayMarker() {
-    if (this.props.isToday) {
-      const { selected } = this.props;
+export default class CalendarDay extends React.Component<
+  DefaultProps,
+  Props,
+  void
+> {
+  static defaultProps = {
+    modifiers: new Set(),
+    onDayPress: () => {}
+  };
 
-      return <TodayMarker selected={selected}>.</TodayMarker>;
-    }
+  shouldComponentUpdate(nextProps: Props) {
+    return !eqSet(this.props.modifiers, nextProps.modifiers);
   }
-  
-  renderBlockedMarker() {
-    if (this.props.blocked) {
-      return <BlockedMarkerContainer><BlockedMarker>|</BlockedMarker></BlockedMarkerContainer>;
+
+  isBlocked = () => this.props.modifiers.has("blocked");
+  isSelected = () => this.props.modifiers.has("selected");
+
+  renderTodayMarker() {
+    const { modifiers } = this.props;
+    if (modifiers.has("today")) {
+      return <TodayMarker modifiers={modifiers}>.</TodayMarker>;
     }
+    return null;
+  }
+
+  renderBlockedMarker() {
+    if (this.isBlocked()) {
+      return (
+        <BlockedMarkerContainer modifiers={this.props.modifiers}>
+          <BlockedMarker modifiers={this.props.modifiers}>
+            |
+          </BlockedMarker>
+        </BlockedMarkerContainer>
+      );
+    }
+    return null;
   }
 
   render() {
-    const { day, onDayPress, ...modifiersProps } = this.props;
+    const { day, onDayPress, modifiers } = this.props;
 
     return (
-      <TouchableWithoutFeedback
-        onPress={() => !this.props.blocked && onDayPress(day)}
-        activeOpacity={0.5}
-      >
-        <Container {...modifiersProps}>
-          <Text {...modifiersProps}>{day.format("D")}</Text>
-          {this.renderTodayMarker()}
-          {this.renderBlockedMarker()}
-        </Container>
-      </TouchableWithoutFeedback>
+      <Wrapper>
+        {day &&
+          <TouchableWithoutFeedback onPress={() => onDayPress(day, modifiers)}>
+            {/* Make sure Touchable fills the whole space */}
+            <View style={{ flex: 1 }}>
+              <Container modifiers={modifiers}>
+                <Text modifiers={modifiers}>
+                  {day.format("D")}
+                </Text>
+                {this.renderTodayMarker()}
+                {this.renderBlockedMarker()}
+              </Container>
+            </View>
+          </TouchableWithoutFeedback>}
+      </Wrapper>
     );
   }
 }

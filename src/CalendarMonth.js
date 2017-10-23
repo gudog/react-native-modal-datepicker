@@ -1,111 +1,105 @@
-import React, { PropTypes } from "react";
+// @flow
+import React from "react";
 import styled from "styled-components/native";
-import momentPropTypes from "react-moment-proptypes";
+import { path } from "ramda";
 import moment from "moment";
 
 import CalendarDay from "./CalendarDay";
+import getDefaultModifiers from "./utils/getDefaultModifiers";
+import getComputedModifiers from "./utils/getComputedModifiers";
+
+import type { Modifiers } from "./types";
+
+const getStylesFromTheme = (element: string, theme): any => {
+  return path(["calendarMonth", element], theme);
+};
 
 const Container = styled.View`
-  ${props => {
-    return {
-      flex: 1,
-      flexDirection: "column",
-      paddingVertical: 12,
-      ...props.theme.calendarMonthContainer
-    };
-  }}
+  ${({ theme }) => ({
+    flexDirection: "column",
+    paddingVertical: 12,
+    ...getStylesFromTheme("container", theme)
+  })};
 `;
 const MonthTitle = styled.Text`
-  ${props => {
-    return {
-      fontWeight: "bold",
-      fontSize: 16,
-      paddingHorizontal: 12,
-      ...props.theme.calendarMonthTitle
-    };
-  }}
+  ${({ theme }) => ({
+    fontWeight: "bold",
+    fontSize: 16,
+    paddingHorizontal: 12,
+    ...getStylesFromTheme("title", theme)
+  })};
 `;
 const Week = styled.View`
-  ${props => {
-    return {
-      flexDirection: "row",
-      alignItems: "stretch",
-      ...props.theme.calendarMonthWeek
-    };
-  }}
-`;
-const DayContainer = styled.View`
-  ${{
-    flex: 1,
-    alignSelf: "stretch",
-    // Hack to avoid this issue
-    // https://github.com/facebook/react-native/issues/10539
-    marginLeft: -1,
-    marginRight: -1
-  }}
+  ${({ theme }) => ({
+    flexDirection: "row",
+    alignItems: "stretch",
+    ...getStylesFromTheme("week", theme)
+  })};
 `;
 
-const propTypes = {
-  month: momentPropTypes.momentObj,
-  dates: PropTypes.arrayOf(momentPropTypes.momentObj),
-  onDayPress: PropTypes.func,
+type Props = {
+  month: moment$Moment,
+  weeks: Array<Array<moment$Moment>>,
+  onDayPress?: moment$Moment => any,
+  modifiers: Modifiers,
+  refresh: boolean,
 
   // i18n
-  monthFormat: PropTypes.string
+  monthFormat: string
 };
 
-const defaultProps = {
-  month: moment(),
-  dates: [],
-  onDayPress() {},
+const defaultModifiers = getDefaultModifiers();
 
-  // i18n
-  monthFormat: "MMMM YYYY" // english locale
-};
+export default class CalendarMonth extends React.Component<
+  any,
+  Props,
+  void
+> {
+  static defaultProps = {
+    month: moment(),
+    onDayPress() {},
+    refresh: false,
 
-export function getModifiersPropsForDay(modifiers, day) {
-  const props = {};
-  if (day) {
-    const keys = Object.keys(modifiers);
-    keys.forEach(key => {
-      props[key] = modifiers[key](day);
-    });
+    // i18n
+    monthFormat: "MMMM YYYY" // english locale
+  };
+
+  shouldComponentUpdate(nextProps: Props) {
+    return nextProps.refresh === true;
   }
 
-  return props;
-}
-
-export default class CalendarMonth extends React.Component {
   render() {
-    const { month, onDayPress, monthFormat, weeks, modifiers } = this.props;
+    const {
+      month,
+      onDayPress,
+      monthFormat,
+      weeks,
+      modifiers
+    } = this.props;
 
     const monthTitle = month.format(monthFormat);
-    const now = moment();
 
     return (
       <Container>
-        <MonthTitle>{monthTitle}</MonthTitle>
+        <MonthTitle>
+          {monthTitle}
+        </MonthTitle>
         {weeks.map((week, i) =>
           <Week key={i}>
             {week.map((day, j) => {
-              const modifiersPropsForDay = getModifiersPropsForDay(
+              const computedModifiers = getComputedModifiers(
+                defaultModifiers,
                 modifiers,
                 day
               );
-              const past = day && day.isBefore(now, "day");
-              const isToday = day && day.isSame(now, "day");
 
               return (
-                <DayContainer key={j}>
-                  {day &&
-                    <CalendarDay
-                      day={day}
-                      {...modifiersPropsForDay}
-                      onDayPress={onDayPress}
-                      past={past}
-                      isToday={isToday}
-                    />}
-                </DayContainer>
+                <CalendarDay
+                  key={j}
+                  day={day}
+                  modifiers={computedModifiers}
+                  onDayPress={onDayPress}
+                />
               );
             })}
           </Week>
@@ -114,6 +108,3 @@ export default class CalendarMonth extends React.Component {
     );
   }
 }
-
-CalendarMonth.propTypes = propTypes;
-CalendarMonth.defaultProps = defaultProps;

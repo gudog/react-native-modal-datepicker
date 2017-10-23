@@ -1,5 +1,15 @@
 import React, { Component } from "react";
-import { DatesPicker } from "./../../src";
+import { ModalDatePicker } from "./../../src";
+
+
+const theme = {
+  calendarMonth: {
+    title: {
+      color: "red"
+    }
+  }
+};
+
 
 export default class DatesPickerExample extends Component {
   constructor(props) {
@@ -9,13 +19,21 @@ export default class DatesPickerExample extends Component {
     };
   }
 
-  onDatesChange = dates => {
+  onValueChange = dates => {
     this.setState({ dates });
   };
 
   render() {
     const { dates } = this.state;
 
-    return <DatesPicker onDatesChange={this.onDatesChange} dates={dates} />;
+    return (
+      <ModalDatePicker
+        mode="dates"
+        onValueChange={this.onValueChange}
+        value={dates}
+        numberOfMonths={6}
+        theme={theme}
+      />
+    );
   }
 }

@@ -1,58 +1,108 @@
-import React from "react";
-import moment from "moment";
-import { View } from "react-native";
-import { storiesOf } from "@kadira/react-native-storybook";
-import { withKnobs, number } from "@kadira/storybook-addon-knobs";
+// @flow
+/* eslint-disable import/no-extraneous-dependencies, import/no-unresolved, import/extensions */
 
+import React from "react";
+import { Text } from "react-native";
+
+import { storiesOf } from "@storybook/react-native";
+import { action } from "@storybook/addon-actions";
+import { linkTo } from "@storybook/addon-links";
+
+// import Button from './Button';
+// import CenterView from './CenterView';
+// import Welcome from './Welcome';
+
+import moment from "moment";
 import CenterView from "./CenterView";
 import SingleDatePickerExample from "./SingleDatePickerExample";
 import DatesPickerExample from "./DatesPickerExample";
 import DateRangePickerExample from "./DateRangePickerExample";
+import AvailabilityCalendar from "./AvailabilityCalendar";
+import {
+  ModalDatePicker,
+  CalendarMonthList,
+  WeekHeader
+} from "./../../src";
 
-import { CalendarMonthList, WeekHeader } from "./../../src";
+import type { ThemeType } from "./../../src/types";
 
-storiesOf("DatesPicker", module)
-  .addDecorator(withKnobs)
-  .addDecorator(getStory => <CenterView>{getStory()}</CenterView>)
-  .add("Single Date", () =>
-    <SingleDatePickerExample maxNumberOfDates={number("maxNumberOfDates", 1)} />
-  )
-  .add("Multiple Dates", () => <DatesPickerExample />);
+const theme: ThemeType = {
+  calendarDay: {
+    container: {
+      // default modifiers
+      selected: {
+        backgroundColor: "red"
+      },
+      // custom modifeirs
+      booked: {
+        backgroundColor: "orange"
+      }
+    },
+    text: {
+      default: {
+        color: "black"
+      },
+      // default modifiers
+      selected: {
+        color: "white"
+      },
+      blocked: {
+        color: "grey"
+      },
+      // custom modifeirs
+      booked: {
+        color: "white"
+      },
+      past: {
+        color: "red"
+      }
+    }
+  },
+  calendarModal: {
+    container: {
+      backgroundColor: "red"
+    }
+  }
+};
 
-storiesOf("DateRangePicker", module)
-  .addDecorator(getStory => <CenterView>{getStory()}</CenterView>)
-  .add("default", () => <DateRangePickerExample />);
+const datesList = [
+  moment(),
+  moment().add(1, "days"),
+  moment().add(3, "days"),
+  moment().add(9, "days"),
+  moment().add(10, "days"),
+  moment().add(11, "days"),
+  moment().add(12, "days"),
+  moment().add(13, "days")
+];
+
+const modifiers = {
+  selected: day => datesList.some(day2 => day.isSame(day2, "day")),
+  booked: day =>
+    datesList.some(day2 =>
+      day.isSame(day2.clone().add(1, "day"), "day")
+    )
+};
 
 storiesOf("CalendarMonthList", module)
-  .addDecorator(withKnobs)
-  .addDecorator(getStory => <View style={{ marginTop: 20 }}>{getStory()}</View>)
-  .add("default", () =>
-    <CalendarMonthList numberOfMonths={number("numberOfMonths", 24)} />
-  )
-  .add("block all weekends", () =>
+  .add("AvailabilityCalendar", () => <AvailabilityCalendar />)
+  .add("12 months", () =>
     <CalendarMonthList
-      modifiers={{
-        blocked: day => day.day() == 5 || day.day() == 6
-      }}
+      numberOfMonths={12}
+      theme={theme}
+      modifiers={modifiers}
     />
   )
-  .add("date range selected", () =>
-    <CalendarMonthList
-      modifiers={{
-        selectedStart: day => day.isSame(moment(), "day"),
-        selectedSpan: day => day.isSame(moment().add(1, "days"), "day"),
-        selectedEnd: day => day.isSame(moment().add(2, "days"), "day")
-      }}
-    />
-  )
-  .add("with custom theme", () =>
-    <CalendarMonthList
-      theme={{
-        calendarMonthTitle: { color: "red" }
-      }}
-    />
-  );
+  .add("24 months", () => <CalendarMonthList numberOfMonths={24} />);
 
-storiesOf("WeekHeader", module)
-  .addDecorator(getStory => <CenterView>{getStory()}</CenterView>)
-  .add("default", () => <WeekHeader />);
+storiesOf("ModalDatePicker", module)
+  .addDecorator(getStory =>
+    <CenterView>
+      {getStory()}
+    </CenterView>
+  )
+  // .add("Single Date", () =>
+  //   <SingleDatePickerExample maxNumberOfDates={1} />
+  // )
+  .add("Date Range", () => <DateRangePickerExample />)
+  .add("Multiple dates", () => <DatesPickerExample />);

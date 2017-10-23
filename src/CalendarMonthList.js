@@ -1,86 +1,90 @@
-import React, { PropTypes } from "react";
+// @flow
+import React from "react";
+
 import moment from "moment";
-import MomentPropTypes from "react-moment-proptypes";
-import { ListView } from "react-native";
+import { FlatList } from "react-native";
 import { ThemeProvider } from "styled-components";
 import CalendarMonth from "./CalendarMonth";
-import ThemePropTypes from "./ThemePropTypes";
 import getCalendarMonthWeeks from "./utils/getCalendarMonthWeeks";
 
 import isMonthIncluded from "./utils/isMonthIncluded";
+import type { CalendarMonthListProps } from "./types";
 
-export default class CalendarMonthList extends React.Component {
-  static propTypes = {
-    mode: PropTypes.string,
-    initialMonth: MomentPropTypes.momentObj,
-    dates: PropTypes.array,
-    modifiers: PropTypes.object,
-    onDayPress: PropTypes.func,
-    theme: ThemePropTypes
-  };
+type Props = CalendarMonthListProps;
 
-  static defaultProps = {
-    mode: "dateRange",
-    initialMonth: moment(),
-    numberOfMonths: 24,
-    dates: [],
-    modifiers: {},
-    theme: {}
-  };
+type State = {
+  months: Array<any>
+};
 
-  constructor(props) {
+const defaultProps = {
+  mode: "dates",
+  initialMonth: moment(),
+  numberOfMonths: 24,
+  // selectedDates: null,
+  modifiers: {},
+  theme: {}
+};
+type DefaultProps = typeof defaultProps;
+
+export default class CalendarMonthList extends React.Component<
+  DefaultProps,
+  Props,
+  State
+> {
+  props: Props;
+  state: State;
+
+  static defaultProps: DefaultProps = defaultProps;
+
+  constructor(props: Props) {
     super(props);
-    const { numberOfMonths, initialMonth } = this.props;
 
+    const { numberOfMonths, initialMonth } = this.props;
     let month = initialMonth.clone().startOf("month");
+    month.locale(false); // Make sure we always use the global moment locale
+
     const months = [];
     for (let i = 0; i < numberOfMonths; i++) {
       months.push({
+        key: i,
         month,
         weeks: getCalendarMonthWeeks(month, false)
       });
       month = month.clone().add(1, "month");
     }
 
-    const dataSource = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => {
-        // console.log(`rowHasChanged ${r1.month.format('MMMM')}: ${(r1 !== r2)}`)
-        return r1 !== r2;
-      }
-    });
-
     this.state = {
-      months,
-      dataSource: dataSource.cloneWithRows(months)
+      months
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { dates, startDate, endDate } = this.props;
-    const {
-      mode,
-      dates: nextDates,
-      startDate: nextStartDate,
-      endDate: nextEndDate
-    } = nextProps;
+  componentWillReceiveProps(nextProps: Props) {
+    const { selectedDates } = this.props;
+    const { mode, selectedDates: nextSelectedDates } = nextProps;
 
-    const { months, dataSource } = this.state;
+    const { months } = this.state;
     let newMonths;
 
     if (mode === "dates") {
       newMonths = months.map(monthRow => {
         const { month } = monthRow;
         if (
-          isMonthIncluded(month, nextDates) ||
-          isMonthIncluded(month, dates)
+          isMonthIncluded(month, nextSelectedDates) ||
+          isMonthIncluded(month, selectedDates)
         ) {
-          // console.log(`flagging ${month.format('MMMM Y')} as dirty`)
-          return Object.assign({}, monthRow); // Change the reference to object
+          monthRow.refresh = true;
+        } else {
+          monthRow.refresh = false;
         }
         return monthRow; // keep the same reference
       });
     } else if (mode === "dateRange") {
       // Tag all the months that need to be re-rendered
+      const { startDate, endDate } = selectedDates;
+      const {
+        startDate: nextStartDate,
+        endDate: nextEndDate
+      } = nextSelectedDates;
       newMonths = months.map(monthRow => {
         const { month } = monthRow;
         if (
@@ -92,44 +96,68 @@ export default class CalendarMonthList extends React.Component {
           month.isBetween(startDate, endDate, "month")
         ) {
           // console.log(`flagging ${month.format('MMMM Y')} as dirty`)
-          return Object.assign({}, monthRow); // Change the reference to object
+          monthRow.refresh = true;
+        } else {
+          monthRow.refresh = false;
         }
         return monthRow; // keep the same reference
       });
     }
 
     this.setState({
-      months: newMonths,
-      dataSource: dataSource.cloneWithRows(newMonths)
+      months: newMonths
     });
   }
 
-  renderRow = (rowData, sectionID, rowID, highlightRow) => {
-    const { modifiers, onDayPress } = this.props;
+  renderItem = ({ item }) => {
+    const { modifiers, onDayPress, monthFormat } = this.props;
 
     return (
       <CalendarMonth
         modifiers={modifiers}
-        weeks={rowData.weeks}
-        month={rowData.month}
+        weeks={item.weeks}
+        month={item.month}
+        refresh={item.refresh}
         onDayPress={onDayPress}
+        monthFormat={monthFormat}
       />
     );
   };
 
+  // onViewableItemsChanged = ({ viewableItems, changed }) => {
+  //   console.log("------------viewableItems");
+  //   viewableItems.map(m =>
+  //     console.log(m.item.month.format("MMMM YYYY"))
+  //   );
+  //   console.log("-----------changed");
+  //   changed.map(m =>
+  //     console.log(
+  //       `${m.item.month.format("MMMM YYYY")} ${m.isViewable}`
+  //     )
+  //   );
+  // };
+
   render() {
-    const { listViewProps, theme } = this.props;
+    const { theme } = this.props;
 
     return (
       <ThemeProvider theme={theme}>
-        <ListView
-          dataSource={this.state.dataSource}
-          renderRow={this.renderRow}
-          initialListSize={2}
-          pageSize={2}
-          scrollRenderAheadDistance={200}
+        <FlatList
+          data={this.state.months}
+          // getItemCount={data => (data ? data.length : 0)}
+          // getItem={(data, index) => data[index]}
+          renderItem={this.renderItem}
+          initialNumToRender={3}
+          maxToRenderPerBatch={3}
+          onEndReachedThreshold={1}
+          windowSize={6}
           showsVerticalScrollIndicator={false}
-          {...listViewProps}
+          // debug={true}
+          // {...listViewProps}
+          // onViewableItemsChanged={this.onViewableItemsChanged}
+          // getItem={(data, index) => data[index]}
+          // getItemCount={data => data.length}
+          // {...listViewProps}sss
         />
       </ThemeProvider>
     );

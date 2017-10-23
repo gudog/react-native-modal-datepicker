@@ -1,96 +1,54 @@
-import React, { PropTypes } from "react";
-import { View, Text } from "react-native";
-import { ThemeProvider } from "styled-components";
-import momentPropTypes from "react-moment-proptypes";
-import moment from "moment";
+// @flow
+import React from "react";
+import CalendarMonthList from "./CalendarMonthList";
+import type { PickerProps, DateRange, ComputedModifiers } from "./types";
 
-import DateInput from "./DateInput";
-import ThemePropTypes from "./ThemePropTypes";
-import CalendarModal from "./CalendarModal";
-
-const propTypes = {
-  theme: ThemePropTypes,
-  numberOfMonths: PropTypes.number,
-  initialVisibleMonth: PropTypes.func,
-  isOutsideRange: PropTypes.func,
-  startDate: momentPropTypes.momentObj,
-  endDate: momentPropTypes.momentObj,
-
-  onDatesChange: PropTypes.func,
-
-  // Custom props for main RN components
-  modalProps: React.PropTypes.object,
-
-  // A React element to be used as background
-  calendarModalBackground: React.PropTypes.element,
-
-  // i18n
-  displayFormat: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-  monthFormat: PropTypes.string,
-  phrases: PropTypes.shape({
-    selectDates: PropTypes.node,
-    clear: PropTypes.node,
-    save: PropTypes.node
-  })
-};
-
-const defaultProps = {
-  numberOfMonths: 12,
-  initialVisibleMonth: () => moment(),
-  isOutsideRange: day => day && !day.isSameOrAfter(moment(), "day"),
-  startDate: null,
-  endDate: null,
-  onDatesChange() {},
-
-  // i18n
-  displayFormat: () => moment.localeData().longDateFormat("L"),
-  monthFormat: "MMMM YYYY",
-  phrases: {
-    selectDates: "Select Date Range",
-    clearDates: "Clear",
-    save: "Save",
-    startDate: "Start Date",
-    endDate: "End Date"
-  },
-  theme: {}
-};
+type Props = PickerProps<DateRange>;
 
 export default class DateRangePicker extends React.Component {
-  constructor(props) {
+  props: Props;
+  combinedModifiers: Object;
+
+  constructor(props: Props) {
     super(props);
 
-    // state.startDate && state.endDate &&  => dates selected in the modal
-    // props.startDate && props.endDate &&  => dates selected in dateInput
-
-    this.state = {
-      calendarVisible: false,
-      startDate: null,
-      endDate: null
-    };
+    this.combinedModifiers = Object.assign({}, props.modifiers, {
+      selectedStart: day => this.isStartDate(day),
+      selectedEnd: day => this.isEndDate(day),
+      selectedSpan: day => this.isInSelectedSpan(day)
+    });
   }
 
-  isBlocked(day) {
-    // const { isDayBlocked, isOutsideRange } = this.props
-    // return isDayBlocked(day) || isOutsideRange(day);
-    const { isOutsideRange } = this.props;
-    return isOutsideRange(day);
+  isStartDate(day: moment$Moment) {
+    const { value } = this.props;
+
+    return value && value.startDate && day.isSame(value.startDate, "day");
   }
 
-  isStartDate(day) {
-    return day.isSame(this.state.startDate, "day");
+  isInSelectedSpan(day: moment$Moment) {
+    const { value } = this.props;
+    if (value) {
+      const { startDate, endDate } = value;
+      return startDate && endDate && day.isBetween(startDate, endDate);
+    }
+    return false;
   }
 
-  isInSelectedSpan(day) {
-    const { startDate, endDate } = this.state;
-    return day.isBetween(startDate, endDate);
+  isEndDate(day: moment$Moment) {
+    const { value } = this.props;
+    return value && value.endDate && day.isSame(value.endDate, "day");
   }
 
-  isEndDate(day) {
-    return day.isSame(this.state.endDate, "day");
-  }
+  handleDayPress = (day: moment, modifiers: ComputedModifiers) => {
+    // No matter what, always bubble up the press event
+    this.props.onDayPress(day, modifiers);
 
-  handleDayPress = day => {
-    let { startDate, endDate } = this.state;
+    if (modifiers.has("past") || modifiers.has("blocked")) {
+      return;
+    }
+
+    const { value, onValueChange } = this.props;
+    let { startDate, endDate } = value;
 
     if (!startDate && !endDate) {
       // Nothing was selected
@@ -105,6 +63,20 @@ export default class DateRangePicker extends React.Component {
         startDate = day;
       } else if (day.isAfter(startDate)) {
         endDate = day;
+      }
+
+      // Check the new range does not contain any blocked date
+      const currDate = startDate.clone();
+      while (currDate.add(1, "days").diff(endDate) < 0) {
+        if (
+          this.combinedModifiers.blocked &&
+          this.combinedModifiers.blocked(currDate)
+        ) {
+          // Use the selected date as startDate to reset date the range
+          startDate = day;
+          endDate = undefined;
+          break;
+        }
       }
     } else if (startDate && endDate) {
       // Both startDate and endDate were selected
@@ -122,97 +94,29 @@ export default class DateRangePicker extends React.Component {
       }
     }
 
-    this.setState({ startDate, endDate });
+    onValueChange({ startDate, endDate });
   };
 
-  handleOnDateInputPress = () => {
-    this.setState({ calendarVisible: true });
-  };
-
-  handleClosePress = () => {
-    this.setState({
-      calendarVisible: false,
-      startDate: this.props.startDate,
-      endDate: this.props.endDate
-    });
-  };
-
-  handleClearPress = () => {
-    this.setState({
-      startDate: null,
-      endDate: null
-    });
-  };
-
-  handleSavePress = () => {
-    const { startDate, endDate } = this.state;
-    this.setState({ calendarVisible: false });
-    this.props.onDatesChange({ startDate, endDate });
-  };
-
-  renderCalendar() {
-    const { calendarVisible, startDate, endDate } = this.state;
+  render() {
     const {
-      initialVisibleMonth,
+      mode,
+      value,
+      initialMonth,
       numberOfMonths,
-      monthFormat,
-      phrases,
-      modalProps,
-      listViewProps,
-      calendarModalBackground
+      monthFormat
     } = this.props;
 
-    const modifiers = {
-      blocked: day => this.isBlocked(day),
-      selectedStart: day => this.isStartDate(day),
-      selectedEnd: day => this.isEndDate(day),
-      selectedSpan: day => this.isInSelectedSpan(day)
-    };
-
     return (
-      <CalendarModal
-        mode="dateRange"
-        startDate={startDate}
-        endDate={endDate}
-        initialVisibleMonth={initialVisibleMonth}
+      <CalendarMonthList
+        mode={mode}
+        graas
         numberOfMonths={numberOfMonths}
-        monthFormat={monthFormat}
-        phrases={phrases}
-        modifiers={modifiers}
-        visible={calendarVisible}
-        // Callbacks
+        initialMonth={initialMonth}
         onDayPress={this.handleDayPress}
-        onClearPress={this.handleClearPress}
-        onClosePress={this.handleClosePress}
-        onSavePress={this.handleSavePress}
-        // Custom Props
-        modalProps={modalProps}
-        listViewProps={listViewProps}
-        // Background
-        background={calendarModalBackground}
+        monthFormat={monthFormat}
+        modifiers={this.combinedModifiers}
+        selectedDates={value}
       />
     );
   }
-
-  render() {
-    const { startDate, endDate, phrases, theme } = this.props;
-
-    return (
-      <ThemeProvider theme={theme}>
-        <View>
-          <DateInput
-            onPress={this.handleOnDateInputPress}
-            mode="dateRange"
-            startDate={startDate}
-            endDate={endDate}
-            phrases={phrases}
-          />
-          {this.renderCalendar()}
-        </View>
-      </ThemeProvider>
-    );
-  }
 }
-
-DateRangePicker.propTypes = propTypes;
-DateRangePicker.defaultProps = defaultProps;
