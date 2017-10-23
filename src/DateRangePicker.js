@@ -1,11 +1,7 @@
 // @flow
 import React from "react";
 import CalendarMonthList from "./CalendarMonthList";
-import type {
-  PickerProps,
-  DateRange,
-  ComputedModifiers
-} from "./types";
+import type { PickerProps, DateRange, ComputedModifiers } from "./types";
 
 type Props = PickerProps<DateRange>;
 
@@ -26,18 +22,14 @@ export default class DateRangePicker extends React.Component {
   isStartDate(day: moment$Moment) {
     const { value } = this.props;
 
-    return (
-      value && value.startDate && day.isSame(value.startDate, "day")
-    );
+    return value && value.startDate && day.isSame(value.startDate, "day");
   }
 
   isInSelectedSpan(day: moment$Moment) {
     const { value } = this.props;
     if (value) {
       const { startDate, endDate } = value;
-      return (
-        startDate && endDate && day.isBetween(startDate, endDate)
-      );
+      return startDate && endDate && day.isBetween(startDate, endDate);
     }
     return false;
   }
@@ -72,6 +64,20 @@ export default class DateRangePicker extends React.Component {
       } else if (day.isAfter(startDate)) {
         endDate = day;
       }
+
+      // Check the new range does not contain any blocked date
+      const currDate = startDate.clone();
+      while (currDate.add(1, "days").diff(endDate) < 0) {
+        if (
+          this.combinedModifiers.blocked &&
+          this.combinedModifiers.blocked(currDate)
+        ) {
+          // Use the selected date as startDate to reset date the range
+          startDate = day;
+          endDate = undefined;
+          break;
+        }
+      }
     } else if (startDate && endDate) {
       // Both startDate and endDate were selected
 
@@ -103,6 +109,7 @@ export default class DateRangePicker extends React.Component {
     return (
       <CalendarMonthList
         mode={mode}
+        graas
         numberOfMonths={numberOfMonths}
         initialMonth={initialMonth}
         onDayPress={this.handleDayPress}
