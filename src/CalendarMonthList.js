@@ -124,6 +124,8 @@ export default class CalendarMonthList extends React.Component<
     );
   };
 
+  keyExtractor = item => `${item.key}`;
+
   // onViewableItemsChanged = ({ viewableItems, changed }) => {
   //   console.log("------------viewableItems");
   //   viewableItems.map(m =>
@@ -143,6 +145,7 @@ export default class CalendarMonthList extends React.Component<
     return (
       <ThemeProvider theme={theme}>
         <FlatList
+          keyExtractor={this.keyExtractor}
           data={this.state.months}
           // getItemCount={data => (data ? data.length : 0)}
           // getItem={(data, index) => data[index]}
